@@ -21,16 +21,13 @@ html,body{
 }
 
 body{
-    background:
-        radial-gradient(circle at center,#17351f 0%,#08120c 70%);
+    background:radial-gradient(circle at center,#17351f,#08120c 70%);
     display:flex;
     align-items:center;
     justify-content:center;
 }
 
-button{
-    font-family:inherit;
-}
+button{font-family:inherit}
 
 #jogo{
     display:block;
@@ -38,14 +35,9 @@ button{
     height:auto;
     max-height:94vh;
     border-radius:18px;
-    box-shadow:
-        0 20px 60px rgba(0,0,0,.6),
-        0 0 0 2px rgba(255,255,255,.08);
+    box-shadow:0 20px 60px rgba(0,0,0,.6),
+               0 0 0 2px rgba(255,255,255,.08);
 }
-
-/* =========================
-   MENUS
-========================= */
 
 .overlay{
     position:fixed;
@@ -53,27 +45,25 @@ button{
     display:flex;
     align-items:center;
     justify-content:center;
-    background:
-        radial-gradient(circle at 50% 40%,#145b2c 0%,#07150b 70%);
+    background:radial-gradient(circle at 50% 40%,#145b2c,#07150b 70%);
     color:white;
     z-index:50;
 }
 
-.hidden{
-    display:none!important;
-}
+.hidden{display:none!important}
 
 .menuBox{
     width:460px;
     max-width:92vw;
+    max-height:90vh;
+    overflow:auto;
     padding:40px 36px;
     text-align:center;
-    background:rgba(5,12,7,.92);
+    background:rgba(5,12,7,.94);
     border:1px solid rgba(75,255,125,.45);
     border-radius:28px;
-    box-shadow:
-        0 25px 80px rgba(0,0,0,.65),
-        0 0 40px rgba(40,255,100,.12);
+    box-shadow:0 25px 80px rgba(0,0,0,.65),
+               0 0 40px rgba(40,255,100,.12);
     backdrop-filter:blur(10px);
 }
 
@@ -102,29 +92,21 @@ button{
     font-weight:800;
     cursor:pointer;
     transition:.16s;
-    box-shadow:0 8px 20px rgba(35,220,90,.15);
 }
 
 .menuButton:hover{
     transform:translateY(-2px) scale(1.015);
 }
 
-.menuButton:active{
-    transform:scale(.98);
-}
+.menuButton:active{transform:scale(.98)}
 
 .secondary{
     background:rgba(255,255,255,.09);
     border:1px solid rgba(255,255,255,.14);
 }
 
-.blueButton{
-    background:linear-gradient(135deg,#126be8,#3190ff);
-}
-
-.redButton{
-    background:linear-gradient(135deg,#e51d2a,#ff4c55);
-}
+.blueButton{background:linear-gradient(135deg,#126be8,#3190ff)}
+.redButton{background:linear-gradient(135deg,#e51d2a,#ff4c55)}
 
 .difficulty{
     display:grid;
@@ -141,13 +123,6 @@ button{
     font-weight:800;
     font-size:16px;
     cursor:pointer;
-    background:rgba(255,255,255,.1);
-    border:1px solid rgba(255,255,255,.12);
-}
-
-.difficulty button:hover{
-    transform:scale(1.03);
-    background:rgba(255,255,255,.17);
 }
 
 .easy{background:#178c48!important}
@@ -175,14 +150,6 @@ button{
     margin:0 0 20px;
 }
 
-.backButton{
-    margin-top:8px;
-}
-
-/* =========================
-   CONTAGEM
-========================= */
-
 #contagem{
     position:fixed;
     inset:0;
@@ -194,14 +161,9 @@ button{
     font-weight:900;
     background:rgba(0,0,0,.35);
     z-index:40;
-    text-shadow:
-        0 0 30px #36ff70,
-        0 0 70px rgba(54,255,112,.35);
+    text-shadow:0 0 30px #36ff70,
+                0 0 70px rgba(54,255,112,.35);
 }
-
-/* =========================
-   FIM
-========================= */
 
 #fim{
     position:fixed;
@@ -222,7 +184,6 @@ button{
     background:#101713;
     border:1px solid rgba(65,255,120,.45);
     border-radius:24px;
-    box-shadow:0 25px 80px rgba(0,0,0,.7);
 }
 
 #resultado{
@@ -231,12 +192,7 @@ button{
     margin:25px 0;
 }
 
-/* =========================
-   BOTÕES DO JOGO
-========================= */
-
-#botaoMusica,
-#botaoPausa{
+#botaoMusica,#botaoPausa{
     position:fixed;
     top:15px;
     z-index:100;
@@ -248,21 +204,10 @@ button{
     font-size:15px;
     font-weight:bold;
     cursor:pointer;
-    box-shadow:0 5px 15px rgba(0,0,0,.4);
 }
 
 #botaoMusica{right:15px}
 #botaoPausa{left:15px}
-
-#botaoMusica:hover,
-#botaoPausa:hover{
-    transform:scale(1.05);
-    background:rgba(20,80,40,.95);
-}
-
-/* =========================
-   PAUSA
-========================= */
 
 #pausaOverlay{
     position:fixed;
@@ -282,17 +227,8 @@ button{
     font-size:64px;
 }
 
-.pauseButtons{
-    width:300px;
-}
-
-.pauseButtons button{
-    width:100%;
-}
-
-/* =========================
-   IA INDICADOR
-========================= */
+.pauseButtons{width:300px}
+.pauseButtons button{width:100%}
 
 #indicadorIA{
     position:fixed;
@@ -309,9 +245,87 @@ button{
     pointer-events:none;
 }
 
-/* =========================
-   MOBILE
-========================= */
+/* ================= GOL ================= */
+
+#golOverlay{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    z-index:70;
+    pointer-events:none;
+    background:rgba(0,0,0,.18);
+}
+
+#golTexto{
+    font-size:clamp(80px,15vw,190px);
+    font-weight:1000;
+    color:white;
+    text-shadow:
+        0 0 10px #ffe600,
+        0 0 30px #ff7b00,
+        0 0 70px #ff2200;
+    animation:piscagol .35s infinite alternate;
+}
+
+#golSub{
+    font-size:24px;
+    font-weight:bold;
+    color:white;
+    margin-top:-15px;
+    text-shadow:0 3px 15px #000;
+}
+
+@keyframes piscagol{
+    from{opacity:.35;transform:scale(.92)}
+    to{opacity:1;transform:scale(1.08)}
+}
+
+/* ================= REPLAY ================= */
+
+#replayTexto{
+    position:fixed;
+    top:75px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:75;
+    display:none;
+    color:white;
+    background:rgba(0,0,0,.7);
+    padding:8px 18px;
+    border-radius:20px;
+    font-weight:bold;
+    pointer-events:none;
+}
+
+/* ================= TUTORIAL ================= */
+
+.tutorial{
+    text-align:left;
+    line-height:1.55;
+    color:#ddd;
+}
+
+.tutorial h3{
+    color:#72ff98;
+    margin-bottom:5px;
+}
+
+.tutorial p{
+    margin-top:5px;
+}
+
+.key{
+    display:inline-block;
+    padding:3px 8px;
+    border-radius:6px;
+    background:#222;
+    border:1px solid #666;
+    color:white;
+    font-weight:bold;
+}
 
 @media(max-width:600px){
     .logo{font-size:40px}
@@ -323,223 +337,244 @@ button{
 
 <body>
 
-<!-- =========================
-     MENU PRINCIPAL
-========================= -->
-
+<!-- MENU -->
 <div id="menu" class="overlay">
-    <div class="menuBox">
+<div class="menuBox">
 
-        <div class="logo">⚽ SoccerGol 🔥</div>
-        <div class="sub">Futebol de Mesa</div>
+<div class="logo">⚽ SoccerGol 🔥</div>
+<div class="sub">Futebol de Mesa</div>
 
-        <button class="menuButton" onclick="abrirModos()">
-            ▶️ JOGAR
-        </button>
+<button class="menuButton" onclick="abrirModos()">▶️ JOGAR</button>
 
-        <button class="menuButton secondary" onclick="mostrarCreditos()">
-            👤 CRÉDITOS
-        </button>
-
-        <div class="creditos" id="creditos">
-            🏆 <b>SoccerGol</b><br>
-            Criado por <b>Diogo</b> ⚽<br>
-            🎮 Futebol de Mesa<br>
-            🔥 Divirta-se!
-        </div>
-
-    </div>
-</div>
-
-<!-- =========================
-     SELEÇÃO DE MODO
-========================= -->
-
-<div id="modoMenu" class="overlay hidden">
-    <div class="menuBox">
-
-        <h1 class="menuTitle">🎮 MODO DE JOGO</h1>
-        <p class="menuDescription">Escolha como quer jogar.</p>
-
-        <button class="menuButton" onclick="selecionarDoisPlayers()">
-            👥 2 PLAYERS
-        </button>
-
-        <button class="menuButton" onclick="abrirEscolhaTime()">
-            🤖 MODO IA
-        </button>
-
-        <button class="menuButton secondary" onclick="voltarMenuPrincipal()">
-            ◀️ VOLTAR
-        </button>
-
-    </div>
-</div>
-
-<!-- =========================
-     ESCOLHA DO TIME
-========================= -->
-
-<div id="timeMenu" class="overlay hidden">
-    <div class="menuBox">
-
-        <h1 class="menuTitle">🤖 ESCOLHA SEU TIME</h1>
-        <p class="menuDescription">
-            A IA ficará com o outro time.
-        </p>
-
-        <button class="menuButton blueButton" onclick="selecionarTimeIA('azul')">
-            🔵 JOGAR DE AZUL
-        </button>
-
-        <button class="menuButton redButton" onclick="selecionarTimeIA('vermelho')">
-            🔴 JOGAR DE VERMELHO
-        </button>
-
-        <button class="menuButton secondary" onclick="abrirModos()">
-            ◀️ VOLTAR
-        </button>
-
-    </div>
-</div>
-
-<!-- =========================
-     DIFICULDADE
-========================= -->
-
-<div id="dificuldadeMenu" class="overlay hidden">
-    <div class="menuBox">
-
-        <h1 class="menuTitle">🤖 DIFICULDADE</h1>
-        <p class="menuDescription">
-            Quanto maior, mais inteligente a IA.
-        </p>
-
-        <div class="difficulty">
-
-            <button class="easy"
-                onclick="selecionarDificuldade('facil')">
-                🟢 FÁCIL
-            </button>
-
-            <button class="medium"
-                onclick="selecionarDificuldade('medio')">
-                🟡 MÉDIO
-            </button>
-
-            <button class="hard"
-                onclick="selecionarDificuldade('dificil')">
-                🔴 DIFÍCIL
-            </button>
-
-            <button class="impossible"
-                onclick="selecionarDificuldade('impossivel')">
-                ☠️ IMPOSSÍVEL
-            </button>
-
-        </div>
-
-        <button class="menuButton secondary backButton"
-            onclick="abrirEscolhaTime()">
-            ◀️ VOLTAR
-        </button>
-
-    </div>
-</div>
-
-<!-- =========================
-     CONTAGEM
-========================= -->
-
-<div id="contagem">3</div>
-
-<!-- =========================
-     FIM
-========================= -->
-
-<div id="fim">
-
-    <div class="fimBox">
-
-        <h1>🏆 FIM DE JOGO</h1>
-
-        <div id="resultado"></div>
-
-        <button class="menuButton" onclick="voltarMenu()">
-            🏠 MENU
-        </button>
-
-        <button class="menuButton" onclick="reiniciarAtual()">
-            🔄 JOGAR NOVAMENTE
-        </button>
-
-    </div>
-
-</div>
-
-<!-- =========================
-     PAUSA
-========================= -->
-
-<div id="pausaOverlay">
-
-    <h1>⏸️ PAUSADO</h1>
-
-    <div class="pauseButtons">
-
-        <button class="menuButton"
-            onclick="alternarPausa()">
-            ▶️ CONTINUAR
-        </button>
-
-        <button class="menuButton secondary"
-            onclick="resetarPartida()">
-            🔄 RESETAR
-        </button>
-
-        <button class="menuButton secondary"
-            onclick="voltarMenu()">
-            🏠 MENU
-        </button>
-
-    </div>
-
-</div>
-
-<!-- =========================
-     BOTÕES
-========================= -->
-
-<button id="botaoPausa"
-    onclick="alternarPausa()">
-    ⏸️ Pausar
+<button class="menuButton secondary" onclick="mostrarCreditos()">
+👤 CRÉDITOS
 </button>
 
-<button id="botaoMusica"
-    onclick="alternarMusica()">
-    🔊 Música: ON
+<button class="menuButton secondary" onclick="abrirTutorial()">
+📖 TUTORIAL
+</button>
+
+<div class="creditos" id="creditos">
+🏆 <b>SoccerGol</b><br>
+Criado por <b>Diogo</b> ⚽<br>
+🎮 Futebol de Mesa<br>
+🔥 Divirta-se!
+</div>
+
+</div>
+</div>
+
+<!-- MODOS -->
+<div id="modoMenu" class="overlay hidden">
+<div class="menuBox">
+
+<h1 class="menuTitle">🎮 MODO DE JOGO</h1>
+<p class="menuDescription">Escolha como quer jogar.</p>
+
+<button class="menuButton" onclick="selecionarDoisPlayers()">
+👥 2 PLAYERS
+</button>
+
+<button class="menuButton" onclick="abrirEscolhaTime()">
+🤖 MODO IA
+</button>
+
+<button class="menuButton secondary" onclick="voltarMenuPrincipal()">
+◀️ VOLTAR
+</button>
+
+</div>
+</div>
+
+<!-- TIME -->
+<div id="timeMenu" class="overlay hidden">
+<div class="menuBox">
+
+<h1 class="menuTitle">🤖 ESCOLHA SEU TIME</h1>
+<p class="menuDescription">A IA ficará com o outro time.</p>
+
+<button class="menuButton blueButton"
+onclick="selecionarTimeIA('azul')">
+🔵 JOGAR DE AZUL
+</button>
+
+<button class="menuButton redButton"
+onclick="selecionarTimeIA('vermelho')">
+🔴 JOGAR DE VERMELHO
+</button>
+
+<button class="menuButton secondary" onclick="abrirModos()">
+◀️ VOLTAR
+</button>
+
+</div>
+</div>
+
+<!-- DIFICULDADE -->
+<div id="dificuldadeMenu" class="overlay hidden">
+<div class="menuBox">
+
+<h1 class="menuTitle">🤖 DIFICULDADE</h1>
+<p class="menuDescription">Quanto maior, mais inteligente a IA.</p>
+
+<div class="difficulty">
+
+<button class="easy" onclick="selecionarDificuldade('facil')">
+🟢 FÁCIL
+</button>
+
+<button class="medium" onclick="selecionarDificuldade('medio')">
+🟡 MÉDIO
+</button>
+
+<button class="hard" onclick="selecionarDificuldade('dificil')">
+🔴 DIFÍCIL
+</button>
+
+<button class="impossible" onclick="selecionarDificuldade('impossivel')">
+☠️ IMPOSSÍVEL
+</button>
+
+</div>
+
+<button class="menuButton secondary" onclick="abrirEscolhaTime()">
+◀️ VOLTAR
+</button>
+
+</div>
+</div>
+
+<!-- TUTORIAL -->
+<div id="tutorialMenu" class="overlay hidden">
+<div class="menuBox">
+
+<h1 class="menuTitle">📖 COMO JOGAR</h1>
+
+<div class="tutorial">
+
+<h3>🔵 Time Azul</h3>
+<p>
+Mover:
+<span class="key">W</span>
+<span class="key">A</span>
+<span class="key">S</span>
+<span class="key">D</span>
+</p>
+<p>Chutar: <span class="key">E</span></p>
+
+<h3>🔴 Time Vermelho</h3>
+<p>
+Mover:
+<span class="key">↑</span>
+<span class="key">↓</span>
+<span class="key">←</span>
+<span class="key">→</span>
+</p>
+<p>Chutar: <span class="key">CTRL DIREITO</span></p>
+
+<h3>🎯 Como mirar</h3>
+<p>
+Seu jogador chuta na direção em que ele está
+se movimentando. Posicione o jogador antes
+de chutar para escolher a direção.
+</p>
+
+<h3>🦶 Chute de calcanhar</h3>
+<p>
+Chegue perto da bola, dê um pequeno movimento
+para trás e chute. A bola pode passar pelo
+jogador e ir para trás. É uma técnica especial
+do SoccerGol. 😎
+</p>
+
+<h3>⚽ Dica</h3>
+<p>
+Não fique simplesmente correndo atrás da bola.
+Tente se posicionar na frente dela para preparar
+o chute.
+</p>
+
+<h3>🤖 IA</h3>
+<p>
+Quanto maior a dificuldade, melhor a IA lê
+a trajetória, se posiciona e finaliza.
+</p>
+
+</div>
+
+<button class="menuButton secondary" onclick="voltarMenuPrincipal()">
+🏠 VOLTAR
+</button>
+
+</div>
+</div>
+
+<!-- CONTAGEM -->
+<div id="contagem">3</div>
+
+<!-- FIM -->
+<div id="fim">
+<div class="fimBox">
+
+<h1>🏆 FIM DE JOGO</h1>
+
+<div id="resultado"></div>
+
+<button class="menuButton" onclick="voltarMenu()">
+🏠 MENU
+</button>
+
+<button class="menuButton" onclick="reiniciarAtual()">
+🔄 JOGAR NOVAMENTE
+</button>
+
+</div>
+</div>
+
+<!-- PAUSA -->
+<div id="pausaOverlay">
+
+<h1>⏸️ PAUSADO</h1>
+
+<div class="pauseButtons">
+
+<button class="menuButton" onclick="alternarPausa()">
+▶️ CONTINUAR
+</button>
+
+<button class="menuButton secondary" onclick="resetarPartida()">
+🔄 RESETAR
+</button>
+
+<button class="menuButton secondary" onclick="voltarMenu()">
+🏠 MENU
+</button>
+
+</div>
+</div>
+
+<button id="botaoPausa" onclick="alternarPausa()">
+⏸️ Pausar
+</button>
+
+<button id="botaoMusica" onclick="alternarMusica()">
+🔊 Música: ON
 </button>
 
 <div id="indicadorIA" class="hidden"></div>
 
-<!-- =========================
-     MÚSICA
-========================= -->
+<div id="golOverlay">
+<div id="golTexto">⚽ GOL!</div>
+<div id="golSub">REPLAY</div>
+</div>
+
+<div id="replayTexto">🎥 REPLAY</div>
 
 <audio id="musicaJogo" loop preload="auto">
-    <source
-        src="Aylex - Energizer (freetouse.com).mp3"
-        type="audio/mpeg">
+<source src="Aylex - Energizer (freetouse.com).mp3" type="audio/mpeg">
 </audio>
 
-<!-- =========================
-     CANVAS
-========================= -->
-
-<canvas id="jogo"
-    width="1100"
-    height="650">
-</canvas>
+<canvas id="jogo" width="1100" height="650"></canvas>
 
 <script>
 
@@ -573,36 +608,24 @@ const teclas={};
 document.addEventListener("keydown",e=>{
 
     /*
-       Impede o navegador de executar atalhos
-       que atrapalham o jogo.
+       Bloqueia atalhos do navegador usados
+       durante a partida.
     */
 
-    const teclasBloqueadas=[
-        "ArrowUp",
-        "ArrowDown",
-        "ArrowLeft",
-        "ArrowRight",
-        " ",
-        "Tab"
-    ];
-
-    if(teclasBloqueadas.includes(e.key)){
+    if(
+        e.key==="ArrowUp" ||
+        e.key==="ArrowDown" ||
+        e.key==="ArrowLeft" ||
+        e.key==="ArrowRight" ||
+        e.key===" " ||
+        e.key==="Tab"
+    ){
         e.preventDefault();
     }
-
-    /*
-       Ctrl + teclas usadas pelo jogo.
-    */
 
     if(e.ctrlKey){
         e.preventDefault();
     }
-
-    /*
-       Evita atalhos comuns do navegador.
-       Ctrl+W pode continuar sendo tratado
-       pelo navegador dependendo da versão.
-    */
 
     if(
         e.ctrlKey &&
@@ -615,41 +638,23 @@ document.addEventListener("keydown",e=>{
 
     teclas[e.key]=true;
 
-    /* P = PAUSA */
-
     if(
-        e.key==="p" ||
-        e.key==="P"
+        (e.key==="p" || e.key==="P") &&
+        !e.repeat
     ){
-
-        if(!e.repeat){
-            alternarPausa();
-        }
-
+        alternarPausa();
         e.preventDefault();
         return;
     }
 
-    /*
-       Chute azul
-    */
-
     if(
-        e.key==="e" ||
-        e.key==="E"
+        (e.key==="e" || e.key==="E") &&
+        !e.repeat
     ){
-
-        if(!e.repeat){
-            chute(azul);
-        }
-
+        chute(azul);
         e.preventDefault();
         return;
     }
-
-    /*
-       CTRL DIREITO = chute vermelho
-    */
 
     if(e.code==="ControlRight"){
 
@@ -672,41 +677,27 @@ document.addEventListener("keyup",e=>{
 },true);
 
 /* =========================================================
-   JOGADORES
+   PLAYERS
 ========================================================= */
 
 const azul={
-    x:250,
-    y:325,
-    r:15,
+    x:250,y:325,r:15,
     cor:"#2580ff",
-
     velMax:4.6,
     aceleracao:.65,
     desaceleracao:.78,
-
-    vx:0,
-    vy:0,
-
-    dx:1,
-    dy:0
+    vx:0,vy:0,
+    dx:1,dy:0
 };
 
 const vermelho={
-    x:850,
-    y:325,
-    r:15,
+    x:850,y:325,r:15,
     cor:"#ff3030",
-
     velMax:4.6,
     aceleracao:.65,
     desaceleracao:.78,
-
-    vx:0,
-    vy:0,
-
-    dx:-1,
-    dy:0
+    vx:0,vy:0,
+    dx:-1,dy:0
 };
 
 /* =========================================================
@@ -714,22 +705,12 @@ const vermelho={
 ========================================================= */
 
 const bola={
-    x:550,
-    y:325,
-    r:9,
-
-    dx:0,
-    dy:0,
-
+    x:550,y:325,r:9,
+    dx:0,dy:0,
     vel:0,
-
     atrito:.985,
-
     maxVel:17,
-
-    /* velocidade física */
-    vx:0,
-    vy:0
+    vx:0,vy:0
 };
 
 /* =========================================================
@@ -747,17 +728,68 @@ let jogoPausado=false;
 let intervaloTempo=null;
 
 let modoJogo="2players";
-
 let timeHumano="azul";
-
 let timeIA="vermelho";
-
 let dificuldadeIA="medio";
 
 let contagemAtiva=false;
 
 /* =========================================================
-   CONFIGURAÇÃO DA IA
+   REPLAY
+========================================================= */
+
+/*
+   Guarda aproximadamente os últimos 5 segundos.
+   Cada frame salva somente os dados necessários.
+*/
+
+const replayFrames=[];
+const MAX_REPLAY_FRAMES=60*5;
+
+let executandoReplay=false;
+let replayIntervalo=null;
+
+function salvarReplay(){
+
+    if(!jogoAtivo || jogoPausado || executandoReplay) return;
+
+    replayFrames.push({
+        azul:{
+            x:azul.x,
+            y:azul.y,
+            vx:azul.vx,
+            vy:azul.vy,
+            dx:azul.dx,
+            dy:azul.dy
+        },
+        vermelho:{
+            x:vermelho.x,
+            y:vermelho.y,
+            vx:vermelho.vx,
+            vy:vermelho.vy,
+            dx:vermelho.dx,
+            dy:vermelho.dy
+        },
+        bola:{
+            x:bola.x,
+            y:bola.y,
+            dx:bola.dx,
+            dy:bola.dy,
+            vx:bola.vx,
+            vy:bola.vy,
+            vel:bola.vel
+        },
+        golsAzul,
+        golsVermelho
+    });
+
+    if(replayFrames.length>MAX_REPLAY_FRAMES){
+        replayFrames.shift();
+    }
+}
+
+/* =========================================================
+   CONFIG IA
 ========================================================= */
 
 const configuracoesIA={
@@ -797,26 +829,19 @@ const configuracoesIA={
         defesa:1,
         chuteDistancia:175
     }
-
 };
 
 /* =========================================================
-   MENU
+   MENUS
 ========================================================= */
 
 function esconderMenus(){
 
-    document.getElementById("menu")
-        .classList.add("hidden");
-
-    document.getElementById("modoMenu")
-        .classList.add("hidden");
-
-    document.getElementById("timeMenu")
-        .classList.add("hidden");
-
-    document.getElementById("dificuldadeMenu")
-        .classList.add("hidden");
+    document.getElementById("menu").classList.add("hidden");
+    document.getElementById("modoMenu").classList.add("hidden");
+    document.getElementById("timeMenu").classList.add("hidden");
+    document.getElementById("dificuldadeMenu").classList.add("hidden");
+    document.getElementById("tutorialMenu").classList.add("hidden");
 }
 
 function abrirModos(){
@@ -835,14 +860,20 @@ function abrirEscolhaTime(){
         .classList.remove("hidden");
 }
 
-function selecionarDoisPlayers(){
-
-    modoJogo="2players";
-
-    timeHumano="azul";
+function abrirTutorial(){
 
     esconderMenus();
 
+    document.getElementById("tutorialMenu")
+        .classList.remove("hidden");
+}
+
+function selecionarDoisPlayers(){
+
+    modoJogo="2players";
+    timeHumano="azul";
+
+    esconderMenus();
     iniciarJogo();
 }
 
@@ -868,7 +899,6 @@ function selecionarDificuldade(dificuldade){
     dificuldadeIA=dificuldade;
 
     esconderMenus();
-
     iniciarJogo();
 }
 
@@ -896,79 +926,59 @@ function voltarMenuPrincipal(){
 
 function alternarMusica(){
 
-    const musica=
-        document.getElementById("musicaJogo");
-
-    const botao=
-        document.getElementById("botaoMusica");
+    const musica=document.getElementById("musicaJogo");
+    const botao=document.getElementById("botaoMusica");
 
     if(musica.paused){
 
         musica.play().then(()=>{
 
-            botao.textContent=
-                "🔊 Música: ON";
+            botao.textContent="🔊 Música: ON";
 
         }).catch(()=>{
 
-            botao.textContent=
-                "🔇 Clique novamente";
-
+            botao.textContent="🔇 Clique novamente";
         });
 
     }else{
 
         musica.pause();
-
-        botao.textContent=
-            "🔇 Música: OFF";
+        botao.textContent="🔇 Música: OFF";
     }
 }
 
 /* =========================================================
-   INICIAR JOGO
+   INICIAR
 ========================================================= */
 
 function iniciarJogo(){
 
     clearInterval(intervaloTempo);
+    pararReplay();
 
-    const musica=
-        document.getElementById("musicaJogo");
-
+    const musica=document.getElementById("musicaJogo");
     musica.volume=.35;
-
-    /*
-       O clique no botão já é uma interação
-       do usuário, então o navegador normalmente
-       permite iniciar a música aqui.
-    */
-
     musica.play().catch(()=>{});
 
-    document.getElementById("fim")
-        .style.display="none";
+    document.getElementById("fim").style.display="none";
+    document.getElementById("pausaOverlay").style.display="none";
+    document.getElementById("golOverlay").style.display="none";
+    document.getElementById("replayTexto").style.display="none";
 
-    document.getElementById("pausaOverlay")
-        .style.display="none";
-
-    document.getElementById("botaoPausa")
-        .textContent="⏸️ Pausar";
+    document.getElementById("botaoPausa").textContent="⏸️ Pausar";
 
     golsAzul=0;
     golsVermelho=0;
-
     tempo=120;
 
     jogoPausado=false;
     jogoAtivo=false;
 
+    replayFrames.length=0;
+
     reset();
-
     atualizarCronometro();
-
     atualizarIndicadorIA();
-
     iniciarContagem();
 }
 
@@ -978,17 +988,15 @@ function iniciarJogo(){
 
 function iniciarContagem(){
 
-    if(contagemAtiva) return;
+    if(contagemAtiva)return;
 
     contagemAtiva=true;
 
-    const elemento=
-        document.getElementById("contagem");
+    const elemento=document.getElementById("contagem");
 
     elemento.style.display="flex";
 
     let numero=3;
-
     elemento.textContent=numero;
 
     const intervalo=setInterval(()=>{
@@ -1006,11 +1014,8 @@ function iniciarContagem(){
             setTimeout(()=>{
 
                 elemento.style.display="none";
-
                 clearInterval(intervalo);
-
                 contagemAtiva=false;
-
                 iniciarPartida();
 
             },500);
@@ -1020,31 +1025,26 @@ function iniciarContagem(){
 }
 
 /* =========================================================
-   INICIAR PARTIDA
+   PARTIDA
 ========================================================= */
 
 function iniciarPartida(){
 
     jogoAtivo=true;
     jogoPausado=false;
-
     tempo=120;
 
     atualizarCronometro();
 
     intervaloTempo=setInterval(()=>{
 
-        if(!jogoAtivo) return;
-        if(jogoPausado) return;
+        if(!jogoAtivo || jogoPausado || executandoReplay)return;
 
         tempo--;
-
         atualizarCronometro();
 
         if(tempo<=0){
-
             tempo=0;
-
             finalizarJogo();
         }
 
@@ -1058,7 +1058,6 @@ function iniciarPartida(){
 function atualizarCronometro(){
 
     const minutos=Math.floor(tempo/60);
-
     const segundos=tempo%60;
 
     document.title=
@@ -1075,29 +1074,22 @@ function atualizarCronometro(){
 
 function alternarPausa(){
 
-    if(!jogoAtivo) return;
+    if(!jogoAtivo || executandoReplay)return;
 
     jogoPausado=!jogoPausado;
 
-    const overlay=
-        document.getElementById("pausaOverlay");
-
-    const botao=
-        document.getElementById("botaoPausa");
+    const overlay=document.getElementById("pausaOverlay");
+    const botao=document.getElementById("botaoPausa");
 
     if(jogoPausado){
 
         overlay.style.display="flex";
-
-        botao.textContent=
-            "▶️ Continuar";
+        botao.textContent="▶️ Continuar";
 
     }else{
 
         overlay.style.display="none";
-
-        botao.textContent=
-            "⏸️ Pausar";
+        botao.textContent="⏸️ Pausar";
     }
 }
 
@@ -1107,64 +1099,43 @@ function alternarPausa(){
 
 function resetarPartida(){
 
-    if(!jogoAtivo) return;
+    if(!jogoAtivo)return;
+
+    pararReplay();
 
     jogoPausado=false;
 
-    document.getElementById("pausaOverlay")
-        .style.display="none";
-
-    document.getElementById("botaoPausa")
-        .textContent="⏸️ Pausar";
+    document.getElementById("pausaOverlay").style.display="none";
+    document.getElementById("botaoPausa").textContent="⏸️ Pausar";
 
     golsAzul=0;
     golsVermelho=0;
     tempo=120;
 
-    reset();
+    replayFrames.length=0;
 
+    reset();
     atualizarCronometro();
 }
 
 /* =========================================================
-   REINICIAR MESMO MODO
+   MOVIMENTO
 ========================================================= */
 
-function reiniciarAtual(){
+function moverJogador(j,cima,baixo,esquerda,direita){
 
-    document.getElementById("fim")
-        .style.display="none";
+    if(!jogoAtivo || jogoPausado || executandoReplay)return;
 
-    iniciarJogo();
-}
+    let x=0,y=0;
 
-/* =========================================================
-   MOVIMENTO PLAYER
-========================================================= */
-
-function moverJogador(
-    j,
-    cima,
-    baixo,
-    esquerda,
-    direita
-){
-
-    if(!jogoAtivo) return;
-    if(jogoPausado) return;
-
-    let x=0;
-    let y=0;
-
-    if(teclas[cima]) y--;
-    if(teclas[baixo]) y++;
-    if(teclas[esquerda]) x--;
-    if(teclas[direita]) x++;
+    if(teclas[cima])y--;
+    if(teclas[baixo])y++;
+    if(teclas[esquerda])x--;
+    if(teclas[direita])x++;
 
     if(x!==0 || y!==0){
 
-        const tamanho=
-            Math.hypot(x,y);
+        const tamanho=Math.hypot(x,y);
 
         x/=tamanho;
         y/=tamanho;
@@ -1181,16 +1152,12 @@ function moverJogador(
         j.vy*=j.desaceleracao;
     }
 
-    const velocidade=
-        Math.hypot(j.vx,j.vy);
+    const velocidade=Math.hypot(j.vx,j.vy);
 
     if(velocidade>j.velMax){
 
-        j.vx=
-            j.vx/velocidade*j.velMax;
-
-        j.vy=
-            j.vy/velocidade*j.velMax;
+        j.vx=j.vx/velocidade*j.velMax;
+        j.vy=j.vy/velocidade*j.velMax;
     }
 
     j.x+=j.vx;
@@ -1200,62 +1167,49 @@ function moverJogador(
 }
 
 /* =========================================================
-   LIMITAR PLAYER
+   LIMITAR
 ========================================================= */
 
 function limitarJogador(j){
 
     j.x=Math.max(
         campo.x+j.r,
-        Math.min(
-            campo.x+campo.w-j.r,
-            j.x
-        )
+        Math.min(campo.x+campo.w-j.r,j.x)
     );
 
     j.y=Math.max(
         campo.y+j.r,
-        Math.min(
-            campo.y+campo.h-j.r,
-            j.y
-        )
+        Math.min(campo.y+campo.h-j.r,j.y)
     );
 }
 
 /* =========================================================
-   COLISÃO PLAYER PLAYER
+   COLISÃO PLAYERS
 ========================================================= */
 
 function colisaoJogadores(){
 
-    if(!jogoAtivo || jogoPausado) return;
+    if(!jogoAtivo || jogoPausado || executandoReplay)return;
 
     const dx=vermelho.x-azul.x;
     const dy=vermelho.y-azul.y;
 
     const distancia=Math.hypot(dx,dy);
-
-    const minimo=
-        azul.r+vermelho.r;
+    const minimo=azul.r+vermelho.r;
 
     if(distancia<minimo){
 
-        let nx;
-        let ny;
+        let nx,ny;
 
         if(distancia<.001){
-
             nx=1;
             ny=0;
-
         }else{
-
             nx=dx/distancia;
             ny=dy/distancia;
         }
 
-        const excesso=
-            minimo-distancia+.1;
+        const excesso=minimo-distancia+.1;
 
         azul.x-=nx*excesso*.5;
         azul.y-=ny*excesso*.5;
@@ -1263,14 +1217,10 @@ function colisaoJogadores(){
         vermelho.x+=nx*excesso*.5;
         vermelho.y+=ny*excesso*.5;
 
-        const rvx=
-            vermelho.vx-azul.vx;
+        const rvx=vermelho.vx-azul.vx;
+        const rvy=vermelho.vy-azul.vy;
 
-        const rvy=
-            vermelho.vy-azul.vy;
-
-        const normal=
-            rvx*nx+rvy*ny;
+        const normal=rvx*nx+rvy*ny;
 
         if(normal<0){
 
@@ -1294,32 +1244,17 @@ function colisaoJogadores(){
 
 function chute(j){
 
-    if(!jogoAtivo || jogoPausado) return;
+    if(!jogoAtivo || jogoPausado || executandoReplay)return;
 
     const dx=bola.x-j.x;
     const dy=bola.y-j.y;
 
     const distancia=Math.hypot(dx,dy);
 
-    /*
-       O chute só acontece se a bola estiver realmente
-       perto do jogador.
-    */
-
-    if(
-        distancia>
-        j.r+bola.r+17
-    ){
-        return;
-    }
+    if(distancia>j.r+bola.r+17)return;
 
     let dirX=j.dx;
     let dirY=j.dy;
-
-    /*
-       Se a direção estiver quase parada,
-       usa a direção da bola.
-    */
 
     if(Math.hypot(dirX,dirY)<.1){
 
@@ -1327,34 +1262,60 @@ function chute(j){
         dirY=dy/(distancia||1);
     }
 
-    const tamanho=
-        Math.hypot(dirX,dirY);
+    const tamanho=Math.hypot(dirX,dirY);
 
     dirX/=tamanho;
     dirY/=tamanho;
 
     /*
-       Coloca a bola NA FRENTE do jogador.
-       Isso impede o problema de chutar andando
-       para trás e a bola atravessar o jogador.
+       IMPORTANTE:
+       A bola é colocada na frente do jogador
+       normalmente.
+
+       Porém, se o jogador estiver se afastando
+       da bola e chutar, o comportamento de
+       "calcanhar" continua possível.
+
+       Isso preserva a técnica que nasceu do
+       comportamento original do jogo.
     */
 
-    bola.x=
-        j.x+
-        dirX*
-        (j.r+bola.r+3);
+    const movimentoParaTras=
+        j.vx*dirX+
+        j.vy*dirY;
 
-    bola.y=
-        j.y+
-        dirY*
-        (j.r+bola.r+3);
+    if(movimentoParaTras<-.35){
 
-    bola.dx=dirX;
-    bola.dy=dirY;
+        /*
+           CHUTE DE CALCANHAR:
+           a bola recebe a direção do movimento
+           do jogador, podendo atravessá-lo para trás.
+        */
 
-    /*
-       CHUTE FORTE.
-    */
+        bola.dx=dirX;
+        bola.dy=dirY;
+
+        bola.x=
+            j.x+
+            dirX*(j.r+bola.r-2);
+
+        bola.y=
+            j.y+
+            dirY*(j.r+bola.r-2);
+
+    }else{
+
+        bola.x=
+            j.x+
+            dirX*(j.r+bola.r+3);
+
+        bola.y=
+            j.y+
+            dirY*(j.r+bola.r+3);
+
+        bola.dx=dirX;
+        bola.dy=dirY;
+    }
 
     bola.vel=14;
 
@@ -1363,24 +1324,17 @@ function chute(j){
 }
 
 /* =========================================================
-   FÍSICA DA BOLA
+   FÍSICA
 ========================================================= */
 
 function atualizarBola(){
 
-    if(!jogoAtivo || jogoPausado) return;
+    if(!jogoAtivo || jogoPausado || executandoReplay)return;
 
     if(bola.vel>.001){
 
-        /*
-           Física baseada em velocidade.
-        */
-
-        bola.vx=
-            bola.dx*bola.vel;
-
-        bola.vy=
-            bola.dy*bola.vel;
+        bola.vx=bola.dx*bola.vel;
+        bola.vy=bola.dy*bola.vel;
 
         bola.x+=bola.vx;
         bola.y+=bola.vy;
@@ -1395,99 +1349,43 @@ function atualizarBola(){
         }
     }
 
-    if(verificarGol()) return;
+    if(verificarGol())return;
 
-    /* PAREDE SUPERIOR */
+    if(bola.y-bola.r<campo.y){
 
-    if(
-        bola.y-bola.r<
-        campo.y
-    ){
-
-        bola.y=
-            campo.y+bola.r;
-
-        bola.dy=
-            Math.abs(bola.dy);
-
-        bola.vy=
-            Math.abs(bola.vy);
-
+        bola.y=campo.y+bola.r;
+        bola.dy=Math.abs(bola.dy);
+        bola.vy=Math.abs(bola.vy);
         bola.vel*=.86;
     }
 
-    /* PAREDE INFERIOR */
+    if(bola.y+bola.r>campo.y+campo.h){
 
-    if(
-        bola.y+bola.r>
-        campo.y+campo.h
-    ){
-
-        bola.y=
-            campo.y+
-            campo.h-
-            bola.r;
-
-        bola.dy=
-            -Math.abs(bola.dy);
-
-        bola.vy=
-            -Math.abs(bola.vy);
-
+        bola.y=campo.y+campo.h-bola.r;
+        bola.dy=-Math.abs(bola.dy);
+        bola.vy=-Math.abs(bola.vy);
         bola.vel*=.86;
     }
 
     const dentroGol=
         bola.y>campo.golY &&
-        bola.y<
-        campo.golY+campo.golH;
+        bola.y<campo.golY+campo.golH;
 
-    /* ESQUERDA */
+    if(bola.x-bola.r<campo.x && !dentroGol){
 
-    if(
-        bola.x-bola.r<
-        campo.x &&
-        !dentroGol
-    ){
-
-        bola.x=
-            campo.x+bola.r;
-
-        bola.dx=
-            Math.abs(bola.dx);
-
-        bola.vx=
-            Math.abs(bola.vx);
-
+        bola.x=campo.x+bola.r;
+        bola.dx=Math.abs(bola.dx);
+        bola.vx=Math.abs(bola.vx);
         bola.vel*=.86;
     }
 
-    /* DIREITA */
+    if(bola.x+bola.r>campo.x+campo.w && !dentroGol){
 
-    if(
-        bola.x+bola.r>
-        campo.x+campo.w &&
-        !dentroGol
-    ){
-
-        bola.x=
-            campo.x+
-            campo.w-
-            bola.r;
-
-        bola.dx=
-            -Math.abs(bola.dx);
-
-        bola.vx=
-            -Math.abs(bola.vx);
-
+        bola.x=campo.x+campo.w-bola.r;
+        bola.dx=-Math.abs(bola.dx);
+        bola.vx=-Math.abs(bola.vx);
         bola.vel*=.86;
     }
-
-    /*
-       Colisões.
-       Azul primeiro e vermelho depois.
-    */
 
     colidirBolaJogador(azul);
     colidirBolaJogador(vermelho);
@@ -1496,7 +1394,7 @@ function atualizarBola(){
 }
 
 /* =========================================================
-   COLISÃO BOLA PLAYER
+   COLISÃO BOLA / JOGADOR
 ========================================================= */
 
 function colidirBolaJogador(j){
@@ -1505,21 +1403,13 @@ function colidirBolaJogador(j){
     const dy=bola.y-j.y;
 
     const distancia=Math.hypot(dx,dy);
+    const minimo=bola.r+j.r;
 
-    const minimo=
-        bola.r+j.r;
+    if(distancia>=minimo)return;
 
-    if(distancia>=minimo) return;
-
-    let nx;
-    let ny;
+    let nx,ny;
 
     if(distancia<.001){
-
-        /*
-           Se a bola estiver exatamente no centro,
-           usa a direção do jogador.
-        */
 
         nx=j.dx||1;
         ny=j.dy||0;
@@ -1535,49 +1425,24 @@ function colidirBolaJogador(j){
         ny=dy/distancia;
     }
 
-    /*
-       PRIMEIRO:
-       tira a bola completamente de dentro do player.
-    */
-
-    const separacao=
-        minimo-distancia+.8;
+    const separacao=minimo-distancia+.8;
 
     bola.x+=nx*separacao;
     bola.y+=ny*separacao;
 
-    /*
-       Velocidade do jogador na direção da bola.
-    */
-
-    const movimento=
-        j.vx*nx+
-        j.vy*ny;
-
-    /*
-       Se o jogador estiver empurrando a bola,
-       o toque é fraco.
-    */
+    const movimento=j.vx*nx+j.vy*ny;
 
     if(movimento>.05){
 
         bola.dx=nx;
         bola.dy=ny;
 
-        const toque=
-            Math.min(
-                1.0+
-                movimento*.28,
-                2.7
-            );
-
-        /*
-           O toque normal NÃO aumenta violentamente
-           uma bola que já está rápida.
-        */
+        const toque=Math.min(
+            1+movimento*.28,
+            2.7
+        );
 
         if(bola.vel<toque){
-
             bola.vel=toque;
         }
 
@@ -1585,44 +1450,34 @@ function colidirBolaJogador(j){
         bola.vy=bola.dy*bola.vel;
     }
 
-    /*
-       Se a bola estiver vindo contra o jogador,
-       rebate de forma física.
-    */
-
-    const velocidadeBolaNaNormal=
+    const velocidadeNormal=
         bola.vx*nx+
         bola.vy*ny;
 
     if(
-        velocidadeBolaNaNormal<0 &&
+        velocidadeNormal<0 &&
         movimento<=.05
     ){
 
         const impulso=
-            -velocidadeBolaNaNormal*.72;
+            -velocidadeNormal*.72;
 
         bola.vx+=nx*impulso;
         bola.vy+=ny*impulso;
 
-        bola.vel=
-            Math.min(
-                Math.hypot(
-                    bola.vx,
-                    bola.vy
-                ),
-                bola.maxVel
-            );
+        bola.vel=Math.min(
+            Math.hypot(bola.vx,bola.vy),
+            bola.maxVel
+        );
 
-        const v=
-            bola.vel||1;
+        const v=bola.vel||1;
 
         bola.dx=bola.vx/v;
         bola.dy=bola.vy/v;
     }
 
     /*
-       Proteção extra contra bola dentro do player.
+       Evita que a bola fique presa dentro do player.
     */
 
     const novaDistancia=
@@ -1633,53 +1488,32 @@ function colidirBolaJogador(j){
 
     if(novaDistancia<minimo){
 
-        const nx2=
-            (bola.x-j.x)/
-            (novaDistancia||1);
+        const nx2=(bola.x-j.x)/(novaDistancia||1);
+        const ny2=(bola.y-j.y)/(novaDistancia||1);
 
-        const ny2=
-            (bola.y-j.y)/
-            (novaDistancia||1);
-
-        bola.x=
-            j.x+
-            nx2*
-            (minimo+.5);
-
-        bola.y=
-            j.y+
-            ny2*
-            (minimo+.5);
+        bola.x=j.x+nx2*(minimo+.5);
+        bola.y=j.y+ny2*(minimo+.5);
     }
 }
 
 /* =========================================================
-   PROTEÇÃO EXTRA DA BOLA
+   PROTEÇÃO
 ========================================================= */
 
 function protegerBola(){
 
     const dentroGol=
         bola.y>campo.golY &&
-        bola.y<
-        campo.golY+campo.golH;
+        bola.y<campo.golY+campo.golH;
 
-    if(
-        bola.x-bola.r<
-        campo.x &&
-        !dentroGol
-    ){
+    if(bola.x-bola.r<campo.x && !dentroGol){
 
-        bola.x=
-            campo.x+bola.r;
+        bola.x=campo.x+bola.r;
 
         if(bola.dx<0){
 
-            bola.dx=
-                Math.abs(bola.dx);
-
-            bola.vx=
-                Math.abs(bola.vx);
+            bola.dx=Math.abs(bola.dx);
+            bola.vx=Math.abs(bola.vx);
         }
     }
 
@@ -1689,102 +1523,205 @@ function protegerBola(){
         !dentroGol
     ){
 
-        bola.x=
-            campo.x+
-            campo.w-
-            bola.r;
+        bola.x=campo.x+campo.w-bola.r;
 
         if(bola.dx>0){
 
-            bola.dx=
-                -Math.abs(bola.dx);
-
-            bola.vx=
-                -Math.abs(bola.vx);
+            bola.dx=-Math.abs(bola.dx);
+            bola.vx=-Math.abs(bola.vx);
         }
     }
 
-    if(
-        bola.y-bola.r<
-        campo.y
-    ){
+    if(bola.y-bola.r<campo.y){
 
-        bola.y=
-            campo.y+bola.r;
+        bola.y=campo.y+bola.r;
 
         if(bola.dy<0){
 
-            bola.dy=
-                Math.abs(bola.dy);
-
-            bola.vy=
-                Math.abs(bola.vy);
+            bola.dy=Math.abs(bola.dy);
+            bola.vy=Math.abs(bola.vy);
         }
     }
 
-    if(
-        bola.y+bola.r>
-        campo.y+campo.h
-    ){
+    if(bola.y+bola.r>campo.y+campo.h){
 
-        bola.y=
-            campo.y+
-            campo.h-
-            bola.r;
+        bola.y=campo.y+campo.h-bola.r;
 
         if(bola.dy>0){
 
-            bola.dy=
-                -Math.abs(bola.dy);
-
-            bola.vy=
-                -Math.abs(bola.vy);
+            bola.dy=-Math.abs(bola.dy);
+            bola.vy=-Math.abs(bola.vy);
         }
     }
 }
 
 /* =========================================================
-   GOLS
+   GOL
 ========================================================= */
 
 function verificarGol(){
 
-    /* ESQUERDA */
-
     if(
-        bola.x+bola.r<
-        campo.x-5 &&
+        bola.x+bola.r<campo.x-5 &&
         bola.y>campo.golY &&
-        bola.y<
-        campo.golY+campo.golH
+        bola.y<campo.golY+campo.golH
     ){
 
         golsVermelho++;
 
-        reset();
+        mostrarGol("🔴 GOL DO VERMELHO!");
 
         return true;
     }
 
-    /* DIREITA */
-
     if(
         bola.x-bola.r>
-        campo.x+
-        campo.w+5 &&
+        campo.x+campo.w+5 &&
         bola.y>campo.golY &&
-        bola.y<
-        campo.golY+campo.golH
+        bola.y<campo.golY+campo.golH
     ){
 
         golsAzul++;
 
-        reset();
+        mostrarGol("🔵 GOL DO AZUL!");
 
         return true;
     }
 
     return false;
+}
+
+/* =========================================================
+   MOSTRAR GOL + REPLAY
+========================================================= */
+
+function mostrarGol(texto){
+
+    /*
+       O gol já aconteceu.
+       O cronômetro fica congelado.
+    */
+
+    jogoPausado=true;
+
+    const golOverlay=document.getElementById("golOverlay");
+    const golTexto=document.getElementById("golTexto");
+    const golSub=document.getElementById("golSub");
+
+    golTexto.textContent="⚽ GOL!";
+    golSub.textContent=texto;
+
+    golOverlay.style.display="flex";
+
+    /*
+       Primeiro mostra o replay.
+    */
+
+    executarReplay();
+
+    /*
+       Depois de 3 segundos, volta ao jogo.
+    */
+
+    setTimeout(()=>{
+
+        golOverlay.style.display="none";
+
+        reset();
+
+        jogoPausado=false;
+
+    },3000);
+}
+
+/* =========================================================
+   REPLAY
+========================================================= */
+
+function executarReplay(){
+
+    if(replayFrames.length<2){
+
+        setTimeout(()=>{
+            reset();
+        },100);
+
+        return;
+    }
+
+    executandoReplay=true;
+
+    document.getElementById("replayTexto")
+        .style.display="block";
+
+    const frames=replayFrames.slice();
+
+    let indice=0;
+
+    clearInterval(replayIntervalo);
+
+    /*
+       Replay mais lento para dar aquela sensação
+       de VAR / replay de futebol.
+    */
+
+    replayIntervalo=setInterval(()=>{
+
+        if(indice>=frames.length){
+
+            pararReplay();
+
+            return;
+        }
+
+        const frame=frames[indice++];
+
+        azul.x=frame.azul.x;
+        azul.y=frame.azul.y;
+        azul.vx=frame.azul.vx;
+        azul.vy=frame.azul.vy;
+        azul.dx=frame.azul.dx;
+        azul.dy=frame.azul.dy;
+
+        vermelho.x=frame.vermelho.x;
+        vermelho.y=frame.vermelho.y;
+        vermelho.vx=frame.vermelho.vx;
+        vermelho.vy=frame.vermelho.vy;
+        vermelho.dx=frame.vermelho.dx;
+        vermelho.dy=frame.vermelho.dy;
+
+        bola.x=frame.bola.x;
+        bola.y=frame.bola.y;
+        bola.dx=frame.bola.dx;
+        bola.dy=frame.bola.dy;
+        bola.vx=frame.bola.vx;
+        bola.vy=frame.bola.vy;
+        bola.vel=frame.bola.vel;
+
+        /*
+           Mantém o placar que existia no frame.
+        */
+
+        golsAzul=frame.golsAzul;
+        golsVermelho=frame.golsVermelho;
+
+    },1000/30);
+}
+
+/* =========================================================
+   PARAR REPLAY
+========================================================= */
+
+function pararReplay(){
+
+    clearInterval(replayIntervalo);
+
+    replayIntervalo=null;
+
+    executandoReplay=false;
+
+    document.getElementById("replayTexto")
+        .style.display="none";
 }
 
 /* =========================================================
@@ -1795,32 +1732,27 @@ function reset(){
 
     azul.x=250;
     azul.y=325;
-
     azul.vx=0;
     azul.vy=0;
-
     azul.dx=1;
     azul.dy=0;
 
     vermelho.x=850;
     vermelho.y=325;
-
     vermelho.vx=0;
     vermelho.vy=0;
-
     vermelho.dx=-1;
     vermelho.dy=0;
 
     bola.x=550;
     bola.y=325;
-
     bola.dx=0;
     bola.dy=0;
-
     bola.vx=0;
     bola.vy=0;
-
     bola.vel=0;
+
+    replayFrames.length=0;
 }
 
 /* =========================================================
@@ -1832,126 +1764,62 @@ function atualizarIA(){
     if(
         !jogoAtivo ||
         jogoPausado ||
+        executandoReplay ||
         modoJogo!=="ia"
-    ){
-        return;
-    }
+    )return;
 
     const ia=
         timeIA==="azul"
         ?azul
         :vermelho;
 
-    const cfg=
-        configuracoesIA[dificuldadeIA];
-
-    /*
-       Alvo principal:
-       bola.
-    */
+    const cfg=configuracoesIA[dificuldadeIA];
 
     let alvoX=bola.x;
     let alvoY=bola.y;
 
-    /*
-       Previsão da trajetória da bola.
-    */
+    alvoX+=bola.dx*bola.vel*cfg.previsao;
+    alvoY+=bola.dy*bola.vel*cfg.previsao;
 
-    alvoX+=bola.dx*
-        bola.vel*
-        cfg.previsao;
-
-    alvoY+=bola.dy*
-        bola.vel*
-        cfg.previsao;
-
-    /*
-       Pequeno erro nas dificuldades menores.
-    */
-
-    const erroX=
-        Math.sin(Date.now()/500)*
-        cfg.erro;
-
-    const erroY=
-        Math.cos(Date.now()/620)*
-        cfg.erro;
-
-    alvoX+=erroX;
-    alvoY+=erroY;
-
-    /*
-       Se a bola estiver perto do gol adversário,
-       a IA tenta se posicionar atrás dela.
-    */
+    alvoX+=Math.sin(Date.now()/500)*cfg.erro;
+    alvoY+=Math.cos(Date.now()/620)*cfg.erro;
 
     const golAdversarioX=
         timeIA==="azul"
         ?campo.x+campo.w
         :campo.x;
 
-    const vetorGol=
-        golAdversarioX-bola.x;
-
     const direcaoGol=
-        Math.sign(vetorGol)||1;
-
-    /*
-       Posição ideal atrás da bola.
-    */
+        Math.sign(golAdversarioX-bola.x)||1;
 
     if(
-        Math.abs(
-            bola.x-ia.x
-        )<cfg.chuteDistancia &&
-        Math.abs(
-            bola.y-ia.y
-        )<cfg.chuteDistancia
+        Math.abs(bola.x-ia.x)<cfg.chuteDistancia &&
+        Math.abs(bola.y-ia.y)<cfg.chuteDistancia
     ){
 
-        alvoX=
-            bola.x-
-            direcaoGol*
-            24;
-
-        alvoY=
-            bola.y;
-
+        alvoX=bola.x-direcaoGol*24;
+        alvoY=bola.y;
     }
-
-    /*
-       Movimento inteligente.
-    */
 
     let dx=alvoX-ia.x;
     let dy=alvoY-ia.y;
 
-    const distancia=
-        Math.hypot(dx,dy);
+    const distancia=Math.hypot(dx,dy);
 
     if(distancia>4){
 
         dx/=distancia;
         dy/=distancia;
 
-        /*
-           A IA tem controle de velocidade.
-        */
-
         const aceleracao=
             ia.aceleracao*
-            (0.8+
-            cfg.velocidade*3);
+            (.8+cfg.velocidade*3);
 
         ia.vx+=dx*aceleracao;
         ia.vy+=dy*aceleracao;
 
         ia.dx=dx;
         ia.dy=dy;
-
-        /*
-           IA impossível é mais rápida.
-        */
 
         const bonus=
             dificuldadeIA==="impossivel"
@@ -1960,37 +1828,26 @@ function atualizarIA(){
             ?1.12
             :1;
 
-        const max=
-            ia.velMax*bonus;
+        const max=ia.velMax*bonus;
 
-        const v=
-            Math.hypot(
-                ia.vx,
-                ia.vy
-            );
+        const v=Math.hypot(ia.vx,ia.vy);
 
         if(v>max){
 
-            ia.vx=
-                ia.vx/v*max;
-
-            ia.vy=
-                ia.vy/v*max;
+            ia.vx=ia.vx/v*max;
+            ia.vy=ia.vy/v*max;
         }
 
         ia.x+=ia.vx;
         ia.y+=ia.vy;
 
         limitarJogador(ia);
+
     }else{
 
         ia.vx*=.82;
         ia.vy*=.82;
     }
-
-    /*
-       IA decide quando chutar.
-    */
 
     const distanciaBola=
         Math.hypot(
@@ -1998,61 +1855,36 @@ function atualizarIA(){
             bola.y-ia.y
         );
 
-    if(
-        distanciaBola<
-        cfg.chuteDistancia
-    ){
-
-        /*
-           Tenta colocar o jogador em direção ao gol.
-        */
+    if(distanciaBola<cfg.chuteDistancia){
 
         const alvoGolX=
             timeIA==="azul"
             ?campo.x+campo.w+60
             :campo.x-60;
 
-        const chuteX=
-            alvoGolX-bola.x;
-
+        const chuteX=alvoGolX-bola.x;
         const chuteY=
-            (campo.y+campo.h/2)-bola.y;
+            campo.y+campo.h/2-bola.y;
 
         const tamanho=
-            Math.hypot(
-                chuteX,
-                chuteY
-            )||1;
+            Math.hypot(chuteX,chuteY)||1;
 
-        ia.dx=
-            chuteX/tamanho;
-
-        ia.dy=
-            chuteY/tamanho;
-
-        /*
-           Dificuldades maiores chutam mais rápido.
-        */
+        ia.dx=chuteX/tamanho;
+        ia.dy=chuteY/tamanho;
 
         const chance=
             dificuldadeIA==="facil"
-            ?0.018
+            ?.018
             :dificuldadeIA==="medio"
-            ?0.035
+            ?.035
             :dificuldadeIA==="dificil"
-            ?0.075
-            :0.18;
+            ?.075
+            :.18;
 
         if(Math.random()<chance){
-
             chute(ia);
         }
     }
-
-    /*
-       IA tenta bloquear o gol quando a bola
-       está vindo em direção ao próprio gol.
-    */
 
     const golProprioX=
         timeIA==="azul"
@@ -2060,9 +1892,7 @@ function atualizarIA(){
         :campo.x+campo.w;
 
     const distanciaGol=
-        Math.abs(
-            bola.x-golProprioX
-        );
+        Math.abs(bola.x-golProprioX);
 
     if(
         distanciaGol<260 &&
@@ -2070,31 +1900,25 @@ function atualizarIA(){
         (timeIA==="azul"?-1:1)
     ){
 
-        const defesaY=
-            bola.y;
-
         ia.y+=
-            (defesaY-ia.y)*
-            cfg.defesa*
-            .08;
+            (bola.y-ia.y)*
+            cfg.defesa*.08;
 
         limitarJogador(ia);
     }
 }
 
 /* =========================================================
-   INDICADOR IA
+   INDICADOR
 ========================================================= */
 
 function atualizarIndicadorIA(){
 
-    const indicador=
-        document.getElementById("indicadorIA");
+    const indicador=document.getElementById("indicadorIA");
 
     if(modoJogo!=="ia"){
 
         indicador.classList.add("hidden");
-
         return;
     }
 
@@ -2105,18 +1929,15 @@ function atualizarIndicadorIA(){
         dificuldadeIA.slice(1);
 
     indicador.textContent=
-        "🤖 IA: "+
-        nome+
+        "🤖 IA: "+nome+
         " • Você: "+
-        (
-            timeHumano==="azul"
-            ?"🔵 Azul"
-            :"🔴 Vermelho"
-        );
+        (timeHumano==="azul"
+        ?"🔵 Azul"
+        :"🔴 Vermelho");
 }
 
 /* =========================================================
-   FINALIZAR
+   FIM
 ========================================================= */
 
 function finalizarJogo(){
@@ -2124,38 +1945,30 @@ function finalizarJogo(){
     jogoAtivo=false;
     jogoPausado=false;
 
+    pararReplay();
+
     clearInterval(intervaloTempo);
 
-    document.getElementById("pausaOverlay")
-        .style.display="none";
+    document.getElementById("pausaOverlay").style.display="none";
 
     let texto;
 
     if(golsAzul>golsVermelho){
-
         texto="🔵 AZUL VENCEU! 🏆";
-
     }else if(golsVermelho>golsAzul){
-
         texto="🔴 VERMELHO VENCEU! 🏆";
-
     }else{
-
         texto="🤝 EMPATE!";
     }
 
-    document.getElementById("resultado")
-        .innerHTML=
+    document.getElementById("resultado").innerHTML=
         texto+
         "<br><br>"+
-        "🔵 "+
-        golsAzul+
+        "🔵 "+golsAzul+
         " &nbsp; × &nbsp; "+
-        golsVermelho+
-        " 🔴";
+        golsVermelho+" 🔴";
 
-    document.getElementById("fim")
-        .style.display="flex";
+    document.getElementById("fim").style.display="flex";
 }
 
 /* =========================================================
@@ -2167,13 +1980,13 @@ function voltarMenu(){
     jogoAtivo=false;
     jogoPausado=false;
 
+    pararReplay();
+
     clearInterval(intervaloTempo);
 
-    document.getElementById("fim")
-        .style.display="none";
-
-    document.getElementById("pausaOverlay")
-        .style.display="none";
+    document.getElementById("fim").style.display="none";
+    document.getElementById("pausaOverlay").style.display="none";
+    document.getElementById("golOverlay").style.display="none";
 
     document.getElementById("botaoPausa")
         .textContent="⏸️ Pausar";
@@ -2184,6 +1997,13 @@ function voltarMenu(){
         .classList.remove("hidden");
 }
 
+function reiniciarAtual(){
+
+    document.getElementById("fim").style.display="none";
+
+    iniciarJogo();
+}
+
 /* =========================================================
    DESENHAR CAMPO
 ========================================================= */
@@ -2191,18 +2011,11 @@ function voltarMenu(){
 function desenharCampo(){
 
     ctx.fillStyle="#07150c";
-
-    ctx.fillRect(
-        0,0,
-        canvas.width,
-        canvas.height
-    );
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
     ctx.save();
 
-    ctx.shadowColor=
-        "rgba(0,0,0,.55)";
-
+    ctx.shadowColor="rgba(0,0,0,.55)";
     ctx.shadowBlur=30;
     ctx.shadowOffsetY=15;
 
@@ -2227,20 +2040,16 @@ function desenharCampo(){
     );
 
     const faixas=10;
-
-    const largura=
-        campo.w/faixas;
+    const largura=campo.w/faixas;
 
     for(let i=0;i<faixas;i++){
 
         if(i%2===0){
 
-            ctx.fillStyle=
-                "rgba(255,255,255,.035)";
+            ctx.fillStyle="rgba(255,255,255,.035)";
 
             ctx.fillRect(
-                campo.x+
-                i*largura,
+                campo.x+i*largura,
                 campo.y,
                 largura,
                 campo.h
@@ -2248,9 +2057,7 @@ function desenharCampo(){
         }
     }
 
-    ctx.strokeStyle=
-        "rgba(255,255,255,.9)";
-
+    ctx.strokeStyle="rgba(255,255,255,.9)";
     ctx.lineWidth=3;
 
     ctx.strokeRect(
@@ -2259,8 +2066,6 @@ function desenharCampo(){
         campo.w,
         campo.h
     );
-
-    /* LINHA CENTRAL */
 
     ctx.beginPath();
 
@@ -2276,8 +2081,6 @@ function desenharCampo(){
 
     ctx.stroke();
 
-    /* CÍRCULO */
-
     ctx.beginPath();
 
     ctx.arc(
@@ -2289,8 +2092,6 @@ function desenharCampo(){
     );
 
     ctx.stroke();
-
-    /* PONTO */
 
     ctx.fillStyle="white";
 
@@ -2306,8 +2107,6 @@ function desenharCampo(){
 
     ctx.fill();
 
-    /* ÁREAS */
-
     ctx.strokeRect(
         campo.x,
         campo.y+155,
@@ -2321,8 +2120,6 @@ function desenharCampo(){
         135,
         230
     );
-
-    /* PEQUENAS ÁREAS */
 
     ctx.strokeRect(
         campo.x,
@@ -2352,21 +2149,17 @@ function desenharCampo(){
 }
 
 /* =========================================================
-   GOL
+   GOL DESENHO
 ========================================================= */
 
 function desenharGol(x,y,direita){
 
-    const profundidade=
-        campo.golProfundidade;
-
-    const altura=
-        campo.golH;
+    const profundidade=campo.golProfundidade;
+    const altura=campo.golH;
 
     ctx.save();
 
-    ctx.fillStyle=
-        "rgba(240,240,240,.13)";
+    ctx.fillStyle="rgba(240,240,240,.13)";
 
     const inicio=
         direita
@@ -2380,49 +2173,25 @@ function desenharGol(x,y,direita){
         altura
     );
 
-    ctx.strokeStyle=
-        "rgba(255,255,255,.20)";
-
+    ctx.strokeStyle="rgba(255,255,255,.20)";
     ctx.lineWidth=1;
 
-    for(
-        let yy=y;
-        yy<=y+altura;
-        yy+=18
-    ){
+    for(let yy=y;yy<=y+altura;yy+=18){
 
         ctx.beginPath();
 
-        ctx.moveTo(
-            inicio,
-            yy
-        );
-
-        ctx.lineTo(
-            inicio+profundidade,
-            yy
-        );
+        ctx.moveTo(inicio,yy);
+        ctx.lineTo(inicio+profundidade,yy);
 
         ctx.stroke();
     }
 
-    for(
-        let xx=inicio;
-        xx<=inicio+profundidade;
-        xx+=15
-    ){
+    for(let xx=inicio;xx<=inicio+profundidade;xx+=15){
 
         ctx.beginPath();
 
-        ctx.moveTo(
-            xx,
-            y
-        );
-
-        ctx.lineTo(
-            xx,
-            y+altura
-        );
+        ctx.moveTo(xx,y);
+        ctx.lineTo(xx,y+altura);
 
         ctx.stroke();
     }
@@ -2437,21 +2206,10 @@ function desenharGol(x,y,direita){
         ctx.moveTo(x,y);
         ctx.lineTo(x+profundidade,y);
 
-        ctx.moveTo(
-            x+profundidade,
-            y
-        );
+        ctx.moveTo(x+profundidade,y);
+        ctx.lineTo(x+profundidade,y+altura);
 
-        ctx.lineTo(
-            x+profundidade,
-            y+altura
-        );
-
-        ctx.moveTo(
-            x+profundidade,
-            y+altura
-        );
-
+        ctx.moveTo(x+profundidade,y+altura);
         ctx.lineTo(x,y+altura);
 
     }else{
@@ -2459,21 +2217,10 @@ function desenharGol(x,y,direita){
         ctx.moveTo(x,y);
         ctx.lineTo(x-profundidade,y);
 
-        ctx.moveTo(
-            x-profundidade,
-            y
-        );
+        ctx.moveTo(x-profundidade,y);
+        ctx.lineTo(x-profundidade,y+altura);
 
-        ctx.lineTo(
-            x-profundidade,
-            y+altura
-        );
-
-        ctx.moveTo(
-            x-profundidade,
-            y+altura
-        );
-
+        ctx.moveTo(x-profundidade,y+altura);
         ctx.lineTo(x,y+altura);
     }
 
@@ -2483,15 +2230,14 @@ function desenharGol(x,y,direita){
 }
 
 /* =========================================================
-   DESENHAR JOGADOR
+   JOGADOR
 ========================================================= */
 
 function desenharJogador(j){
 
     ctx.save();
 
-    ctx.fillStyle=
-        "rgba(0,0,0,.3)";
+    ctx.fillStyle="rgba(0,0,0,.3)";
 
     ctx.beginPath();
 
@@ -2500,9 +2246,7 @@ function desenharJogador(j){
         j.y+5,
         j.r+2,
         j.r*.65,
-        0,
-        0,
-        Math.PI*2
+        0,0,Math.PI*2
     );
 
     ctx.fill();
@@ -2517,20 +2261,9 @@ function desenharJogador(j){
             j.r
         );
 
-    gradiente.addColorStop(
-        0,
-        "#ffffff"
-    );
-
-    gradiente.addColorStop(
-        .15,
-        j.cor
-    );
-
-    gradiente.addColorStop(
-        1,
-        j.cor
-    );
+    gradiente.addColorStop(0,"#ffffff");
+    gradiente.addColorStop(.15,j.cor);
+    gradiente.addColorStop(1,j.cor);
 
     ctx.fillStyle=gradiente;
 
@@ -2546,15 +2279,11 @@ function desenharJogador(j){
 
     ctx.fill();
 
-    ctx.strokeStyle=
-        "rgba(255,255,255,.75)";
-
+    ctx.strokeStyle="rgba(255,255,255,.75)";
     ctx.lineWidth=2;
-
     ctx.stroke();
 
-    ctx.fillStyle=
-        "rgba(255,255,255,.55)";
+    ctx.fillStyle="rgba(255,255,255,.55)";
 
     ctx.beginPath();
 
@@ -2568,10 +2297,6 @@ function desenharJogador(j){
 
     ctx.fill();
 
-    /*
-       Indicador da IA.
-    */
-
     if(
         modoJogo==="ia" &&
         (
@@ -2580,9 +2305,7 @@ function desenharJogador(j){
         )
     ){
 
-        ctx.strokeStyle=
-            "rgba(255,255,255,.55)";
-
+        ctx.strokeStyle="rgba(255,255,255,.55)";
         ctx.lineWidth=1.5;
 
         ctx.beginPath();
@@ -2603,15 +2326,14 @@ function desenharJogador(j){
 }
 
 /* =========================================================
-   DESENHAR BOLA
+   BOLA
 ========================================================= */
 
 function desenharBola(){
 
     ctx.save();
 
-    ctx.fillStyle=
-        "rgba(0,0,0,.32)";
+    ctx.fillStyle="rgba(0,0,0,.32)";
 
     ctx.beginPath();
 
@@ -2620,9 +2342,7 @@ function desenharBola(){
         bola.y+5,
         bola.r+2,
         bola.r*.6,
-        0,
-        0,
-        Math.PI*2
+        0,0,Math.PI*2
     );
 
     ctx.fill();
@@ -2637,20 +2357,9 @@ function desenharBola(){
             bola.r
         );
 
-    gradiente.addColorStop(
-        0,
-        "#ffffff"
-    );
-
-    gradiente.addColorStop(
-        .75,
-        "#eeeeee"
-    );
-
-    gradiente.addColorStop(
-        1,
-        "#bcbcbc"
-    );
+    gradiente.addColorStop(0,"#ffffff");
+    gradiente.addColorStop(.75,"#eeeeee");
+    gradiente.addColorStop(1,"#bcbcbc");
 
     ctx.fillStyle=gradiente;
 
@@ -2666,15 +2375,11 @@ function desenharBola(){
 
     ctx.fill();
 
-    ctx.strokeStyle=
-        "rgba(0,0,0,.35)";
-
+    ctx.strokeStyle="rgba(0,0,0,.35)";
     ctx.lineWidth=1.2;
-
     ctx.stroke();
 
-    ctx.fillStyle=
-        "rgba(30,30,30,.7)";
+    ctx.fillStyle="rgba(30,30,30,.7)";
 
     ctx.beginPath();
 
@@ -2699,77 +2404,50 @@ function desenharHUD(){
 
     ctx.save();
 
-    ctx.fillStyle=
-        "rgba(5,15,9,.78)";
+    ctx.fillStyle="rgba(5,15,9,.78)";
 
     ctx.beginPath();
 
     ctx.roundRect(
-        430,
-        10,
-        240,
-        58,
+        430,10,
+        240,58,
         16
     );
 
     ctx.fill();
 
-    ctx.strokeStyle=
-        "rgba(255,255,255,.15)";
-
+    ctx.strokeStyle="rgba(255,255,255,.15)";
     ctx.lineWidth=1;
-
     ctx.stroke();
 
-    ctx.font=
-        "bold 25px Arial";
-
+    ctx.font="bold 25px Arial";
     ctx.textAlign="center";
 
     ctx.fillStyle="#55a8ff";
-
-    ctx.fillText(
-        golsAzul,
-        485,
-        48
-    );
+    ctx.fillText(golsAzul,485,48);
 
     ctx.fillStyle="#ff5555";
-
-    ctx.fillText(
-        golsVermelho,
-        615,
-        48
-    );
+    ctx.fillText(golsVermelho,615,48);
 
     ctx.fillStyle="white";
 
-    ctx.font=
-        "bold 22px Arial";
+    ctx.font="bold 22px Arial";
 
-    ctx.fillText(
-        "×",
-        550,
-        48
-    );
+    ctx.fillText("×",550,48);
 
-    const minutos=
-        Math.floor(tempo/60);
-
-    const segundos=
-        tempo%60;
+    const minutos=Math.floor(tempo/60);
+    const segundos=tempo%60;
 
     const cronometro=
         String(minutos).padStart(2,"0")+
         ":"+
         String(segundos).padStart(2,"0");
 
-    ctx.font=
-        "bold 17px Arial";
+    ctx.font="bold 17px Arial";
 
     ctx.fillStyle=
         tempo<=10
-        ?" #ff5555"
+        ?"red"
         :"white";
 
     ctx.fillText(
@@ -2778,8 +2456,7 @@ function desenharHUD(){
         88
     );
 
-    ctx.font=
-        "bold 13px Arial";
+    ctx.font="bold 13px Arial";
 
     ctx.fillStyle="#65b5ff";
 
@@ -2801,19 +2478,15 @@ function desenharHUD(){
 }
 
 /* =========================================================
-   DESENHAR TUDO
+   DESENHAR
 ========================================================= */
 
 function desenhar(){
 
     desenharCampo();
-
     desenharJogador(azul);
-
     desenharJogador(vermelho);
-
     desenharBola();
-
     desenharHUD();
 }
 
@@ -2822,11 +2495,6 @@ function desenhar(){
 ========================================================= */
 
 function loop(){
-
-    /*
-       Player azul:
-       WASD
-    */
 
     if(
         modoJogo==="2players" ||
@@ -2842,11 +2510,6 @@ function loop(){
         );
     }
 
-    /*
-       Player vermelho:
-       SETAS
-    */
-
     if(
         modoJogo==="2players" ||
         timeHumano==="vermelho"
@@ -2861,24 +2524,22 @@ function loop(){
         );
     }
 
-    /*
-       IA
-    */
-
     atualizarIA();
 
     colisaoJogadores();
 
     atualizarBola();
 
+    /*
+       O replay é gravado depois da física.
+    */
+
+    salvarReplay();
+
     desenhar();
 
     requestAnimationFrame(loop);
 }
-
-/* =========================================================
-   COMEÇAR
-========================================================= */
 
 loop();
 
