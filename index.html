@@ -486,54 +486,49 @@ const teclas={};
 
 document.addEventListener("keydown",e=>{
 
+    ```js
+/* =========================
+   CONTROLES + BLOQUEIO DE ATALHOS
+========================= */
+
+document.addEventListener("keydown", e => {
+
     /*
        =========================
        BLOQUEAR ATALHOS
        =========================
 
-       Ctrl + E no Chrome pode
-       mexer com a barra de endereço.
-
-       O preventDefault impede o
-       navegador de executar o
-       atalho.
+       Impede o navegador de tentar
+       executar alguns atalhos enquanto
+       o jogo está sendo usado.
     */
 
-    if(
-        e.key==="e" ||
-        e.key==="E" ||
-        e.code==="ControlRight"
-    ){
+    if (
+        e.ctrlKey ||
+        e.altKey ||
+        e.metaKey
+    ) {
 
+        // Ctrl + E
+        if (
+            e.key === "e" ||
+            e.key === "E"
+        ) {
+            e.preventDefault();
+        }
+
+        // Ctrl + W
+        if (
+            e.key === "w" ||
+            e.key === "W"
+        ) {
+            e.preventDefault();
+        }
+
+        // Alt + teclas
         e.preventDefault();
 
     }
-
-
-    /*
-       Ctrl + E especificamente.
-    */
-
-    if(
-        e.ctrlKey &&
-        (
-            e.key==="e" ||
-            e.key==="E"
-        )
-    ){
-
-        e.preventDefault();
-
-    }
-
-
-    /*
-       =========================
-       REGISTRAR TECLA
-       =========================
-    */
-
-    teclas[e.key]=true;
 
 
     /*
@@ -541,19 +536,113 @@ document.addEventListener("keydown",e=>{
        SETAS
        =========================
 
-       Impede a página de rolar.
+       Impede as setas de rolarem
+       a página do navegador.
     */
 
-    if(
-        e.key==="ArrowUp" ||
-        e.key==="ArrowDown" ||
-        e.key==="ArrowLeft" ||
-        e.key==="ArrowRight"
-    ){
+    if (
+        e.key === "ArrowUp" ||
+        e.key === "ArrowDown" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowRight"
+    ) {
 
         e.preventDefault();
 
     }
+
+
+    /*
+       =========================
+       ESPAÇO
+       =========================
+
+       Evita a página descer quando
+       Espaço for usado futuramente.
+    */
+
+    if (e.code === "Space") {
+
+        e.preventDefault();
+
+    }
+
+
+    /*
+       =========================
+       REGISTRAR TECLAS
+       =========================
+    */
+
+    teclas[e.key] = true;
+
+
+    /*
+       =========================
+       PAUSAR
+       =========================
+    */
+
+    if (
+        e.key === "p" ||
+        e.key === "P"
+    ) {
+
+        e.preventDefault();
+
+        alternarPausa();
+
+    }
+
+
+    /*
+       =========================
+       CHUTE AZUL
+       E
+       =========================
+    */
+
+    if (
+        e.key === "e" ||
+        e.key === "E"
+    ) {
+
+        e.preventDefault();
+
+        chute(azul);
+
+    }
+
+
+    /*
+       =========================
+       CHUTE VERMELHO
+       CTRL DIREITO
+       =========================
+    */
+
+    if (e.code === "ControlRight") {
+
+        e.preventDefault();
+
+        chute(vermelho);
+
+    }
+
+});
+
+
+/* =========================
+   SOLTAR TECLAS
+========================= */
+
+document.addEventListener("keyup", e => {
+
+    teclas[e.key] = false;
+
+});
+```
+
 
 
     /*
