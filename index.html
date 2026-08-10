@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -31,10 +30,6 @@ body{
     justify-content:center;
 }
 
-/* =========================
-   CANVAS
-========================= */
-
 #jogo{
     display:block;
     width:min(96vw,1100px);
@@ -47,11 +42,6 @@ body{
         0 20px 60px rgba(0,0,0,.6),
         0 0 0 2px rgba(255,255,255,.08);
 }
-
-
-/* =========================
-   MENU
-========================= */
 
 #menu{
     position:fixed;
@@ -157,11 +147,6 @@ body{
     color:#ddd;
 }
 
-
-/* =========================
-   CONTAGEM
-========================= */
-
 #contagem{
     position:fixed;
     inset:0;
@@ -184,11 +169,6 @@ body{
         0 0 30px #36ff70,
         0 0 70px rgba(54,255,112,.35);
 }
-
-
-/* =========================
-   FIM
-========================= */
 
 #fim{
     position:fixed;
@@ -232,11 +212,6 @@ body{
     line-height:1.5;
     margin:25px 0;
 }
-
-
-/* =========================
-   BOTÕES DO JOGO
-========================= */
 
 #botaoMusica,
 #botaoPausa{
@@ -285,11 +260,6 @@ body{
         rgba(20,80,40,.95);
 }
 
-
-/* =========================
-   PAUSA
-========================= */
-
 #pausaOverlay{
 
     position:fixed;
@@ -337,10 +307,7 @@ body{
 
 <body>
 
-
-<!-- =========================
-     MENU
-========================= -->
+<!-- MENU -->
 
 <div id="menu">
 
@@ -378,19 +345,13 @@ body{
 
 </div>
 
-
-<!-- =========================
-     CONTAGEM
-========================= -->
+<!-- CONTAGEM -->
 
 <div id="contagem">
     3
 </div>
 
-
-<!-- =========================
-     FIM
-========================= -->
+<!-- FIM -->
 
 <div id="fim">
 
@@ -412,10 +373,7 @@ body{
 
 </div>
 
-
-<!-- =========================
-     PAUSA
-========================= -->
+<!-- PAUSA -->
 
 <div id="pausaOverlay">
 
@@ -433,10 +391,7 @@ body{
 
 </div>
 
-
-<!-- =========================
-     BOTÕES
-========================= -->
+<!-- BOTÕES -->
 
 <button
     id="botaoPausa"
@@ -445,7 +400,6 @@ body{
     ⏸️ Pausar
 </button>
 
-
 <button
     id="botaoMusica"
     onclick="alternarMusica()"
@@ -453,10 +407,7 @@ body{
     🔊 Música: ON
 </button>
 
-
-<!-- =========================
-     MÚSICA
-========================= -->
+<!-- MÚSICA -->
 
 <audio id="musicaJogo" loop>
 
@@ -467,10 +418,7 @@ body{
 
 </audio>
 
-
-<!-- =========================
-     JOGO
-========================= -->
+<!-- JOGO -->
 
 <canvas
     id="jogo"
@@ -478,9 +426,7 @@ body{
     height="650"
 ></canvas>
 
-
 <script>
-
 
 /* =========================
    CANVAS
@@ -520,10 +466,83 @@ const campo={
 const teclas={};
 
 
+/*
+   =========================
+   CONTROLES
+   =========================
+
+   AZUL:
+   WASD = movimento
+   E    = chute forte
+
+   VERMELHO:
+   SETAS = movimento
+   CTRL DIREITO = chute forte
+
+   Também bloqueamos os atalhos
+   do navegador para as teclas
+   usadas pelo jogo.
+*/
+
 document.addEventListener("keydown",e=>{
+
+    /*
+       =========================
+       BLOQUEAR ATALHOS
+       =========================
+
+       Ctrl + E no Chrome pode
+       mexer com a barra de endereço.
+
+       O preventDefault impede o
+       navegador de executar o
+       atalho.
+    */
+
+    if(
+        e.key==="e" ||
+        e.key==="E" ||
+        e.code==="ControlRight"
+    ){
+
+        e.preventDefault();
+
+    }
+
+
+    /*
+       Ctrl + E especificamente.
+    */
+
+    if(
+        e.ctrlKey &&
+        (
+            e.key==="e" ||
+            e.key==="E"
+        )
+    ){
+
+        e.preventDefault();
+
+    }
+
+
+    /*
+       =========================
+       REGISTRAR TECLA
+       =========================
+    */
 
     teclas[e.key]=true;
 
+
+    /*
+       =========================
+       SETAS
+       =========================
+
+       Impede a página de rolar.
+    */
 
     if(
         e.key==="ArrowUp" ||
@@ -537,16 +556,71 @@ document.addEventListener("keydown",e=>{
     }
 
 
-    /* =========================
+    /*
+       =========================
        PAUSAR COM P
-    ========================= */
+       =========================
+    */
 
     if(
         e.key==="p" ||
         e.key==="P"
     ){
 
-        alternarPausa();
+        e.preventDefault();
+
+        /*
+           Evita pausar várias vezes
+           caso a tecla fique pressionada.
+        */
+
+        if(!e.repeat){
+
+            alternarPausa();
+
+        }
+
+    }
+
+
+    /*
+       =========================
+       CHUTE AZUL
+       =========================
+    */
+
+    if(
+        (
+            e.key==="e" ||
+            e.key==="E"
+        ) &&
+        !e.ctrlKey
+    ){
+
+        if(!e.repeat){
+
+            chute(azul);
+
+        }
+
+    }
+
+
+    /*
+       =========================
+       CHUTE VERMELHO
+       =========================
+    */
+
+    if(
+        e.code==="ControlRight"
+    ){
+
+        if(!e.repeat){
+
+            chute(vermelho);
+
+        }
 
     }
 
@@ -1248,28 +1322,6 @@ function chute(j){
 
 
 /* =========================
-   CONTROLES DE CHUTE
-========================= */
-
-document.addEventListener("keydown",e=>{
-
-    if(e.key==="e" || e.key==="E"){
-
-        chute(azul);
-
-    }
-
-
-    if(e.code==="ControlRight"){
-
-        chute(vermelho);
-
-    }
-
-});
-
-
-/* =========================
    FÍSICA DA BOLA
 ========================= */
 
@@ -1359,8 +1411,7 @@ function atualizarBola(){
         bola.y>
         campo.golY &&
         bola.y<
-        campo.golY+
-        campo.golH;
+        campo.golY+campo.golH;
 
 
     /* PAREDE ESQUERDA */
@@ -1468,10 +1519,6 @@ function colidirBolaJogador(j){
     }
 
 
-    /*
-       Separa a bola do jogador.
-    */
-
     const excesso =
         minimo-
         distancia+
@@ -1551,12 +1598,6 @@ function colidirBolaJogador(j){
        =========================
        EMPURRÃO FRACO
        =========================
-
-       Agora andar contra a bola
-       gera apenas um toque leve.
-
-       O E / CTRL continua sendo
-       responsável pelo chute forte.
     */
 
     const movimento =
@@ -1571,10 +1612,6 @@ function colidirBolaJogador(j){
         bola.dy=ny;
 
 
-        /*
-           Bem mais fraco que o chute.
-        */
-
         const toque =
             Math.min(
                 2.8+
@@ -1582,15 +1619,6 @@ function colidirBolaJogador(j){
                 4.0
             );
 
-
-        /*
-           Só aumenta a velocidade
-           se ela estiver menor.
-
-           Isso deixa possível
-           controlar a bola sem ela
-           sair voando toda hora.
-        */
 
         bola.vel =
             Math.max(
@@ -2198,7 +2226,8 @@ function desenharGol(
 
         ctx.lineTo(
             xx,
-            y+altura
+            y+
+            altura
         );
 
         ctx.stroke();
@@ -2707,4 +2736,3 @@ loop();
 
 </body>
 </html>
-```
