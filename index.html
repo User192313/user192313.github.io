@@ -1407,7 +1407,39 @@ function protegerBola(){
 ========================================================= */
 
 function verificarGol(){
+function verificarGol(){
 
+    if(executandoReplay) return false;
+
+    if(
+        bola.x+bola.r<campo.x-5 &&
+        bola.y>campo.golY &&
+        bola.y<campo.golY+campo.golH
+    ){
+
+        golsVermelho++;
+
+        mostrarGol("🔴 GOL DO VERMELHO!");
+
+        return true;
+    }
+
+    if(
+        bola.x-bola.r>
+        campo.x+campo.w+5 &&
+        bola.y>campo.golY &&
+        bola.y<campo.golY+campo.golH
+    ){
+
+        golsAzul++;
+
+        mostrarGol("🔵 GOL DO AZUL!");
+
+        return true;
+    }
+
+    return false;
+}
     if(
         bola.x+bola.r<campo.x-5 &&
         bola.y>campo.golY &&
