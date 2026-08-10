@@ -260,47 +260,107 @@ body{
         rgba(20,80,40,.95);
 }
 
-#pausaOverlay{
+```html
+<!-- =========================
+     PAUSA
+========================= -->
 
-    position:fixed;
+<div id="pausaOverlay">
 
-    inset:0;
+    <h1>⏸️ PAUSADO</h1>
 
-    display:none;
+    <p>O que deseja fazer?</p>
 
-    align-items:center;
+    <!-- CONTINUAR -->
+    <button
+        class="menuButton"
+        style="width:280px;margin-top:25px"
+        onclick="alternarPausa()"
+    >
+        ▶️ CONTINUAR
+    </button>
 
-    justify-content:center;
+    <!-- RESETAR -->
+    <button
+        class="menuButton"
+        style="width:280px"
+        onclick="resetarPartida()"
+    >
+        🔄 RESETAR
+    </button>
 
-    flex-direction:column;
+    <!-- MENU -->
+    <button
+        class="menuButton"
+        style="width:280px"
+        onclick="voltarMenu()"
+    >
+        🏠 MENU
+    </button>
 
-    background:rgba(0,0,0,.62);
+</div>
+```
 
-    color:white;
+Agora adiciona **esta função** em qualquer lugar dentro do `<script>`:
 
-    z-index:55;
+```js
+/* =========================
+   RESETAR PARTIDA
+========================= */
 
-    backdrop-filter:blur(4px);
+function resetarPartida(){
+
+    // Zera o placar
+    golsAzul=0;
+    golsVermelho=0;
+
+    // Reinicia o tempo
+    tempo=120;
+
+    // Mantém o jogo ativo
+    jogoAtivo=true;
+
+    // Tira da pausa
+    jogoPausado=false;
+
+    // Esconde o menu de pausa
+    document.getElementById("pausaOverlay")
+        .style.display="none";
+
+    // Volta o botão para "Pausar"
+    document.getElementById("botaoPausa")
+        .textContent="⏸️ Pausar";
+
+    // Reposiciona jogadores e bola
+    reset();
+
+    // Reinicia o cronômetro
+    clearInterval(intervaloTempo);
+
+    atualizarCronometro();
+
+    intervaloTempo=setInterval(()=>{
+
+        if(!jogoAtivo) return;
+
+        if(jogoPausado) return;
+
+        tempo--;
+
+        atualizarCronometro();
+
+        if(tempo<=0){
+
+            tempo=0;
+
+            finalizarJogo();
+
+        }
+
+    },1000);
+
 }
-
-#pausaOverlay h1{
-
-    margin:0 0 10px;
-
-    font-size:64px;
-
-    text-shadow:
-        0 0 25px rgba(255,255,255,.25);
-}
-
-#pausaOverlay p{
-
-    margin:0;
-
-    font-size:20px;
-
-    color:#ddd;
-}
+```
 
 </style>
 </head>
