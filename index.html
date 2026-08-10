@@ -11,322 +11,137 @@ crossorigin="anonymous"></script>
 
 <style>
 *{box-sizing:border-box}
-
 html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
+    margin:0;width:100%;height:100%;overflow:hidden;
     font-family:Arial,Helvetica,sans-serif;
 }
-
 body{
     background:radial-gradient(circle at center,#17351f,#08120c 70%);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display:flex;align-items:center;justify-content:center;
 }
-
 button{font-family:inherit}
 
 #jogo{
-    display:block;
-    width:min(96vw,1100px);
-    height:auto;
-    max-height:94vh;
+    display:block;width:min(96vw,1100px);height:auto;max-height:94vh;
     border-radius:18px;
-    box-shadow:0 20px 60px rgba(0,0,0,.6),
-               0 0 0 2px rgba(255,255,255,.08);
+    box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 2px rgba(255,255,255,.08);
 }
 
 .overlay{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
     background:radial-gradient(circle at 50% 40%,#145b2c,#07150b 70%);
-    color:white;
-    z-index:50;
+    color:white;z-index:50;
 }
-
 .hidden{display:none!important}
 
 .menuBox{
-    width:460px;
-    max-width:92vw;
-    max-height:90vh;
-    overflow:auto;
-    padding:40px 36px;
-    text-align:center;
+    width:460px;max-width:92vw;max-height:90vh;overflow:auto;
+    padding:40px 36px;text-align:center;
     background:rgba(5,12,7,.94);
-    border:1px solid rgba(75,255,125,.45);
-    border-radius:28px;
-    box-shadow:0 25px 80px rgba(0,0,0,.65),
-               0 0 40px rgba(40,255,100,.12);
+    border:1px solid rgba(75,255,125,.45);border-radius:28px;
+    box-shadow:0 25px 80px rgba(0,0,0,.65),0 0 40px rgba(40,255,100,.12);
     backdrop-filter:blur(10px);
 }
-
-.logo{
-    font-size:52px;
-    font-weight:900;
-    letter-spacing:-2px;
-    margin-bottom:5px;
-}
-
-.sub{
-    color:#9cffb5;
-    font-size:17px;
-    margin-bottom:28px;
-}
+.logo{font-size:52px;font-weight:900;letter-spacing:-2px;margin-bottom:5px}
+.sub{color:#9cffb5;font-size:17px;margin-bottom:28px}
 
 .menuButton{
-    width:100%;
-    padding:15px;
-    margin:8px 0;
-    border:0;
-    border-radius:13px;
+    width:100%;padding:15px;margin:8px 0;border:0;border-radius:13px;
     background:linear-gradient(135deg,#20bd52,#36e96b);
-    color:white;
-    font-size:19px;
-    font-weight:800;
-    cursor:pointer;
-    transition:.16s;
+    color:white;font-size:19px;font-weight:800;cursor:pointer;transition:.16s;
 }
-
-.menuButton:hover{
-    transform:translateY(-2px) scale(1.015);
-}
-
+.menuButton:hover{transform:translateY(-2px) scale(1.015)}
 .menuButton:active{transform:scale(.98)}
-
-.secondary{
-    background:rgba(255,255,255,.09);
-    border:1px solid rgba(255,255,255,.14);
-}
-
+.secondary{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14)}
 .blueButton{background:linear-gradient(135deg,#126be8,#3190ff)}
 .redButton{background:linear-gradient(135deg,#e51d2a,#ff4c55)}
 
-.difficulty{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:10px;
-}
-
+.difficulty{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .difficulty button{
-    padding:15px 8px;
-    border:0;
-    border-radius:12px;
-    color:white;
-    font-weight:800;
-    font-size:16px;
-    cursor:pointer;
+    padding:15px 8px;border:0;border-radius:12px;color:white;
+    font-weight:800;font-size:16px;cursor:pointer;
 }
-
 .easy{background:#178c48!important}
 .medium{background:#a47b00!important}
 .hard{background:#c44325!important}
 .impossible{background:#7c1621!important}
 
 .creditos{
-    display:none;
-    margin-top:20px;
-    padding:16px;
-    border-radius:14px;
-    background:rgba(255,255,255,.05);
-    line-height:1.7;
-    color:#ddd;
+    display:none;margin-top:20px;padding:16px;border-radius:14px;
+    background:rgba(255,255,255,.05);line-height:1.7;color:#ddd;
 }
-
-.menuTitle{
-    font-size:32px;
-    margin:0 0 8px;
-}
-
-.menuDescription{
-    color:#bbb;
-    margin:0 0 20px;
-}
+.menuTitle{font-size:32px;margin:0 0 8px}
+.menuDescription{color:#bbb;margin:0 0 20px}
 
 #contagem{
-    position:fixed;
-    inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    font-size:140px;
-    font-weight:900;
-    background:rgba(0,0,0,.35);
-    z-index:40;
-    text-shadow:0 0 30px #36ff70,
-                0 0 70px rgba(54,255,112,.35);
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    color:white;font-size:140px;font-weight:900;background:rgba(0,0,0,.35);
+    z-index:40;text-shadow:0 0 30px #36ff70,0 0 70px rgba(54,255,112,.35);
 }
 
 #fim{
-    position:fixed;
-    inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    background:rgba(0,0,0,.72);
-    color:white;
-    z-index:60;
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.72);color:white;z-index:60;
 }
-
 .fimBox{
-    width:420px;
-    max-width:92vw;
-    padding:35px;
-    text-align:center;
-    background:#101713;
-    border:1px solid rgba(65,255,120,.45);
-    border-radius:24px;
+    width:420px;max-width:92vw;padding:35px;text-align:center;
+    background:#101713;border:1px solid rgba(65,255,120,.45);border-radius:24px;
 }
-
-#resultado{
-    font-size:30px;
-    line-height:1.5;
-    margin:25px 0;
-}
+#resultado{font-size:30px;line-height:1.5;margin:25px 0}
 
 #botaoMusica,#botaoPausa{
-    position:fixed;
-    top:15px;
-    z-index:100;
-    padding:10px 16px;
-    border:1px solid rgba(255,255,255,.25);
-    border-radius:10px;
-    background:rgba(5,15,9,.88);
-    color:white;
-    font-size:15px;
-    font-weight:bold;
+    position:fixed;top:15px;z-index:100;padding:10px 16px;
+    border:1px solid rgba(255,255,255,.25);border-radius:10px;
+    background:rgba(5,15,9,.88);color:white;font-size:15px;font-weight:bold;
     cursor:pointer;
 }
-
 #botaoMusica{right:15px}
 #botaoPausa{left:15px}
 
 #pausaOverlay{
-    position:fixed;
-    inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    background:rgba(0,0,0,.68);
-    color:white;
-    z-index:55;
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(0,0,0,.68);color:white;z-index:55;
     backdrop-filter:blur(5px);
 }
-
-#pausaOverlay h1{
-    margin:0 0 20px;
-    font-size:64px;
-}
-
+#pausaOverlay h1{margin:0 0 20px;font-size:64px}
 .pauseButtons{width:300px}
 .pauseButtons button{width:100%}
 
 #indicadorIA{
-    position:fixed;
-    bottom:14px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:20;
-    color:white;
-    font-size:13px;
-    font-weight:bold;
-    background:rgba(0,0,0,.45);
-    padding:7px 12px;
-    border-radius:20px;
+    position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+    z-index:20;color:white;font-size:13px;font-weight:bold;
+    background:rgba(0,0,0,.45);padding:7px 12px;border-radius:20px;
     pointer-events:none;
 }
-
-/* ================= GOL ================= */
 
 #golOverlay{
-    position:fixed;
-    inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    z-index:70;
-    pointer-events:none;
-    background:rgba(0,0,0,.18);
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    flex-direction:column;z-index:70;pointer-events:none;background:rgba(0,0,0,.18);
 }
-
 #golTexto{
-    font-size:clamp(80px,15vw,190px);
-    font-weight:1000;
-    color:white;
-    text-shadow:
-        0 0 10px #ffe600,
-        0 0 30px #ff7b00,
-        0 0 70px #ff2200;
+    font-size:clamp(80px,15vw,190px);font-weight:1000;color:white;
+    text-shadow:0 0 10px #ffe600,0 0 30px #ff7b00,0 0 70px #ff2200;
     animation:piscagol .35s infinite alternate;
 }
-
-#golSub{
-    font-size:24px;
-    font-weight:bold;
-    color:white;
-    margin-top:-15px;
-    text-shadow:0 3px 15px #000;
-}
-
+#golSub{font-size:24px;font-weight:bold;color:white;margin-top:-15px;text-shadow:0 3px 15px #000}
 @keyframes piscagol{
     from{opacity:.35;transform:scale(.92)}
     to{opacity:1;transform:scale(1.08)}
 }
 
-/* ================= REPLAY ================= */
-
 #replayTexto{
-    position:fixed;
-    top:75px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:75;
-    display:none;
-    color:white;
-    background:rgba(0,0,0,.7);
-    padding:8px 18px;
-    border-radius:20px;
-    font-weight:bold;
-    pointer-events:none;
+    position:fixed;top:75px;left:50%;transform:translateX(-50%);
+    z-index:75;display:none;color:white;background:rgba(0,0,0,.7);
+    padding:8px 18px;border-radius:20px;font-weight:bold;pointer-events:none;
 }
 
-/* ================= TUTORIAL ================= */
-
-.tutorial{
-    text-align:left;
-    line-height:1.55;
-    color:#ddd;
-}
-
-.tutorial h3{
-    color:#72ff98;
-    margin-bottom:5px;
-}
-
-.tutorial p{
-    margin-top:5px;
-}
-
+.tutorial{text-align:left;line-height:1.55;color:#ddd}
+.tutorial h3{color:#72ff98;margin-bottom:5px}
+.tutorial p{margin-top:5px}
 .key{
-    display:inline-block;
-    padding:3px 8px;
-    border-radius:6px;
-    background:#222;
-    border:1px solid #666;
-    color:white;
-    font-weight:bold;
+    display:inline-block;padding:3px 8px;border-radius:6px;background:#222;
+    border:1px solid #666;color:white;font-weight:bold;
 }
-
 @media(max-width:600px){
     .logo{font-size:40px}
     .menuBox{padding:30px 24px}
@@ -337,7 +152,8 @@ button{font-family:inherit}
 
 <body>
 
-<!-- MENU -->
+<!-- ================= MENU ================= -->
+
 <div id="menu" class="overlay">
 <div class="menuBox">
 
@@ -364,7 +180,8 @@ Criado por <b>Diogo</b> ⚽<br>
 </div>
 </div>
 
-<!-- MODOS -->
+<!-- ================= MODOS ================= -->
+
 <div id="modoMenu" class="overlay hidden">
 <div class="menuBox">
 
@@ -386,20 +203,19 @@ Criado por <b>Diogo</b> ⚽<br>
 </div>
 </div>
 
-<!-- TIME -->
+<!-- ================= ESCOLHA TIME ================= -->
+
 <div id="timeMenu" class="overlay hidden">
 <div class="menuBox">
 
 <h1 class="menuTitle">🤖 ESCOLHA SEU TIME</h1>
 <p class="menuDescription">A IA ficará com o outro time.</p>
 
-<button class="menuButton blueButton"
-onclick="selecionarTimeIA('azul')">
+<button class="menuButton blueButton" onclick="selecionarTimeIA('azul')">
 🔵 JOGAR DE AZUL
 </button>
 
-<button class="menuButton redButton"
-onclick="selecionarTimeIA('vermelho')">
+<button class="menuButton redButton" onclick="selecionarTimeIA('vermelho')">
 🔴 JOGAR DE VERMELHO
 </button>
 
@@ -410,7 +226,8 @@ onclick="selecionarTimeIA('vermelho')">
 </div>
 </div>
 
-<!-- DIFICULDADE -->
+<!-- ================= DIFICULDADE ================= -->
+
 <div id="dificuldadeMenu" class="overlay hidden">
 <div class="menuBox">
 
@@ -418,23 +235,10 @@ onclick="selecionarTimeIA('vermelho')">
 <p class="menuDescription">Quanto maior, mais inteligente a IA.</p>
 
 <div class="difficulty">
-
-<button class="easy" onclick="selecionarDificuldade('facil')">
-🟢 FÁCIL
-</button>
-
-<button class="medium" onclick="selecionarDificuldade('medio')">
-🟡 MÉDIO
-</button>
-
-<button class="hard" onclick="selecionarDificuldade('dificil')">
-🔴 DIFÍCIL
-</button>
-
-<button class="impossible" onclick="selecionarDificuldade('impossivel')">
-☠️ IMPOSSÍVEL
-</button>
-
+<button class="easy" onclick="selecionarDificuldade('facil')">🟢 FÁCIL</button>
+<button class="medium" onclick="selecionarDificuldade('medio')">🟡 MÉDIO</button>
+<button class="hard" onclick="selecionarDificuldade('dificil')">🔴 DIFÍCIL</button>
+<button class="impossible" onclick="selecionarDificuldade('impossivel')">☠️ IMPOSSÍVEL</button>
 </div>
 
 <button class="menuButton secondary" onclick="abrirEscolhaTime()">
@@ -444,7 +248,8 @@ onclick="selecionarTimeIA('vermelho')">
 </div>
 </div>
 
-<!-- TUTORIAL -->
+<!-- ================= TUTORIAL ================= -->
+
 <div id="tutorialMenu" class="overlay hidden">
 <div class="menuBox">
 
@@ -453,6 +258,7 @@ onclick="selecionarTimeIA('vermelho')">
 <div class="tutorial">
 
 <h3>🔵 Time Azul</h3>
+
 <p>
 Mover:
 <span class="key">W</span>
@@ -460,9 +266,11 @@ Mover:
 <span class="key">S</span>
 <span class="key">D</span>
 </p>
+
 <p>Chutar: <span class="key">E</span></p>
 
 <h3>🔴 Time Vermelho</h3>
+
 <p>
 Mover:
 <span class="key">↑</span>
@@ -470,36 +278,47 @@ Mover:
 <span class="key">←</span>
 <span class="key">→</span>
 </p>
-<p>Chutar: <span class="key">CTRL DIREITO</span></p>
+
+<p>Chutar: <span class="key">SHIFT DIREITO</span></p>
 
 <h3>🎯 Como mirar</h3>
+
 <p>
-Seu jogador chuta na direção em que ele está
+O jogador chuta na direção em que ele está
 se movimentando. Posicione o jogador antes
 de chutar para escolher a direção.
 </p>
 
 <h3>🦶 Chute de calcanhar</h3>
+
 <p>
-Chegue perto da bola, dê um pequeno movimento
-para trás e chute. A bola pode passar pelo
-jogador e ir para trás. É uma técnica especial
-do SoccerGol. 😎
+O chute de calcanhar é uma técnica especial
+que surgiu de um comportamento do próprio jogo.
+Se você estiver se movimentando para trás em
+relação à direção do chute, a bola pode ir para
+trás do jogador. 😎
+</p>
+
+<h3>🖊️ Caneta</h3>
+
+<p>
+Para fazer uma <b>Caneta</b>, os dois jogadores
+precisam estar prensando a bola entre eles.
+Quando a bola estiver presa entre os dois,
+dê um chute. A bola pode passar pelo jogador
+adversário e sair do outro lado. 😂⚽
 </p>
 
 <h3>⚽ Dica</h3>
+
 <p>
 Não fique simplesmente correndo atrás da bola.
-Tente se posicionar na frente dela para preparar
-o chute.
+Tente se posicionar na frente dela e use o
+movimento do jogador para preparar o chute.
 </p>
 
-<h3>🖊 Caneta</h3>
-Para dar uma Caneta no adversário faça ambos prensarem
-a bola e você chuta, fazendo a bola passar por debaixo do adversário.
-</p>
-    
 <h3>🤖 IA</h3>
+
 <p>
 Quanto maior a dificuldade, melhor a IA lê
 a trajetória, se posiciona e finaliza.
@@ -514,10 +333,10 @@ a trajetória, se posiciona e finaliza.
 </div>
 </div>
 
-<!-- CONTAGEM -->
 <div id="contagem">3</div>
 
-<!-- FIM -->
+<!-- ================= FIM ================= -->
+
 <div id="fim">
 <div class="fimBox">
 
@@ -536,7 +355,8 @@ a trajetória, se posiciona e finaliza.
 </div>
 </div>
 
-<!-- PAUSA -->
+<!-- ================= PAUSA ================= -->
+
 <div id="pausaOverlay">
 
 <h1>⏸️ PAUSADO</h1>
@@ -558,13 +378,8 @@ a trajetória, se posiciona e finaliza.
 </div>
 </div>
 
-<button id="botaoPausa" onclick="alternarPausa()">
-⏸️ Pausar
-</button>
-
-<button id="botaoMusica" onclick="alternarMusica()">
-🔊 Música: ON
-</button>
+<button id="botaoPausa" onclick="alternarPausa()">⏸️ Pausar</button>
+<button id="botaoMusica" onclick="alternarMusica()">🔊 Música: ON</button>
 
 <div id="indicadorIA" class="hidden"></div>
 
@@ -613,8 +428,9 @@ const teclas={};
 document.addEventListener("keydown",e=>{
 
     /*
-       Bloqueia atalhos do navegador usados
-       durante a partida.
+       Impede atalhos do navegador durante o jogo.
+       ShiftRight NÃO é usado pelo navegador como
+       atalho normal, então pode ser usado no chute.
     */
 
     if(
@@ -632,16 +448,10 @@ document.addEventListener("keydown",e=>{
         e.preventDefault();
     }
 
-    if(
-        e.ctrlKey &&
-        ["w","t","r","l","n","d","f"].includes(
-            e.key.toLowerCase()
-        )
-    ){
-        e.preventDefault();
-    }
-
     teclas[e.key]=true;
+    teclas[e.code]=true;
+
+    /* PAUSA */
 
     if(
         (e.key==="p" || e.key==="P") &&
@@ -652,6 +462,8 @@ document.addEventListener("keydown",e=>{
         return;
     }
 
+    /* CHUTE AZUL */
+
     if(
         (e.key==="e" || e.key==="E") &&
         !e.repeat
@@ -661,12 +473,16 @@ document.addEventListener("keydown",e=>{
         return;
     }
 
-    if(e.code==="ControlRight"){
+    /*
+       CHUTE VERMELHO
+       AGORA É SHIFT DIREITO.
+    */
 
-        if(!e.repeat){
-            chute(vermelho);
-        }
-
+    if(
+        e.code==="ShiftRight" &&
+        !e.repeat
+    ){
+        chute(vermelho);
         e.preventDefault();
         return;
     }
@@ -674,11 +490,14 @@ document.addEventListener("keydown",e=>{
 },true);
 
 document.addEventListener("keyup",e=>{
+
     teclas[e.key]=false;
+    teclas[e.code]=false;
 
     if(e.ctrlKey){
         e.preventDefault();
     }
+
 },true);
 
 /* =========================================================
@@ -724,7 +543,6 @@ const bola={
 
 let golsAzul=0;
 let golsVermelho=0;
-
 let tempo=120;
 
 let jogoAtivo=false;
@@ -743,11 +561,6 @@ let contagemAtiva=false;
    REPLAY
 ========================================================= */
 
-/*
-   Guarda aproximadamente os últimos 5 segundos.
-   Cada frame salva somente os dados necessários.
-*/
-
 const replayFrames=[];
 const MAX_REPLAY_FRAMES=60*5;
 
@@ -756,34 +569,28 @@ let replayIntervalo=null;
 
 function salvarReplay(){
 
-    if(!jogoAtivo || jogoPausado || executandoReplay) return;
+    if(!jogoAtivo || jogoPausado || executandoReplay)return;
 
     replayFrames.push({
         azul:{
-            x:azul.x,
-            y:azul.y,
-            vx:azul.vx,
-            vy:azul.vy,
-            dx:azul.dx,
-            dy:azul.dy
+            x:azul.x,y:azul.y,
+            vx:azul.vx,vy:azul.vy,
+            dx:azul.dx,dy:azul.dy
         },
+
         vermelho:{
-            x:vermelho.x,
-            y:vermelho.y,
-            vx:vermelho.vx,
-            vy:vermelho.vy,
-            dx:vermelho.dx,
-            dy:vermelho.dy
+            x:vermelho.x,y:vermelho.y,
+            vx:vermelho.vx,vy:vermelho.vy,
+            dx:vermelho.dx,dy:vermelho.dy
         },
+
         bola:{
-            x:bola.x,
-            y:bola.y,
-            dx:bola.dx,
-            dy:bola.dy,
-            vx:bola.vx,
-            vy:bola.vy,
+            x:bola.x,y:bola.y,
+            dx:bola.dx,dy:bola.dy,
+            vx:bola.vx,vy:bola.vy,
             vel:bola.vel
         },
+
         golsAzul,
         golsVermelho
     });
@@ -794,7 +601,7 @@ function salvarReplay(){
 }
 
 /* =========================================================
-   CONFIG IA
+   IA
 ========================================================= */
 
 const configuracoesIA={
@@ -850,27 +657,18 @@ function esconderMenus(){
 }
 
 function abrirModos(){
-
     esconderMenus();
-
-    document.getElementById("modoMenu")
-        .classList.remove("hidden");
+    document.getElementById("modoMenu").classList.remove("hidden");
 }
 
 function abrirEscolhaTime(){
-
     esconderMenus();
-
-    document.getElementById("timeMenu")
-        .classList.remove("hidden");
+    document.getElementById("timeMenu").classList.remove("hidden");
 }
 
 function abrirTutorial(){
-
     esconderMenus();
-
-    document.getElementById("tutorialMenu")
-        .classList.remove("hidden");
+    document.getElementById("tutorialMenu").classList.remove("hidden");
 }
 
 function selecionarDoisPlayers(){
@@ -885,13 +683,8 @@ function selecionarDoisPlayers(){
 function selecionarTimeIA(time){
 
     modoJogo="ia";
-
     timeHumano=time;
-
-    timeIA=
-        time==="azul"
-        ?"vermelho"
-        :"azul";
+    timeIA=time==="azul"?"vermelho":"azul";
 
     esconderMenus();
 
@@ -937,11 +730,8 @@ function alternarMusica(){
     if(musica.paused){
 
         musica.play().then(()=>{
-
             botao.textContent="🔊 Música: ON";
-
         }).catch(()=>{
-
             botao.textContent="🔇 Clique novamente";
         });
 
@@ -1021,6 +811,7 @@ function iniciarContagem(){
                 elemento.style.display="none";
                 clearInterval(intervalo);
                 contagemAtiva=false;
+
                 iniciarPartida();
 
             },500);
@@ -1049,6 +840,7 @@ function iniciarPartida(){
         atualizarCronometro();
 
         if(tempo<=0){
+
             tempo=0;
             finalizarJogo();
         }
@@ -1172,7 +964,7 @@ function moverJogador(j,cima,baixo,esquerda,direita){
 }
 
 /* =========================================================
-   LIMITAR
+   LIMITAR JOGADOR
 ========================================================= */
 
 function limitarJogador(j){
@@ -1189,7 +981,7 @@ function limitarJogador(j){
 }
 
 /* =========================================================
-   COLISÃO PLAYERS
+   COLISÃO DOS JOGADORES
 ========================================================= */
 
 function colisaoJogadores(){
@@ -1207,9 +999,12 @@ function colisaoJogadores(){
         let nx,ny;
 
         if(distancia<.001){
+
             nx=1;
             ny=0;
+
         }else{
+
             nx=dx/distancia;
             ny=dy/distancia;
         }
@@ -1222,25 +1017,82 @@ function colisaoJogadores(){
         vermelho.x+=nx*excesso*.5;
         vermelho.y+=ny*excesso*.5;
 
-        const rvx=vermelho.vx-azul.vx;
-        const rvy=vermelho.vy-azul.vy;
-
-        const normal=rvx*nx+rvy*ny;
-
-        if(normal<0){
-
-            const impulso=normal*.5;
-
-            azul.vx+=nx*impulso;
-            azul.vy+=ny*impulso;
-
-            vermelho.vx-=nx*impulso;
-            vermelho.vy-=ny*impulso;
-        }
-
         limitarJogador(azul);
         limitarJogador(vermelho);
     }
+}
+
+/* =========================================================
+   CANETA
+========================================================= */
+
+/*
+   A caneta acontece naturalmente quando:
+   1. A bola está entre os jogadores.
+   2. Os jogadores estão prensando a bola.
+   3. Um deles chuta.
+
+   A bola recebe uma pequena ajuda para atravessar
+   o adversário em vez de ficar presa na colisão.
+*/
+
+function tentarCaneta(j){
+
+    const outro=j===azul?vermelho:azul;
+
+    const distJogadores=
+        Math.hypot(
+            j.x-outro.x,
+            j.y-outro.y
+        );
+
+    const distBolaJ=
+        Math.hypot(
+            bola.x-j.x,
+            bola.y-j.y
+        );
+
+    const distBolaOutro=
+        Math.hypot(
+            bola.x-outro.x,
+            bola.y-outro.y
+        );
+
+    const prensando=
+        distJogadores<=j.r+outro.r+bola.r+5 &&
+        distBolaJ<=j.r+bola.r+10 &&
+        distBolaOutro<=outro.r+bola.r+10;
+
+    if(!prensando)return false;
+
+    /*
+       Direção do chute.
+    */
+
+    let dx=j.dx;
+    let dy=j.dy;
+
+    const tamanho=Math.hypot(dx,dy)||1;
+
+    dx/=tamanho;
+    dy/=tamanho;
+
+    /*
+       Faz a bola passar para o outro lado
+       do adversário.
+    */
+
+    bola.x=outro.x+dx*(outro.r+bola.r+10);
+    bola.y=outro.y+dy*(outro.r+bola.r+10);
+
+    bola.dx=dx;
+    bola.dy=dy;
+    bola.vel=14;
+
+    bola.vx=dx*bola.vel;
+    bola.vy=dy*bola.vel;
+
+    return true;
 }
 
 /* =========================================================
@@ -1250,6 +1102,15 @@ function colisaoJogadores(){
 function chute(j){
 
     if(!jogoAtivo || jogoPausado || executandoReplay)return;
+
+    /*
+       PRIMEIRO:
+       tenta a CANETA.
+    */
+
+    if(tentarCaneta(j)){
+        return;
+    }
 
     const dx=bola.x-j.x;
     const dy=bola.y-j.y;
@@ -1267,22 +1128,14 @@ function chute(j){
         dirY=dy/(distancia||1);
     }
 
-    const tamanho=Math.hypot(dirX,dirY);
+    const tamanho=Math.hypot(dirX,dirY)||1;
 
     dirX/=tamanho;
     dirY/=tamanho;
 
     /*
-       IMPORTANTE:
-       A bola é colocada na frente do jogador
-       normalmente.
-
-       Porém, se o jogador estiver se afastando
-       da bola e chutar, o comportamento de
-       "calcanhar" continua possível.
-
-       Isso preserva a técnica que nasceu do
-       comportamento original do jogo.
+       CHUTE DE CALCANHAR:
+       mantém o comportamento especial já existente.
     */
 
     const movimentoParaTras=
@@ -1290,12 +1143,6 @@ function chute(j){
         j.vy*dirY;
 
     if(movimentoParaTras<-.35){
-
-        /*
-           CHUTE DE CALCANHAR:
-           a bola recebe a direção do movimento
-           do jogador, podendo atravessá-lo para trás.
-        */
 
         bola.dx=dirX;
         bola.dy=dirY;
@@ -1329,7 +1176,7 @@ function chute(j){
 }
 
 /* =========================================================
-   FÍSICA
+   FÍSICA DA BOLA
 ========================================================= */
 
 function atualizarBola(){
@@ -1464,8 +1311,7 @@ function colidirBolaJogador(j){
         movimento<=.05
     ){
 
-        const impulso=
-            -velocidadeNormal*.72;
+        const impulso=-velocidadeNormal*.72;
 
         bola.vx+=nx*impulso;
         bola.vy+=ny*impulso;
@@ -1480,10 +1326,6 @@ function colidirBolaJogador(j){
         bola.dx=bola.vx/v;
         bola.dy=bola.vy/v;
     }
-
-    /*
-       Evita que a bola fique presa dentro do player.
-    */
 
     const novaDistancia=
         Math.hypot(
@@ -1502,7 +1344,7 @@ function colidirBolaJogador(j){
 }
 
 /* =========================================================
-   PROTEÇÃO
+   PROTEGER BOLA
 ========================================================= */
 
 function protegerBola(){
@@ -1573,7 +1415,6 @@ function verificarGol(){
     ){
 
         golsVermelho++;
-
         mostrarGol("🔴 GOL DO VERMELHO!");
 
         return true;
@@ -1587,7 +1428,6 @@ function verificarGol(){
     ){
 
         golsAzul++;
-
         mostrarGol("🔵 GOL DO AZUL!");
 
         return true;
@@ -1597,15 +1437,10 @@ function verificarGol(){
 }
 
 /* =========================================================
-   MOSTRAR GOL + REPLAY
+   MOSTRAR GOL
 ========================================================= */
 
 function mostrarGol(texto){
-
-    /*
-       O gol já aconteceu.
-       O cronômetro fica congelado.
-    */
 
     jogoPausado=true;
 
@@ -1618,15 +1453,7 @@ function mostrarGol(texto){
 
     golOverlay.style.display="flex";
 
-    /*
-       Primeiro mostra o replay.
-    */
-
     executarReplay();
-
-    /*
-       Depois de 3 segundos, volta ao jogo.
-    */
 
     setTimeout(()=>{
 
@@ -1647,10 +1474,7 @@ function executarReplay(){
 
     if(replayFrames.length<2){
 
-        setTimeout(()=>{
-            reset();
-        },100);
-
+        setTimeout(()=>reset(),100);
         return;
     }
 
@@ -1665,17 +1489,11 @@ function executarReplay(){
 
     clearInterval(replayIntervalo);
 
-    /*
-       Replay mais lento para dar aquela sensação
-       de VAR / replay de futebol.
-    */
-
     replayIntervalo=setInterval(()=>{
 
         if(indice>=frames.length){
 
             pararReplay();
-
             return;
         }
 
@@ -1703,26 +1521,14 @@ function executarReplay(){
         bola.vy=frame.bola.vy;
         bola.vel=frame.bola.vel;
 
-        /*
-           Mantém o placar que existia no frame.
-        */
-
-        golsAzul=frame.golsAzul;
-        golsVermelho=frame.golsVermelho;
-
     },1000/30);
 }
-
-/* =========================================================
-   PARAR REPLAY
-========================================================= */
 
 function pararReplay(){
 
     clearInterval(replayIntervalo);
 
     replayIntervalo=null;
-
     executandoReplay=false;
 
     document.getElementById("replayTexto")
@@ -1901,20 +1707,17 @@ function atualizarIA(){
 
     if(
         distanciaGol<260 &&
-        Math.sign(bola.dx)===
-        (timeIA==="azul"?-1:1)
+        Math.sign(bola.dx)===(timeIA==="azul"?-1:1)
     ){
 
-        ia.y+=
-            (bola.y-ia.y)*
-            cfg.defesa*.08;
+        ia.y+=(bola.y-ia.y)*cfg.defesa*.08;
 
         limitarJogador(ia);
     }
 }
 
 /* =========================================================
-   INDICADOR
+   INDICADOR IA
 ========================================================= */
 
 function atualizarIndicadorIA(){
@@ -1936,9 +1739,7 @@ function atualizarIndicadorIA(){
     indicador.textContent=
         "🤖 IA: "+nome+
         " • Você: "+
-        (timeHumano==="azul"
-        ?"🔵 Azul"
-        :"🔴 Vermelho");
+        (timeHumano==="azul"?"🔵 Azul":"🔴 Vermelho");
 }
 
 /* =========================================================
@@ -1951,7 +1752,6 @@ function finalizarJogo(){
     jogoPausado=false;
 
     pararReplay();
-
     clearInterval(intervaloTempo);
 
     document.getElementById("pausaOverlay").style.display="none";
@@ -1977,7 +1777,7 @@ function finalizarJogo(){
 }
 
 /* =========================================================
-   VOLTAR MENU
+   MENU
 ========================================================= */
 
 function voltarMenu(){
@@ -1986,7 +1786,6 @@ function voltarMenu(){
     jogoPausado=false;
 
     pararReplay();
-
     clearInterval(intervaloTempo);
 
     document.getElementById("fim").style.display="none";
@@ -2010,7 +1809,7 @@ function reiniciarAtual(){
 }
 
 /* =========================================================
-   DESENHAR CAMPO
+   CAMPO
 ========================================================= */
 
 function desenharCampo(){
@@ -2140,21 +1939,12 @@ function desenharCampo(){
         110
     );
 
-    desenharGol(
-        campo.x,
-        campo.golY,
-        false
-    );
-
-    desenharGol(
-        campo.x+campo.w,
-        campo.golY,
-        true
-    );
+    desenharGol(campo.x,campo.golY,false);
+    desenharGol(campo.x+campo.w,campo.golY,true);
 }
 
 /* =========================================================
-   GOL DESENHO
+   GOLS
 ========================================================= */
 
 function desenharGol(x,y,direita){
@@ -2166,10 +1956,7 @@ function desenharGol(x,y,direita){
 
     ctx.fillStyle="rgba(240,240,240,.13)";
 
-    const inicio=
-        direita
-        ?x
-        :x-profundidade;
+    const inicio=direita?x:x-profundidade;
 
     ctx.fillRect(
         inicio,
@@ -2184,20 +1971,16 @@ function desenharGol(x,y,direita){
     for(let yy=y;yy<=y+altura;yy+=18){
 
         ctx.beginPath();
-
         ctx.moveTo(inicio,yy);
         ctx.lineTo(inicio+profundidade,yy);
-
         ctx.stroke();
     }
 
     for(let xx=inicio;xx<=inicio+profundidade;xx+=15){
 
         ctx.beginPath();
-
         ctx.moveTo(xx,y);
         ctx.lineTo(xx,y+altura);
-
         ctx.stroke();
     }
 
@@ -2435,9 +2218,7 @@ function desenharHUD(){
     ctx.fillText(golsVermelho,615,48);
 
     ctx.fillStyle="white";
-
     ctx.font="bold 22px Arial";
-
     ctx.fillText("×",550,48);
 
     const minutos=Math.floor(tempo/60);
@@ -2455,29 +2236,15 @@ function desenharHUD(){
         ?"red"
         :"white";
 
-    ctx.fillText(
-        cronometro,
-        550,
-        88
-    );
+    ctx.fillText(cronometro,550,88);
 
     ctx.font="bold 13px Arial";
 
     ctx.fillStyle="#65b5ff";
-
-    ctx.fillText(
-        "AZUL",
-        485,
-        27
-    );
+    ctx.fillText("AZUL",485,27);
 
     ctx.fillStyle="#ff6464";
-
-    ctx.fillText(
-        "VERMELHO",
-        615,
-        27
-    );
+    ctx.fillText("VERMELHO",615,27);
 
     ctx.restore();
 }
@@ -2530,17 +2297,9 @@ function loop(){
     }
 
     atualizarIA();
-
     colisaoJogadores();
-
     atualizarBola();
-
-    /*
-       O replay é gravado depois da física.
-    */
-
     salvarReplay();
-
     desenhar();
 
     requestAnimationFrame(loop);
