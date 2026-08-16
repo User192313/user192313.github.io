@@ -387,10 +387,11 @@ button{
 </style>
 
 <style>
-#onlinePanel{z-index:125}
+#onlinePanel,#creditsPanel{z-index:125}
 .onlineBox{width:520px;max-width:94vw;padding:28px;background:rgba(5,12,7,.96);border:1px solid rgba(75,255,125,.45);border-radius:24px;box-shadow:0 25px 80px rgba(0,0,0,.7);text-align:center}
 .onlineCode{font-size:34px;letter-spacing:7px;font-weight:900;background:#111b14;border:1px solid #49604e;border-radius:12px;padding:12px;margin:14px 0;color:#9cffb5}
-.onlineStatus{min-height:24px;color:#bbb;margin:10px 0 16px}.onlineSmall{font-size:13px;color:#999;line-height:1.4}
+.onlineStatus{min-height:24px;color:#bbb;margin:10px 0 8px}.onlineDebug{min-height:18px;color:#777;font-size:12px;line-height:1.35;margin:4px 0 14px;word-break:break-word}.onlineSmall{font-size:13px;color:#999;line-height:1.4}
+.historyItem{padding:10px 12px;margin:8px 0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px}
 </style>
 </head>
 
@@ -412,7 +413,9 @@ button{
    <div class="onlineSmall">CÓDIGO DA SALA</div>
    <div id="onlineCode" class="onlineCode">------</div>
    <div id="onlineStatus" class="onlineStatus">Aguardando jogador...</div>
+   <div id="onlineDebug" class="onlineDebug"></div>
    <button class="menuButton secondary" onclick="copiarSalaOnline()">🔗 COPIAR CÓDIGO</button>
+   <button class="menuButton secondary" onclick="tentarReconectarOnline()">🔄 TENTAR NOVAMENTE</button>
   </div>
   <p class="onlineSmall">O criador fica com o Azul. Quem entrar fica com o Vermelho.</p>
   <button class="menuButton secondary" onclick="fecharOnline()">◀️ VOLTAR</button>
@@ -431,7 +434,7 @@ button{
 <p style="color:#999;font-size:13px">O remapeamento é aplicado aos controles do teclado. No mobile, use os controles virtuais.</p>
 <button class="menuButton" onclick="saveSettings()">💾 SALVAR</button><button class="menuButton secondary" onclick="voltarMenuPrincipal()">◀️ VOLTAR</button></div></div>
 <div id="skinsPanel" class="overlay hidden"><div class="sg-panel"><h1 class="menuTitle">🎨 SKINS</h1><p class="menuDescription">Escolha a aparência de cada time.</p><h3>Time Azul / Jogador 1</h3><div id="skinsA" class="sg-skin-grid"></div><h3>Time Vermelho / Jogador 2</h3><div id="skinsB" class="sg-skin-grid"></div><button class="menuButton secondary" onclick="voltarMenuPrincipal()">🏠 VOLTAR</button></div></div>
-<div id="replaysPanel" class="overlay hidden"><div class="sg-panel"><h1 class="menuTitle">🎥 REPLAYS</h1><div id="replayList" style="color:#ddd;text-align:left">Nenhum replay salvo nesta sessão.</div><button class="menuButton secondary" onclick="voltarMenuPrincipal()">🏠 VOLTAR</button></div></div>
+<div id="replaysPanel" class="overlay hidden"><div class="sg-panel"><h1 class="menuTitle">📜 HISTÓRICO DE PARTIDAS</h1><div id="replayList" style="color:#ddd;text-align:left">Nenhum replay salvo nesta sessão.</div><button class="menuButton secondary" onclick="voltarMenuPrincipal()">🏠 VOLTAR</button></div></div>
 <div id="mobileControls"><div id="joyBlue" class="joy"><div class="joyKnob"></div></div><button id="kickBlue" class="kickBtn blueMobile">⚽</button><button id="dashBlue" class="dashBtn blueDash">👟</button><div id="joyRed" class="joy"><div class="joyKnob"></div></div><button id="kickRed" class="kickBtn redMobile">⚽</button><button id="dashRed" class="dashBtn redDash">👟</button></div>
 
 
@@ -455,13 +458,19 @@ button{
             📖 TUTORIAL
         </button>
 
-        <div class="creditos" id="creditos">
+    </div>
+</div>
+
+<div id="creditsPanel" class="overlay hidden">
+    <div class="sg-panel" style="text-align:center;max-width:460px">
+        <h1 class="menuTitle">👤 CRÉDITOS</h1>
+        <p style="font-size:18px;line-height:1.7;color:#ddd">
             🏆 <b>SoccerGol</b><br>
             Criado por <b>Diogo</b> ⚽<br>
             🎮 Futebol de Mesa<br>
             🔥 Divirta-se!
-        </div>
-
+        </p>
+        <button class="menuButton secondary" onclick="fecharCreditos()">◀️ VOLTAR</button>
     </div>
 </div>
 
@@ -814,7 +823,7 @@ document.addEventListener("keydown",e=>{
     }
 
     if(
-        (e.code==="ControlRight" || e.code==="ShiftRight") &&
+        e.code==="ShiftRight" &&
         !e.repeat
     ){
 
@@ -1320,13 +1329,13 @@ function selecionarDificuldade(dificuldade){
 }
 
 function mostrarCreditos(){
-
-    const c=document.getElementById("creditos");
-
-    c.style.display=
-        c.style.display==="block"
-        ?"none"
-        :"block";
+    esconderMenus();
+    const c=document.getElementById("creditsPanel");
+    if(c)c.classList.remove("hidden");
+}
+function fecharCreditos(){
+    document.getElementById("creditsPanel")?.classList.add("hidden");
+    voltarMenuPrincipal();
 }
 
 function voltarMenuPrincipal(){
@@ -3487,11 +3496,12 @@ const SKINS={
 
 /* ---------- ONLINE 1v1 ---------- */
 const online={
- active:false, host:false, peer:null, conn:null, roomCode:"", connected:false,
- remoteInput:{x:0,y:0,kick:false,dash:false}, lastStateSent:0, lastInputSent:0,
- pendingKick:false, pendingDash:false, intentionalClose:false
+ active:false,host:false,peer:null,conn:null,roomCode:"",connected:false,
+ remoteInput:{x:0,y:0,kick:false,dash:false},lastStateSent:0,lastInputSent:0,
+ intentionalClose:false,waiting:false,lastError:""
 };
 function onlineSetStatus(text){const e=document.getElementById("onlineStatus");if(e)e.textContent=text;}
+function onlineSetDebug(text){const e=document.getElementById("onlineDebug");if(e)e.textContent=text||"";}
 function gerarCodigoSala(){return Math.random().toString(36).slice(2,8).toUpperCase();}
 function abrirOnline(){
  esconderMenus();
@@ -3499,94 +3509,252 @@ function abrirOnline(){
  document.getElementById("onlineHome")?.classList.remove("hidden");
  document.getElementById("onlineRoom")?.classList.add("hidden");
  onlineSetStatus("Aguardando jogador...");
+ onlineSetDebug("");
 }
 function fecharOnline(){
  encerrarOnline();
  document.getElementById("onlinePanel")?.classList.add("hidden");
  voltarMenuPrincipal();
 }
+function onlineErroHumano(err){
+ const t=err?.type||"unknown";
+ const map={
+   "peer-unavailable":"A sala não foi encontrada ou já foi encerrada.",
+   "network":"Não foi possível conectar ao servidor de sinalização.",
+   "server-error":"O servidor online recusou a conexão.",
+   "socket-error":"A conexão com o servidor online falhou.",
+   "socket-closed":"A conexão com o servidor online foi encerrada.",
+   "browser-incompatible":"Este navegador não suporta o multiplayer WebRTC.",
+   "unavailable-id":"O código da sala já está em uso. Vou tentar outro.",
+   "webrtc":"O navegador não conseguiu estabelecer a conexão WebRTC.",
+   "disconnected":"O PeerJS foi desconectado do servidor."
+ };
+ return map[t]||"Não foi possível estabelecer a conexão.";
+}
 function encerrarOnline(){
  online.intentionalClose=true;
- try{online.conn?.close()}catch(e){} try{online.peer?.destroy()}catch(e){}
- online.active=false;online.host=false;online.connected=false;online.conn=null;online.peer=null;online.roomCode="";
+ try{online.conn?.close()}catch(e){}
+ try{online.peer?.destroy()}catch(e){}
+ online.active=false;online.host=false;online.connected=false;online.waiting=false;
+ online.conn=null;online.peer=null;online.roomCode="";online.lastError="";
  online.remoteInput={x:0,y:0,kick:false,dash:false};
 }
+function resetOnlineUI(){
+ document.getElementById("onlineHome")?.classList.remove("hidden");
+ document.getElementById("onlineRoom")?.classList.add("hidden");
+ onlineSetDebug("");
+}
 function configurarConexaoOnline(conn){
- online.conn=conn;online.active=true;online.connected=!!conn.open;
- conn.on("open",()=>{online.connected=true;});
+ online.conn=conn; online.active=true;
+ conn.serialization="json";
+ conn.on("open",()=>{
+   online.connected=true;
+   online.waiting=false;
+   onlineSetDebug("Canal P2P aberto.");
+   if(online.host){
+     onlineSetStatus("Jogador conectado! Enviando configurações...");
+     onlineSend({type:"hostSkin",skin:SG.skinsA});
+   }else{
+     onlineSetStatus("Conectado! Aguardando o criador...");
+   }
+ });
  conn.on("data",dados=>processarMensagemOnline(dados));
- conn.on("close",()=>{online.connected=false;if(online.active){onlineSetStatus("O outro jogador saiu da sala.");jogoAtivo=false;jogoPausado=true;}});
- conn.on("error",err=>onlineSetStatus("Erro na conexão: "+(err?.type||"erro")+"."));
+ conn.on("close",()=>{
+   online.connected=false;
+   if(online.active){
+     onlineSetStatus("O outro jogador saiu da sala.");
+     onlineSetDebug("Conexão P2P encerrada.");
+     jogoAtivo=false;jogoPausado=true;
+   }
+ });
+ conn.on("error",err=>{
+   online.connected=false;
+   online.lastError=err?.type||"connection-error";
+   onlineSetStatus(onlineErroHumano(err));
+   onlineSetDebug("DataConnection: "+online.lastError);
+ });
 }
-function criarPeerHost(code,attempt=0){
- if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");return;}
- const peer=new Peer("soccergol-"+code,{debug:1,config:{iceServers:[{urls:"stun:stun.l.google.com:19302"}]}});online.peer=peer;
- peer.on("open",()=>{online.roomCode=code;document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");document.getElementById("onlineCode").textContent=code;onlineSetStatus("Sala criada! Aguardando jogador...");});
- peer.on("connection",conn=>{if(online.conn){try{conn.close()}catch(e){}return;}configurarConexaoOnline(conn);const sendSkin=()=>{if(online.conn!==conn)return;onlineSend({type:"hostSkin",skin:SG.skinsA});onlineSetStatus("Jogador conectado! Verificando skins...");};if(conn.open)sendSkin();else conn.on("open",sendSkin);});
- peer.on("error",err=>{const type=err?.type||"erro";if(type==="unavailable-id"&&attempt<3){try{peer.destroy()}catch(e){};const novo=gerarCodigoSala();onlineSetStatus("Gerando outro código...");setTimeout(()=>criarPeerHost(novo,attempt+1),120);return;}const msg={"unavailable-id":"Código da sala ocupado.","network":"Não foi possível conectar ao servidor online.","server-error":"Servidor online indisponível.","browser-incompatible":"Este navegador não suporta multiplayer WebRTC.","ssl-unavailable":"Falha na conexão segura do servidor."}[type]||("Falha ao criar sala ("+type+").");onlineSetStatus(msg);});
+function criarPeerHost(code,tentativa=0){
+ if(typeof Peer==="undefined"){
+   onlineSetStatus("Não foi possível carregar o sistema online.");
+   return;
+ }
+ const peerId="soccergol-"+code;
+ const peer=new Peer(peerId,{debug:1});
+ online.peer=peer;
+ peer.on("open",()=>{
+   document.getElementById("onlineHome")?.classList.add("hidden");
+   document.getElementById("onlineRoom")?.classList.remove("hidden");
+   document.getElementById("onlineCode").textContent=code;
+   online.roomCode=code; online.waiting=true;
+   onlineSetStatus("Aguardando jogador...");
+   onlineSetDebug("Sala criada com sucesso.");
+ });
+ peer.on("connection",conn=>{
+   if(online.conn){conn.close();return;}
+   configurarConexaoOnline(conn);
+ });
+ peer.on("disconnected",()=>{
+   if(online.active&&!online.intentionalClose){
+     onlineSetStatus("Servidor de sinalização desconectado. Tentando reconectar...");
+     try{peer.reconnect()}catch(e){}
+   }
+ });
+ peer.on("error",err=>{
+   online.lastError=err?.type||"unknown";
+   onlineSetDebug("Peer: "+online.lastError);
+   if(err?.type==="unavailable-id" && tentativa<3){
+     try{peer.destroy()}catch(e){}
+     const novo=gerarCodigoSala();
+     onlineSetStatus("Gerando outro código de sala...");
+     setTimeout(()=>criarPeerHost(novo,tentativa+1),250);
+     return;
+   }
+   onlineSetStatus("Falha ao criar sala: "+onlineErroHumano(err));
+ });
 }
-function criarSalaOnline(){if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");return;}encerrarOnline();online.intentionalClose=false;online.host=true;online.active=true;const code=gerarCodigoSala();online.roomCode=code;criarPeerHost(code);}
+function criarSalaOnline(){
+ if(typeof Peer==="undefined"){
+   onlineSetStatus("Não foi possível carregar o sistema online.");
+   onlineSetDebug("A biblioteca PeerJS não carregou.");
+   return;
+ }
+ encerrarOnline();
+ online.intentionalClose=false; online.host=true; online.active=true;
+ const code=gerarCodigoSala();
+ online.roomCode=code;
+ onlineSetStatus("Criando sala...");
+ onlineSetDebug("Conectando ao PeerJS Cloud...");
+ criarPeerHost(code);
+}
 function entrarSalaOnline(){
- if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");return;}
- const code=(document.getElementById("onlineJoinCode")?.value||"").trim().toUpperCase();if(!/^[A-Z0-9]{6}$/.test(code)){alert("Digite um código de 6 caracteres.");return;}
- encerrarOnline();online.intentionalClose=false;online.host=false;online.active=true;online.roomCode=code;onlineSetStatus("Conectando à sala...");
- const peer=new Peer(undefined,{debug:1,config:{iceServers:[{urls:"stun:stun.l.google.com:19302"}]}});online.peer=peer;
- peer.on("open",()=>{const conn=peer.connect("soccergol-"+code,{reliable:false,serialization:"json"});conn.on("open",()=>{configurarConexaoOnline(conn);document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");document.getElementById("onlineCode").textContent=code;onlineSetStatus("Conectado! Verificando skins...");});conn.on("error",err=>onlineSetStatus("Erro na conexão: "+(err?.type||"erro")+"."));});
- peer.on("error",err=>{const type=err?.type||"erro";onlineSetStatus(type==="peer-unavailable"?"Sala não encontrada ou já fechada.":type==="network"?"Não foi possível conectar ao servidor online.":type==="server-error"?"Servidor online indisponível.":type==="browser-incompatible"?"Este navegador não suporta multiplayer WebRTC.":"Falha na conexão ("+type+").");});
+ if(typeof Peer==="undefined"){
+   onlineSetStatus("Não foi possível carregar o sistema online.");
+   onlineSetDebug("A biblioteca PeerJS não carregou.");
+   return;
+ }
+ const code=(document.getElementById("onlineJoinCode")?.value||"").trim().toUpperCase();
+ if(!/^[A-Z0-9]{6}$/.test(code)){alert("Digite um código de 6 caracteres.");return;}
+ encerrarOnline(); online.intentionalClose=false; online.host=false; online.active=true; online.roomCode=code; online.waiting=true;
+ onlineSetStatus("Conectando à sala...");
+ onlineSetDebug("Procurando soccergol-"+code);
+ const peer=new Peer(undefined,{debug:1}); online.peer=peer;
+ peer.on("open",()=>{
+   onlineSetDebug("Sinalização conectada. Enviando convite...");
+   const conn=peer.connect("soccergol-"+code,{reliable:false,serialization:"json"});
+   configurarConexaoOnline(conn);
+   conn.on("open",()=>{
+     document.getElementById("onlineHome")?.classList.add("hidden");
+     document.getElementById("onlineRoom")?.classList.remove("hidden");
+     document.getElementById("onlineCode").textContent=code;
+     onlineSetStatus("Conectado! Aguardando o criador...");
+   });
+   conn.on("error",err=>{
+     online.lastError=err?.type||"connection-error";
+     onlineSetStatus(onlineErroHumano(err));
+     onlineSetDebug("DataConnection: "+online.lastError);
+   });
+ });
+ peer.on("disconnected",()=>{
+   if(online.active&&!online.intentionalClose){
+     onlineSetStatus("Servidor de sinalização desconectado. Tentando reconectar...");
+     try{peer.reconnect()}catch(e){}
+   }
+ });
+ peer.on("error",err=>{
+   online.lastError=err?.type||"unknown";
+   onlineSetStatus(onlineErroHumano(err));
+   onlineSetDebug("Peer: "+online.lastError);
+ });
+}
+function tentarReconectarOnline(){
+ const code=online.roomCode || (document.getElementById("onlineJoinCode")?.value||"").trim().toUpperCase();
+ if(online.host && online.roomCode){criarSalaOnline();return;}
+ if(code){document.getElementById("onlineJoinCode").value=code;entrarSalaOnline();return;}
+ onlineSetStatus("Digite o código da sala primeiro.");
+}
+async function copiarSalaOnline(){
+ const code=online.roomCode||document.getElementById("onlineCode")?.textContent||"";
+ if(!code || code==="------")return;
+ try{await navigator.clipboard.writeText(code);onlineSetStatus("Código copiado: "+code);}catch(e){onlineSetStatus("Código da sala: "+code);}
 }
 function iniciarOnlineHost(){
  modoJogo="online"; timeHumano="azul"; timeIA="vermelho";
  esconderMenus(); document.getElementById("onlinePanel")?.classList.add("hidden");
- SG.overtime=false; SG.replay=false; // replays ficam locais; não sincronizamos replay no primeiro online
+ SG.overtime=false; SG.replay=false;
  iniciarJogo();
  onlineSend({type:"start",skinA:SG.skinsA,skinB:SG.skinsB,device:"remote"});
 }
 function iniciarOnlineClient(dados){
  modoJogo="online"; timeHumano="vermelho"; timeIA="azul";
  SG.skinsA=dados.skinA||SG.skinsA; SG.skinsB=dados.skinB||SG.skinsB;
+ applySkin("azul",SG.skinsA); applySkin("vermelho",SG.skinsB);
  esconderMenus(); document.getElementById("onlinePanel")?.classList.add("hidden");
  SG.replay=false; iniciarJogo();
 }
-function onlineSend(data){if(online.conn&&online.connected){try{online.conn.send(data)}catch(e){}}}
+function onlineSend(data){
+ if(online.conn&&online.connected){
+   try{online.conn.send(data);return true}catch(e){
+     onlineSetStatus("Falha ao enviar dados.");onlineSetDebug("send: "+(e?.message||e));return false;
+   }
+ }
+ return false;
+}
+function escolherSkinDisponivel(excluirA,excluirB){
+ return Object.keys(SKINS).find(k=>k!==excluirA&&k!==excluirB)||"black";
+}
 function processarMensagemOnline(d){
  if(!d||!online.active)return;
- if(d.type==="hello"&&online.host){
-   const requested=d.skin||SG.skinsB;
-   if(requested===SG.skinsA){const fallback=Object.keys(SKINS).find(k=>k!==SG.skinsA)||"black";SG.skinsB=fallback;applySkin("vermelho",fallback);}
-   else{SG.skinsB=requested;applySkin("vermelho",requested);}
-   onlineSend({type:"start",skinA:SG.skinsA,skinB:SG.skinsB});iniciarOnlineHost();return;
- }
  if(d.type==="hostSkin"&&!online.host){
    if(d.skin===SG.skinsB){
-      const fallback=Object.keys(SKINS).find(k=>k!==d.skin&&k!==SG.skinsA)||"black";
-      SG.skinsB=fallback; applySkin("vermelho",fallback);
-      onlineSend({type:"hello",skin:fallback});
-      onlineSetStatus("Essa skin já estava ocupada. Escolhida automaticamente: "+SKINS[fallback].name+".");
+     const fallback=escolherSkinDisponivel(d.skin,SG.skinsA);
+     SG.skinsB=fallback; applySkin("vermelho",fallback);
+     onlineSend({type:"hello",skin:fallback});
+     onlineSetStatus("Skin ocupada. Escolhida automaticamente: "+SKINS[fallback].name+".");
    }else{
-      onlineSend({type:"hello",skin:SG.skinsB});
+     onlineSend({type:"hello",skin:SG.skinsB});
    }
    return;
  }
- if(d.type==="start"&&!online.host){ iniciarOnlineClient(d); return; }
- if(d.type==="input"&&online.host){ online.remoteInput.x=Number(d.x)||0; online.remoteInput.y=Number(d.y)||0; if(d.kick)online.remoteInput.kick=true; if(d.dash)online.remoteInput.dash=true; return; }
- if(d.type==="state"&&!online.host){ aplicarEstadoOnline(d.state); return; }
- if(d.type==="skinConflict"){onlineSetStatus("Essa skin já está sendo usada. Escolha outra."); return;}
+ if(d.type==="hello"&&online.host){
+   if(!d.skin || d.skin===SG.skinsA){
+     const fallback=escolherSkinDisponivel(SG.skinsA,"");
+     if(d.skin===SG.skinsA){
+       onlineSend({type:"skinConflict",skin:SG.skinsA,replace:fallback});
+       SG.skinsB=fallback; applySkin("vermelho",fallback);
+     }
+   }else{
+     SG.skinsB=d.skin; applySkin("vermelho",SG.skinsB);
+   }
+   onlineSetStatus("Jogador conectado! Iniciando partida...");
+   iniciarOnlineHost();
+   return;
+ }
+ if(d.type==="start"&&!online.host){iniciarOnlineClient(d);return;}
+ if(d.type==="input"&&online.host){
+   online.remoteInput.x=Number(d.x)||0; online.remoteInput.y=Number(d.y)||0;
+   if(d.kick)online.remoteInput.kick=true;if(d.dash)online.remoteInput.dash=true;
+   return;
+ }
+ if(d.type==="state"&&!online.host){aplicarEstadoOnline(d.state);return;}
+ if(d.type==="skinConflict"&&!online.host){
+   if(d.replace&&SKINS[d.replace]){SG.skinsB=d.replace;applySkin("vermelho",d.replace);onlineSend({type:"hello",skin:d.replace});onlineSetStatus("Skin ocupada. Escolhida automaticamente: "+SKINS[d.replace].name+".");}
+   return;
+ }
 }
 function obterInputLocalOnline(){
  let x=0,y=0;
  if(SG.device==="mobile"){x=joy.red.x;y=joy.red.y;}
  else{if(teclas.ArrowLeft)x--;if(teclas.ArrowRight)x++;if(teclas.ArrowUp)y--;if(teclas.ArrowDown)y++;}
- const m=Math.hypot(x,y)||1; if(Math.hypot(x,y)>1){x/=m;y/=m;}
- return {x,y};
+ const m=Math.hypot(x,y)||1;if(Math.hypot(x,y)>1){x/=m;y/=m;}
+ return{x,y};
 }
 function enviarInputOnline(kick=false,dash=false){
  if(!online.active||online.host||!online.connected)return;
- const now=performance.now();
- if(!kick&&!dash&&now-online.lastInputSent<45)return;
- online.lastInputSent=now;
- const p=obterInputLocalOnline(); onlineSend({type:"input",x:p.x,y:p.y,kick,dash});
+ const now=performance.now();if(!kick&&!dash&&now-online.lastInputSent<45)return;
+ online.lastInputSent=now;const p=obterInputLocalOnline();onlineSend({type:"input",x:p.x,y:p.y,kick,dash});
 }
-function estadoOnline(){return {
+function estadoOnline(){return{
  azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},
  vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},
  bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},
@@ -3594,12 +3762,13 @@ function estadoOnline(){return {
 };}
 function aplicarEstadoOnline(s){
  if(!s)return;Object.assign(azul,s.azul||{});Object.assign(vermelho,s.vermelho||{});Object.assign(bola,s.bola||{});
- if(s.skinsA&&SG.skinsA!==s.skinsA){SG.skinsA=s.skinsA;applySkin("azul",s.skinsA)}
- if(s.skinsB&&SG.skinsB!==s.skinsB){SG.skinsB=s.skinsB;applySkin("vermelho",s.skinsB)}
- golsAzul=Number(s.golsAzul)||0;golsVermelho=Number(s.golsVermelho)||0;tempo=Number.isFinite(s.tempo)?s.tempo:tempo;jogoAtivo=!!s.jogoAtivo;jogoPausado=!!s.jogoPausado;atualizarControlesMobile();
+ golsAzul=Number(s.golsAzul)||0;golsVermelho=Number(s.golsVermelho)||0;tempo=Number.isFinite(s.tempo)?s.tempo:tempo;
+ jogoAtivo=!!s.jogoAtivo;jogoPausado=!!s.jogoPausado;atualizarControlesMobile();
 }
-function enviarEstadoOnline(){if(!online.host||!online.connected)return; const now=performance.now(); if(now-online.lastStateSent<45)return; online.lastStateSent=now; onlineSend({type:"state",state:estadoOnline()});}
-
+function enviarEstadoOnline(){
+ if(!online.host||!online.connected)return;const now=performance.now();if(now-online.lastStateSent<45)return;
+ online.lastStateSent=now;onlineSend({type:"state",state:estadoOnline()});
+}
 
 /* ---------- dispositivo ---------- */
 function setDevice(device){
@@ -3621,14 +3790,13 @@ function adicionarBotoesMenu(){
     extras.innerHTML=`
       <button class="menuButton secondary" onclick="abrirConfiguracoes()">⚙️ CONFIGURAÇÕES</button>
       <button class="menuButton secondary" onclick="abrirSkins()">🎨 SKINS</button>
-      <button class="menuButton secondary" onclick="abrirReplays()">🎥 REPLAYS</button>
-      <button class="menuButton secondary" onclick="abrirOnline()">🌐 ONLINE</button>`;
+      <button class="menuButton secondary" onclick="abrirReplays()">📜 HISTÓRICO DE PARTIDAS</button>`;
     box.appendChild(extras);
 }
 adicionarBotoesMenu();
 
 function esconderExtras(){
-    ["optionsPanel","settingsPanel","skinsPanel","replaysPanel"].forEach(id=>{
+    ["optionsPanel","settingsPanel","skinsPanel","replaysPanel","creditsPanel","onlinePanel"].forEach(id=>{
         const e=document.getElementById(id);
         if(e)e.classList.add("hidden");
     });
@@ -3638,6 +3806,15 @@ esconderMenus=function(){_esconderMenus();esconderExtras()};
 
 function abrirConfiguracoes(){esconderMenus();document.getElementById("settingsPanel")?.classList.remove("hidden")}
 function abrirSkins(){esconderMenus();renderSkins();document.getElementById("skinsPanel")?.classList.remove("hidden")}
+function renderReplayList(){
+ const el=document.getElementById("replayList");
+ if(!el)return;
+ if(!replayHistorico.length){el.innerHTML='<div class="onlineSmall">Nenhuma partida registrada nesta sessão.</div>';return;}
+ el.innerHTML=replayHistorico.map((r,i)=>{
+   const skin=SKINS[r.team]||SKINS.blue;
+   return `<div class="historyItem"><b>#${i+1} — ${skin.emoji} ${skin.name}</b><br><span style="color:#bbb">Placar: ${r.score}</span><br><span style="color:#888;font-size:12px">${r.time}</span></div>`;
+ }).join('');
+}
 function abrirReplays(){esconderMenus();renderReplayList();document.getElementById("replaysPanel")?.classList.remove("hidden")}
 
 const _abrirModos=abrirModos;
@@ -3665,9 +3842,9 @@ function saveSettings(){
 function aplicarIdioma(){
     const lang=SG.lang;
     const dict={
-      pt:{play:"▶️ JOGAR",credits:"👤 CRÉDITOS",tutorial:"📖 TUTORIAL",settings:"⚙️ CONFIGURAÇÕES",skins:"🎨 SKINS",replays:"🎥 REPLAYS"},
-      en:{play:"▶️ PLAY",credits:"👤 CREDITS",tutorial:"📖 TUTORIAL",settings:"⚙️ SETTINGS",skins:"🎨 SKINS",replays:"🎥 REPLAYS"},
-      es:{play:"▶️ JUGAR",credits:"👤 CRÉDITOS",tutorial:"📖 TUTORIAL",settings:"⚙️ AJUSTES",skins:"🎨 SKINS",replays:"🎥 REPETICIONES"}
+      pt:{play:"▶️ JOGAR",credits:"👤 CRÉDITOS",tutorial:"📖 TUTORIAL",settings:"⚙️ CONFIGURAÇÕES",skins:"🎨 SKINS",replays:"📜 HISTÓRICO DE PARTIDAS"},
+      en:{play:"▶️ PLAY",credits:"👤 CREDITS",tutorial:"📖 TUTORIAL",settings:"⚙️ SETTINGS",skins:"🎨 SKINS",replays:"📜 MATCH HISTORY"},
+      es:{play:"▶️ JUGAR",credits:"👤 CRÉDITOS",tutorial:"📖 TUTORIAL",settings:"⚙️ AJUSTES",skins:"🎨 SKINS",replays:"📜 HISTORIAL DE PARTIDAS"}
     }[lang]||null;
     if(!dict)return;
     const buttons=document.querySelectorAll("#menu .menuButton");
