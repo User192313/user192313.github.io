@@ -483,6 +483,10 @@ button{
             🤖 MODO IA
         </button>
 
+        <button class="menuButton" onclick="abrirOnline()">
+            🌐 ONLINE 1V1
+        </button>
+
         <button class="menuButton secondary" onclick="voltarMenuPrincipal()">
             ◀️ VOLTAR
         </button>
@@ -810,7 +814,7 @@ document.addEventListener("keydown",e=>{
     }
 
     if(
-        e.code==="ShiftRight" &&
+        (e.code==="ControlRight" || e.code==="ShiftRight") &&
         !e.repeat
     ){
 
@@ -3508,45 +3512,27 @@ function encerrarOnline(){
  online.remoteInput={x:0,y:0,kick:false,dash:false};
 }
 function configurarConexaoOnline(conn){
- online.conn=conn; online.connected=true; online.active=true;
+ online.conn=conn;online.active=true;online.connected=!!conn.open;
+ conn.on("open",()=>{online.connected=true;});
  conn.on("data",dados=>processarMensagemOnline(dados));
- conn.on("close",()=>{
-   online.connected=false;
-   if(online.active){ onlineSetStatus("O outro jogador saiu da sala."); jogoAtivo=false; jogoPausado=true; }
- });
- conn.on("error",()=>onlineSetStatus("Erro na conexão. Tente novamente."));
+ conn.on("close",()=>{online.connected=false;if(online.active){onlineSetStatus("O outro jogador saiu da sala.");jogoAtivo=false;jogoPausado=true;}});
+ conn.on("error",err=>onlineSetStatus("Erro na conexão: "+(err?.type||"erro")+"."));
 }
-function criarSalaOnline(){
+function criarPeerHost(code,attempt=0){
  if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");return;}
- encerrarOnline(); online.intentionalClose=false; online.host=true; online.active=true;
- const code=gerarCodigoSala(); online.roomCode=code;
- const peer=new Peer("soccergol-"+code,{debug:0}); online.peer=peer;
- peer.on("open",()=>{
-   document.getElementById("onlineHome")?.classList.add("hidden");
-   document.getElementById("onlineRoom")?.classList.remove("hidden");
-   document.getElementById("onlineCode").textContent=code;
-   onlineSetStatus("Aguardando jogador...");
- });
- peer.on("connection",conn=>{
-   if(online.conn){conn.close();return;}
-   configurarConexaoOnline(conn);
-   onlineSend({type:"hostSkin",skin:SG.skinsA});
-   onlineSetStatus("Jogador conectado! Preparando partida...");
-   onlineSetStatus("Conectado! Escolha de skin sincronizada.");
- });
- peer.on("error",err=>{onlineSetStatus("Falha ao criar sala: "+(err.type||"erro"));});
+ const peer=new Peer("soccergol-"+code,{debug:1,config:{iceServers:[{urls:"stun:stun.l.google.com:19302"}]}});online.peer=peer;
+ peer.on("open",()=>{online.roomCode=code;document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");document.getElementById("onlineCode").textContent=code;onlineSetStatus("Sala criada! Aguardando jogador...");});
+ peer.on("connection",conn=>{if(online.conn){try{conn.close()}catch(e){}return;}configurarConexaoOnline(conn);const sendSkin=()=>{if(online.conn!==conn)return;onlineSend({type:"hostSkin",skin:SG.skinsA});onlineSetStatus("Jogador conectado! Verificando skins...");};if(conn.open)sendSkin();else conn.on("open",sendSkin);});
+ peer.on("error",err=>{const type=err?.type||"erro";if(type==="unavailable-id"&&attempt<3){try{peer.destroy()}catch(e){};const novo=gerarCodigoSala();onlineSetStatus("Gerando outro código...");setTimeout(()=>criarPeerHost(novo,attempt+1),120);return;}const msg={"unavailable-id":"Código da sala ocupado.","network":"Não foi possível conectar ao servidor online.","server-error":"Servidor online indisponível.","browser-incompatible":"Este navegador não suporta multiplayer WebRTC.","ssl-unavailable":"Falha na conexão segura do servidor."}[type]||("Falha ao criar sala ("+type+").");onlineSetStatus(msg);});
 }
+function criarSalaOnline(){if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");return;}encerrarOnline();online.intentionalClose=false;online.host=true;online.active=true;const code=gerarCodigoSala();online.roomCode=code;criarPeerHost(code);}
 function entrarSalaOnline(){
  if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");return;}
- const code=(document.getElementById("onlineJoinCode")?.value||"").trim().toUpperCase();
- if(!/^[A-Z0-9]{6}$/.test(code)){alert("Digite um código de 6 caracteres.");return;}
- encerrarOnline(); online.intentionalClose=false; online.host=false; online.active=true; online.roomCode=code;
- const peer=new Peer(undefined,{debug:0}); online.peer=peer;
- peer.on("open",()=>{
-   const conn=peer.connect("soccergol-"+code,{reliable:true});
-   conn.on("open",()=>{configurarConexaoOnline(conn); document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");document.getElementById("onlineCode").textContent=code;onlineSetStatus("Conectado! Aguardando o criador iniciar...");/* O host envia a skin primeiro. */});
- });
- peer.on("error",err=>onlineSetStatus(err.type==="peer-unavailable"?"Sala não encontrada.":"Falha na conexão."));
+ const code=(document.getElementById("onlineJoinCode")?.value||"").trim().toUpperCase();if(!/^[A-Z0-9]{6}$/.test(code)){alert("Digite um código de 6 caracteres.");return;}
+ encerrarOnline();online.intentionalClose=false;online.host=false;online.active=true;online.roomCode=code;onlineSetStatus("Conectando à sala...");
+ const peer=new Peer(undefined,{debug:1,config:{iceServers:[{urls:"stun:stun.l.google.com:19302"}]}});online.peer=peer;
+ peer.on("open",()=>{const conn=peer.connect("soccergol-"+code,{reliable:false,serialization:"json"});conn.on("open",()=>{configurarConexaoOnline(conn);document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");document.getElementById("onlineCode").textContent=code;onlineSetStatus("Conectado! Verificando skins...");});conn.on("error",err=>onlineSetStatus("Erro na conexão: "+(err?.type||"erro")+"."));});
+ peer.on("error",err=>{const type=err?.type||"erro";onlineSetStatus(type==="peer-unavailable"?"Sala não encontrada ou já fechada.":type==="network"?"Não foi possível conectar ao servidor online.":type==="server-error"?"Servidor online indisponível.":type==="browser-incompatible"?"Este navegador não suporta multiplayer WebRTC.":"Falha na conexão ("+type+").");});
 }
 function iniciarOnlineHost(){
  modoJogo="online"; timeHumano="azul"; timeIA="vermelho";
@@ -3565,8 +3551,10 @@ function onlineSend(data){if(online.conn&&online.connected){try{online.conn.send
 function processarMensagemOnline(d){
  if(!d||!online.active)return;
  if(d.type==="hello"&&online.host){
-   if(d.skin&&d.skin===SG.skinsA){ onlineSend({type:"skinConflict",skin:SG.skinsA}); return; }
-   SG.skinsB=d.skin||SG.skinsB; applySkin("vermelho",SG.skinsB); onlineSend({type:"start",skinA:SG.skinsA,skinB:SG.skinsB}); iniciarOnlineHost(); return;
+   const requested=d.skin||SG.skinsB;
+   if(requested===SG.skinsA){const fallback=Object.keys(SKINS).find(k=>k!==SG.skinsA)||"black";SG.skinsB=fallback;applySkin("vermelho",fallback);}
+   else{SG.skinsB=requested;applySkin("vermelho",requested);}
+   onlineSend({type:"start",skinA:SG.skinsA,skinB:SG.skinsB});iniciarOnlineHost();return;
  }
  if(d.type==="hostSkin"&&!online.host){
    if(d.skin===SG.skinsB){
@@ -3605,9 +3593,10 @@ function estadoOnline(){return {
  golsAzul,golsVermelho,tempo,jogoAtivo,jogoPausado
 };}
 function aplicarEstadoOnline(s){
- if(!s)return; Object.assign(azul,s.azul||{}); Object.assign(vermelho,s.vermelho||{}); Object.assign(bola,s.bola||{});
- golsAzul=Number(s.golsAzul)||0; golsVermelho=Number(s.golsVermelho)||0; tempo=Number.isFinite(s.tempo)?s.tempo:tempo;
- jogoAtivo=!!s.jogoAtivo; jogoPausado=!!s.jogoPausado; atualizarControlesMobile();
+ if(!s)return;Object.assign(azul,s.azul||{});Object.assign(vermelho,s.vermelho||{});Object.assign(bola,s.bola||{});
+ if(s.skinsA&&SG.skinsA!==s.skinsA){SG.skinsA=s.skinsA;applySkin("azul",s.skinsA)}
+ if(s.skinsB&&SG.skinsB!==s.skinsB){SG.skinsB=s.skinsB;applySkin("vermelho",s.skinsB)}
+ golsAzul=Number(s.golsAzul)||0;golsVermelho=Number(s.golsVermelho)||0;tempo=Number.isFinite(s.tempo)?s.tempo:tempo;jogoAtivo=!!s.jogoAtivo;jogoPausado=!!s.jogoPausado;atualizarControlesMobile();
 }
 function enviarEstadoOnline(){if(!online.host||!online.connected)return; const now=performance.now(); if(now-online.lastStateSent<45)return; online.lastStateSent=now; onlineSend({type:"state",state:estadoOnline()});}
 
