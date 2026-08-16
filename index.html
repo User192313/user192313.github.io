@@ -390,6 +390,13 @@ button{
 #mobileControls.skin-red .joy,#mobileControls.skin-red .kickBtn{background-color:rgba(255,48,48,.75)}
 @media(max-width:700px){.sg-panel{padding:22px}.sg-skin-grid{grid-template-columns:repeat(2,1fr)}#mobileControls.active{display:block}#jogo{max-width:100vw;max-height:76vh}.sg-grid{grid-template-columns:1fr}}
 </style>
+
+<style>
+#onlinePanel{z-index:125}
+.onlineBox{width:520px;max-width:94vw;padding:28px;background:rgba(5,12,7,.96);border:1px solid rgba(75,255,125,.45);border-radius:24px;box-shadow:0 25px 80px rgba(0,0,0,.7);text-align:center}
+.onlineCode{font-size:34px;letter-spacing:7px;font-weight:900;background:#111b14;border:1px solid #49604e;border-radius:12px;padding:12px;margin:14px 0;color:#9cffb5}
+.onlineStatus{min-height:24px;color:#bbb;margin:10px 0 16px}.onlineSmall{font-size:13px;color:#999;line-height:1.4}
+</style>
 </head>
 
 <body>
@@ -397,6 +404,26 @@ button{
  <div class="sg-panel" style="text-align:center"><div class="logo">⚽ SoccerGol</div><p class="sub">Escolha como você vai jogar</p>
  <div class="sg-grid"><button class="menuButton blueButton" onclick="setDevice('pc')">🖥️ PC / TECLADO</button><button class="menuButton" onclick="setDevice('mobile')">📱 MOBILE / TOUCH</button></div></div>
 </div>
+<div id="onlinePanel" class="overlay hidden">
+ <div class="onlineBox">
+  <h1 class="menuTitle">🌐 ONLINE 1v1</h1>
+  <p class="menuDescription">Jogue contra outra pessoa em outro dispositivo.</p>
+  <div id="onlineHome">
+   <button class="menuButton" onclick="criarSalaOnline()">🏠 CRIAR SALA</button>
+   <input id="onlineJoinCode" class="sg-input" maxlength="6" placeholder="CÓDIGO DA SALA" style="width:100%;text-align:center;text-transform:uppercase;font-size:20px">
+   <button class="menuButton blueButton" onclick="entrarSalaOnline()">🔑 ENTRAR NA SALA</button>
+  </div>
+  <div id="onlineRoom" class="hidden">
+   <div class="onlineSmall">CÓDIGO DA SALA</div>
+   <div id="onlineCode" class="onlineCode">------</div>
+   <div id="onlineStatus" class="onlineStatus">Aguardando jogador...</div>
+   <button class="menuButton secondary" onclick="copiarSalaOnline()">🔗 COPIAR CÓDIGO</button>
+  </div>
+  <p class="onlineSmall">O criador fica com o Azul. Quem entrar fica com o Vermelho.</p>
+  <button class="menuButton secondary" onclick="fecharOnline()">◀️ VOLTAR</button>
+ </div>
+</div>
+
 <div id="optionsPanel" class="overlay hidden"><div class="sg-panel"><h1 class="menuTitle">⚙️ OPÇÕES DA PARTIDA</h1>
 <div class="sg-row"><label>⏱️ Prorrogação</label><input id="optOvertime" type="checkbox"></div>
 <div class="sg-row"><label>🎥 Replays</label><input id="optReplay" type="checkbox" checked></div>
@@ -717,6 +744,7 @@ width="1200"
 height="650">
 </canvas>
 
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 /* =========================================================
    CANVAS
@@ -3458,6 +3486,137 @@ const SKINS={
  yellow:{name:"Amarelo",color:"#ffd52e",emoji:"🟡",outline:"#000"}
 };
 
+/* ---------- ONLINE 1v1 ---------- */
+const online={
+ active:false, host:false, peer:null, conn:null, roomCode:"", connected:false,
+ remoteInput:{x:0,y:0,kick:false,dash:false}, lastStateSent:0, lastInputSent:0,
+ pendingKick:false, pendingDash:false, intentionalClose:false
+};
+function onlineSetStatus(text){const e=document.getElementById("onlineStatus");if(e)e.textContent=text;}
+function gerarCodigoSala(){return Math.random().toString(36).slice(2,8).toUpperCase();}
+function abrirOnline(){
+ esconderMenus();
+ const p=document.getElementById("onlinePanel"); if(p)p.classList.remove("hidden");
+ document.getElementById("onlineHome")?.classList.remove("hidden");
+ document.getElementById("onlineRoom")?.classList.add("hidden");
+ onlineSetStatus("Aguardando jogador...");
+}
+function fecharOnline(){
+ encerrarOnline();
+ document.getElementById("onlinePanel")?.classList.add("hidden");
+ voltarMenuPrincipal();
+}
+function encerrarOnline(){
+ online.intentionalClose=true;
+ try{online.conn?.close()}catch(e){} try{online.peer?.destroy()}catch(e){}
+ online.active=false;online.host=false;online.connected=false;online.conn=null;online.peer=null;online.roomCode="";
+ online.remoteInput={x:0,y:0,kick:false,dash:false};
+}
+function configurarConexaoOnline(conn){
+ online.conn=conn; online.connected=true; online.active=true;
+ conn.on("data",dados=>processarMensagemOnline(dados));
+ conn.on("close",()=>{
+   online.connected=false;
+   if(online.active){ onlineSetStatus("O outro jogador saiu da sala."); jogoAtivo=false; jogoPausado=true; }
+ });
+ conn.on("error",()=>onlineSetStatus("Erro na conexão. Tente novamente."));
+}
+function criarSalaOnline(){
+ if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");return;}
+ encerrarOnline(); online.intentionalClose=false; online.host=true; online.active=true;
+ const code=gerarCodigoSala(); online.roomCode=code;
+ const peer=new Peer("soccergol-"+code,{debug:0}); online.peer=peer;
+ peer.on("open",()=>{
+   document.getElementById("onlineHome")?.classList.add("hidden");
+   document.getElementById("onlineRoom")?.classList.remove("hidden");
+   document.getElementById("onlineCode").textContent=code;
+   onlineSetStatus("Aguardando jogador...");
+ });
+ peer.on("connection",conn=>{
+   if(online.conn){conn.close();return;}
+   configurarConexaoOnline(conn);
+   onlineSend({type:"hostSkin",skin:SG.skinsA});
+   onlineSetStatus("Jogador conectado! Preparando partida...");
+   onlineSetStatus("Conectado! Escolha de skin sincronizada.");
+ });
+ peer.on("error",err=>{onlineSetStatus("Falha ao criar sala: "+(err.type||"erro"));});
+}
+function entrarSalaOnline(){
+ if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");return;}
+ const code=(document.getElementById("onlineJoinCode")?.value||"").trim().toUpperCase();
+ if(!/^[A-Z0-9]{6}$/.test(code)){alert("Digite um código de 6 caracteres.");return;}
+ encerrarOnline(); online.intentionalClose=false; online.host=false; online.active=true; online.roomCode=code;
+ const peer=new Peer(undefined,{debug:0}); online.peer=peer;
+ peer.on("open",()=>{
+   const conn=peer.connect("soccergol-"+code,{reliable:true});
+   conn.on("open",()=>{configurarConexaoOnline(conn); document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");document.getElementById("onlineCode").textContent=code;onlineSetStatus("Conectado! Aguardando o criador iniciar...");/* O host envia a skin primeiro. */});
+ });
+ peer.on("error",err=>onlineSetStatus(err.type==="peer-unavailable"?"Sala não encontrada.":"Falha na conexão."));
+}
+function iniciarOnlineHost(){
+ modoJogo="online"; timeHumano="azul"; timeIA="vermelho";
+ esconderMenus(); document.getElementById("onlinePanel")?.classList.add("hidden");
+ SG.overtime=false; SG.replay=false; // replays ficam locais; não sincronizamos replay no primeiro online
+ iniciarJogo();
+ onlineSend({type:"start",skinA:SG.skinsA,skinB:SG.skinsB,device:"remote"});
+}
+function iniciarOnlineClient(dados){
+ modoJogo="online"; timeHumano="vermelho"; timeIA="azul";
+ SG.skinsA=dados.skinA||SG.skinsA; SG.skinsB=dados.skinB||SG.skinsB;
+ esconderMenus(); document.getElementById("onlinePanel")?.classList.add("hidden");
+ SG.replay=false; iniciarJogo();
+}
+function onlineSend(data){if(online.conn&&online.connected){try{online.conn.send(data)}catch(e){}}}
+function processarMensagemOnline(d){
+ if(!d||!online.active)return;
+ if(d.type==="hello"&&online.host){
+   if(d.skin&&d.skin===SG.skinsA){ onlineSend({type:"skinConflict",skin:SG.skinsA}); return; }
+   SG.skinsB=d.skin||SG.skinsB; applySkin("vermelho",SG.skinsB); onlineSend({type:"start",skinA:SG.skinsA,skinB:SG.skinsB}); iniciarOnlineHost(); return;
+ }
+ if(d.type==="hostSkin"&&!online.host){
+   if(d.skin===SG.skinsB){
+      const fallback=Object.keys(SKINS).find(k=>k!==d.skin&&k!==SG.skinsA)||"black";
+      SG.skinsB=fallback; applySkin("vermelho",fallback);
+      onlineSend({type:"hello",skin:fallback});
+      onlineSetStatus("Essa skin já estava ocupada. Escolhida automaticamente: "+SKINS[fallback].name+".");
+   }else{
+      onlineSend({type:"hello",skin:SG.skinsB});
+   }
+   return;
+ }
+ if(d.type==="start"&&!online.host){ iniciarOnlineClient(d); return; }
+ if(d.type==="input"&&online.host){ online.remoteInput.x=Number(d.x)||0; online.remoteInput.y=Number(d.y)||0; if(d.kick)online.remoteInput.kick=true; if(d.dash)online.remoteInput.dash=true; return; }
+ if(d.type==="state"&&!online.host){ aplicarEstadoOnline(d.state); return; }
+ if(d.type==="skinConflict"){onlineSetStatus("Essa skin já está sendo usada. Escolha outra."); return;}
+}
+function obterInputLocalOnline(){
+ let x=0,y=0;
+ if(SG.device==="mobile"){x=joy.red.x;y=joy.red.y;}
+ else{if(teclas.ArrowLeft)x--;if(teclas.ArrowRight)x++;if(teclas.ArrowUp)y--;if(teclas.ArrowDown)y++;}
+ const m=Math.hypot(x,y)||1; if(Math.hypot(x,y)>1){x/=m;y/=m;}
+ return {x,y};
+}
+function enviarInputOnline(kick=false,dash=false){
+ if(!online.active||online.host||!online.connected)return;
+ const now=performance.now();
+ if(!kick&&!dash&&now-online.lastInputSent<45)return;
+ online.lastInputSent=now;
+ const p=obterInputLocalOnline(); onlineSend({type:"input",x:p.x,y:p.y,kick,dash});
+}
+function estadoOnline(){return {
+ azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},
+ vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},
+ bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},
+ golsAzul,golsVermelho,tempo,jogoAtivo,jogoPausado
+};}
+function aplicarEstadoOnline(s){
+ if(!s)return; Object.assign(azul,s.azul||{}); Object.assign(vermelho,s.vermelho||{}); Object.assign(bola,s.bola||{});
+ golsAzul=Number(s.golsAzul)||0; golsVermelho=Number(s.golsVermelho)||0; tempo=Number.isFinite(s.tempo)?s.tempo:tempo;
+ jogoAtivo=!!s.jogoAtivo; jogoPausado=!!s.jogoPausado; atualizarControlesMobile();
+}
+function enviarEstadoOnline(){if(!online.host||!online.connected)return; const now=performance.now(); if(now-online.lastStateSent<45)return; online.lastStateSent=now; onlineSend({type:"state",state:estadoOnline()});}
+
+
 /* ---------- dispositivo ---------- */
 function setDevice(device){
     SG.device=device;
@@ -3478,7 +3637,8 @@ function adicionarBotoesMenu(){
     extras.innerHTML=`
       <button class="menuButton secondary" onclick="abrirConfiguracoes()">⚙️ CONFIGURAÇÕES</button>
       <button class="menuButton secondary" onclick="abrirSkins()">🎨 SKINS</button>
-      <button class="menuButton secondary" onclick="abrirReplays()">🎥 REPLAYS</button>`;
+      <button class="menuButton secondary" onclick="abrirReplays()">🎥 REPLAYS</button>
+      <button class="menuButton secondary" onclick="abrirOnline()">🌐 ONLINE</button>`;
     box.appendChild(extras);
 }
 adicionarBotoesMenu();
@@ -3616,6 +3776,14 @@ function atualizarBotoesTimeIA(){
 }
 
 function selecionarSkin(side,key){
+    if(side===0 && key===SG.skinsB){
+        alert("⚠️ Essa skin já está sendo usada pelo outro time. Escolha outra.");
+        return;
+    }
+    if(side===1 && key===SG.skinsA){
+        alert("⚠️ Essa skin já está sendo usada pelo outro time. Escolha outra.");
+        return;
+    }
     if(side===0){SG.skinsA=key;applySkin("azul",key)}
     else {SG.skinsB=key;applySkin("vermelho",key)}
     atualizarSkinsGoleiros();
@@ -3646,28 +3814,33 @@ function liberarPausa(){
 /* ---------- chute: contato real + animação ---------- */
 let kickAnim=null;
 
+function tentarCanetaSeguro(j){
+    const outro=j===azul?vermelho:azul;
+    const dj=Math.hypot(j.x-outro.x,j.y-outro.y);
+    const dbj=Math.hypot(bola.x-j.x,bola.y-j.y);
+    const dbo=Math.hypot(bola.x-outro.x,bola.y-outro.y);
+    const prensando=dj<=j.r+outro.r+bola.r+5 && dbj<=j.r+bola.r+10 && dbo<=outro.r+bola.r+10;
+    if(!prensando)return false;
+    let dx=j.dx,dy=j.dy; const m=Math.hypot(dx,dy)||1; dx/=m;dy/=m;
+    // A direção é SEMPRE a do jogador que chutou, então o vermelho também pode fazer a caneta.
+    bola.x=outro.x+dx*(outro.r+bola.r+10);
+    bola.y=outro.y+dy*(outro.r+bola.r+10);
+    bola.dx=dx;bola.dy=dy;bola.vel=14;bola.vx=dx*14;bola.vy=dy*14;
+    kickAnim=null;
+    return true;
+}
 function chute(j){
     if(!jogoAtivo || executandoReplay || SG.goalLock || SG.manualPause)return false;
-
+    if(modoJogo==="online" && !online.host && j===vermelho){enviarInputOnline(true,false);return true;}
+    if(tentarCanetaSeguro(j))return true;
     const d=Math.hypot(bola.x-j.x,bola.y-j.y);
-    /* contato real + pequena margem para evitar o bug de ficar impossível */
     if(d>j.r+bola.r+9)return false;
-
-    let dx=j.dx,dy=j.dy;
-    const mag=Math.hypot(dx,dy);
-    if(mag<.01){
-        dx=(bola.x-j.x)/(d||1);
-        dy=(bola.y-j.y)/(d||1);
-    }else{
-        dx/=mag;dy/=mag;
-    }
-
-    /* Calcanhar */
+    let dx=j.dx,dy=j.dy; const mag=Math.hypot(dx,dy);
+    if(mag<.01){dx=(bola.x-j.x)/(d||1);dy=(bola.y-j.y)/(d||1)}else{dx/=mag;dy/=mag}
     const paraTras=(j.vx*dx+j.vy*dy)<-.35;
     kickAnim={j,dx,dy,t:0,paraTras};
     return true;
 }
-
 function atualizarChute(){
     if(!kickAnim)return;
     const k=kickAnim;
@@ -3789,22 +3962,23 @@ function botaoMobile(id,fn){
     if(!b)return;
     b.addEventListener("pointerdown",e=>{e.preventDefault();fn()});
 }
-botaoMobile("kickBlue",()=>chute(azul));
-botaoMobile("kickRed",()=>chute(vermelho));
-botaoMobile("dashBlue",()=>carrinhoSeguro(azul));
-botaoMobile("dashRed",()=>carrinhoSeguro(vermelho));
+botaoMobile("kickBlue",()=>{if(modoJogo==="online"&&!online.host)enviarInputOnline(true,false);else chute(azul)});
+botaoMobile("kickRed",()=>{if(modoJogo==="online"&&!online.host)enviarInputOnline(true,false);else chute(vermelho)});
+botaoMobile("dashBlue",()=>{if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(azul)});
+botaoMobile("dashRed",()=>{if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(vermelho)});
 
 /* usa joystick como teclas virtuais */
 const _moverJogador=moverJogador;
 moverJogador=function(j,cima,baixo,esq,dir){
     if(!jogoAtivo||jogoPausado||executandoReplay)return;
+    if(modoJogo==="online" && !online.host)return;
 
     let x=0,y=0;
     const team=j===azul?"blue":"red";
-
-    if(SG.device==="mobile"){
-        x=joy[team].x;
-        y=joy[team].y;
+    if(modoJogo==="online" && online.host && j===vermelho){
+        x=online.remoteInput.x; y=online.remoteInput.y;
+    }else if(SG.device==="mobile"){
+        x=joy[team].x; y=joy[team].y;
     }else{
         if(teclas[esq])x--;
         if(teclas[dir])x++;
@@ -3831,13 +4005,13 @@ moverJogador=function(j,cima,baixo,esq,dir){
 
 /* ---------- teclado ---------- */
 document.addEventListener("keydown",e=>{
-    if(e.code==="Space" && executandoReplay){
-        e.preventDefault();
-        pararReplay();
-        resetarDepoisReplay();
+    if(e.code==="Space" && executandoReplay){e.preventDefault();pararReplay();resetarDepoisReplay();}
+    if(e.code==="KeyC" && !e.repeat){
+        if(modoJogo==="online" && !online.host) enviarInputOnline(false,true); else carrinhoSeguro(azul);
     }
-    if(e.code==="KeyC" && !e.repeat) carrinhoSeguro(azul);
-    if(e.key==="ç" || e.key==="Ç") carrinhoSeguro(vermelho);
+    if((e.key==="ç" || e.key==="Ç") && !e.repeat){
+        if(modoJogo==="online" && !online.host) enviarInputOnline(false,true); else carrinhoSeguro(vermelho);
+    }
 },true);
 
 /* ---------- carrinho ---------- */
@@ -3973,26 +4147,20 @@ function mostrarGol(time){
 /* ---------- loop ÚNICO ---------- */
 function loopSeguro(){
     if(!executandoReplay){
-        if(!SG.manualPause && !SG.goalLock){
-            jogoPausado=false;
-        }
-
-        if(!jogoAtivo || !jogoPausado){
-            if(modoJogo==="2players" || timeHumano==="azul")
-                moverJogador(azul,"w","s","a","d");
-
-            if(modoJogo==="2players" || timeHumano==="vermelho")
-                moverJogador(vermelho,"ArrowUp","ArrowDown","ArrowLeft","ArrowRight");
-
-            atualizarIA();
-            atualizarGoleiros();
-            colisaoJogadores();
-            atualizarChute();
-            atualizarBola();
-            atualizarEfeitoDash();
-
-            if(SG.replay && !SG.goalLock){
-                replayFrames.push({
+        if(modoJogo==="online" && !online.host){
+            // Cliente: não executa a física local; recebe o estado do host.
+            enviarInputOnline(false,false);
+        }else{
+            if(!SG.manualPause && !SG.goalLock)jogoPausado=false;
+            if(!jogoAtivo || !jogoPausado){
+                if(modoJogo==="2players" || modoJogo==="online" || timeHumano==="azul") moverJogador(azul,"w","s","a","d");
+                if(modoJogo==="2players" || modoJogo==="online" || timeHumano==="vermelho") moverJogador(vermelho,"ArrowUp","ArrowDown","ArrowLeft","ArrowRight");
+                atualizarIA(); atualizarGoleiros(); colisaoJogadores();
+                if(modoJogo==="online" && online.host && online.remoteInput.kick){chute(vermelho);online.remoteInput.kick=false;}
+                if(modoJogo==="online" && online.host && online.remoteInput.dash){carrinhoSeguro(vermelho);online.remoteInput.dash=false;}
+                atualizarChute(); atualizarBola(); atualizarEfeitoDash();
+                if(SG.replay && !SG.goalLock){
+                    replayFrames.push({
                     azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},
                     vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},
                     bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},
@@ -4000,7 +4168,9 @@ function loopSeguro(){
                     goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,dx:goleiroB.dx||0,dy:goleiroB.dy||0,cor:goleiroB.cor}
                 });
                 if(replayFrames.length>480)replayFrames.shift();
+                }
             }
+            enviarEstadoOnline();
         }
     }
     desenhar();
