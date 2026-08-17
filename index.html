@@ -3576,19 +3576,12 @@ const online={
 };
 function onlineSetStatus(text){const e=document.getElementById("onlineStatus");if(e)e.textContent=text;}
 function onlineSetDebug(text){const e=document.getElementById("onlineDebug");if(e)e.textContent=text||"";}
-function iniciarBarraOnline(){
+function iniciarBarraOnline(inicial=8){
  const wrap=document.getElementById("onlineLoading"),bar=document.getElementById("onlineLoadingBar");
  if(!wrap||!bar)return;
- clearInterval(online.loadingTimer);
+ clearInterval(online.loadingTimer);online.loadingTimer=null;
  wrap.classList.add("active");
- bar.style.width="8%";
- let p=8;
- online.loadingTimer=setInterval(()=>{
-  if(!online.active)return;
-  // Apenas sinaliza atividade; nunca fica parado em 92% aguardando a rede.
-  p=Math.min(p+0.7,97);
-  bar.style.width=p.toFixed(1)+"%";
- },400);
+ bar.style.width=Math.max(0,Math.min(100,inicial))+"%";
 }
 function atualizarBarraOnline(percent){
  const bar=document.getElementById("onlineLoadingBar");
@@ -3761,7 +3754,7 @@ function criarSalaOnline(){
  document.getElementById("onlineCode").textContent=code;
  mostrarOpcoesHostOnline(false);
  onlineSetStatus("Criando sala...");onlineSetDebug("Conectando ao PeerJS Cloud...");
- iniciarBarraOnline();agendarTimeoutConexaoOnline("Tempo esgotado ao criar a sala. Tente novamente.");
+ iniciarBarraOnline(15);agendarTimeoutConexaoOnline("Tempo esgotado ao criar a sala. Tente novamente.");
  criarPeerHost(code);
 }
 function entrarSalaOnline(){
@@ -3772,7 +3765,7 @@ function entrarSalaOnline(){
  esconderExtras();document.getElementById("onlinePanel")?.classList.remove("hidden");
  document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");
  document.getElementById("onlineCode").textContent=code;mostrarOpcoesHostOnline(false);prepararChat();limparChat();
- onlineSetStatus("Conectando à sala...");onlineSetDebug("Procurando soccergol-"+code);iniciarBarraOnline();
+ onlineSetStatus("Conectando à sala...");onlineSetDebug("Procurando soccergol-"+code);iniciarBarraOnline(12);
  agendarTimeoutConexaoOnline("Tempo esgotado procurando a sala. Confira o código e tente novamente.");
  const peer=new Peer(undefined,{debug:2,config:ONLINE_ICE_CONFIG});online.peer=peer;
  const tentarCanal=()=>{
@@ -3873,9 +3866,48 @@ function onlineSend(data){
  return false;
 }
 function escolherSkinDisponivel(excluirA,excluirB){return Object.keys(SKINS).find(k=>k!==excluirA&&k!==excluirB)||"black";}
-function addChatLine(name,text){const log=document.getElementById("onlineChatLog");if(!log)return;const safe=String(text||"").replace(/[<>]/g,"").slice(0,120);const safeName=String(name||"Jogador").replace(/[<>]/g,"").slice(0,16);const div=document.createElement("div");div.className="chatLine";div.innerHTML=`<span class="chatName">${safeName}</span>: ${safe}`;log.appendChild(div);log.scrollTop=log.scrollHeight;}
+function normalizarTextoFiltro(valor){
+ return String(valor||"")
+  .toLowerCase()
+  .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .replace(/[@4]/g,"a")
+  .replace(/[3]/g,"e")
+  .replace(/[1!|]/g,"i")
+  .replace(/[0]/g,"o")
+  .replace(/[5$]/g,"s")
+  .replace(/[7]/g,"t")
+  .replace(/[^a-z0-9]+/g," ")
+  .replace(/(.)\1{2,}/g,"$1");
+}
+const PALAVRAS_BLOQUEADAS=[
+ "filha da puta","filho da puta","filho de puta","puta que pariu","vai tomar no cu","tomar no cu","vai se foder","vai se fuder","se foder","se fuder","foder","fuder","fodase","foda se",
+ "caralho","porra","merda","puta","puto","piranha","vadia","viado","viadao","bicha","bichinha","retardado","retardada",
+ "macaco","macaca","macac@","nigger","nigga","niga","coon","spic","kike","cracker","whore","bitch","fuck","fucking","motherfucker","shit","asshole","bastard","slut","dick","pussy"
+];
+function censurarTexto(valor){
+ const original=String(valor||"").replace(/[<>]/g,"").slice(0,120);
+ let out=original;
+ for(const termo of PALAVRAS_BLOQUEADAS){
+  const partes=normalizarTextoFiltro(termo).trim().split(/\s+/).filter(Boolean);
+  if(!partes.length)continue;
+  const padrao=partes.join("\\s+");
+  const re=new RegExp("(?<![a-z0-9])"+padrao+"(?![a-z0-9])","gi");
+  out=out.replace(re,m=>"#".repeat(Math.max(3,m.replace(/\s+/g,"").length)));
+ }
+ // Também bloqueia variantes coladas/contornadas de termos de uma palavra.
+ const normal=normalizarTextoFiltro(out);
+ for(const termo of PALAVRAS_BLOQUEADAS.filter(x=>!x.includes(" "))){
+  const n=normalizarTextoFiltro(termo);
+  if(n.length>=3 && normal.includes(n)){
+   const re=new RegExp(n.split("").join("[^a-z0-9]*"),"gi");
+   out=out.replace(re,m=>"#".repeat(Math.max(3,m.replace(/\W/g,"").length)));
+  }
+ }
+ return out.slice(0,120);
+}
+function addChatLine(name,text){const log=document.getElementById("onlineChatLog");if(!log)return;const safe=censurarTexto(text);const safeName=censurarTexto(String(name||"Jogador").slice(0,16));const div=document.createElement("div");div.className="chatLine";const n=document.createElement("span");n.className="chatName";n.textContent=safeName||"Jogador";div.appendChild(n);div.appendChild(document.createTextNode(": "+safe));log.appendChild(div);log.scrollTop=log.scrollHeight;}
 function limparChat(){const log=document.getElementById("onlineChatLog");if(log)log.innerHTML="";}
-function enviarChatOnline(){const input=document.getElementById("onlineChatInput");const text=String(input?.value||"").trim();if(!text)return;if(!online.connected||!online.conn?.open){onlineSetStatus("Ainda conectando à sala...");return;}if(!onlineSend({type:"chat",nickname:getNickname(),text:text})){onlineSetStatus("Mensagem não enviada. Aguardando conexão...");return;}addChatLine(getNickname(),text);input.value="";input.focus();}
+function enviarChatOnline(){const input=document.getElementById("onlineChatInput");const text=String(input?.value||"").trim();if(!text)return;if(!online.connected||!online.conn?.open){onlineSetStatus("Ainda conectando à sala...");return;}const filtrado=censurarTexto(text);if(!onlineSend({type:"chat",nickname:getNickname(),text:filtrado})){onlineSetStatus("Mensagem não enviada. Aguardando conexão...");return;}addChatLine(getNickname(),filtrado);input.value="";input.focus();}
 function prepararChat(){
  const input=document.getElementById("onlineChatInput");
  if(input&&!input.dataset.bound){input.dataset.bound="1";input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();enviarChatOnline();}});}
@@ -3949,7 +3981,7 @@ function enviarEstadoOnline(){if(!online.host||!online.connected)return;const no
 
 /* ---------- dispositivo ---------- */
 function getNickname(){try{return (localStorage.getItem("soccerGolNickname")||"").trim()||"Jogador";}catch(e){return "Jogador";}}
-function setNickname(v){v=String(v||"").trim().replace(/[<>]/g,"").slice(0,16)||"Jogador";try{localStorage.setItem("soccerGolNickname",v);}catch(e){}const bp=document.getElementById("botaoPerfil"); if(bp)bp.textContent="👤 "+v;return v;}
+function setNickname(v){v=censurarTexto(String(v||"").trim()).replace(/[<>]/g,"").slice(0,16)||"Jogador";try{localStorage.setItem("soccerGolNickname",v);}catch(e){}const bp=document.getElementById("botaoPerfil"); if(bp)bp.textContent="👤 "+v;return v;}
 function salvarNicknameInicial(){const v=setNickname(document.getElementById("nicknameInput")?.value);document.getElementById("nicknamePanel")?.classList.add("hidden");document.getElementById("updatesPanel")?.classList.remove("hidden");atualizarPerfilVisibilidade();}
 function abrirPerfil(){const p=document.getElementById("profilePanel");const i=document.getElementById("profileNicknameInput");if(i)i.value=getNickname();p?.classList.remove("hidden");}
 function fecharPerfil(){document.getElementById("profilePanel")?.classList.add("hidden");}
