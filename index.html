@@ -388,7 +388,7 @@ button{
 
 <style>
 #onlinePanel,#creditsPanel{z-index:125}
-.onlineBox{width:520px;max-width:94vw;padding:28px;background:rgba(5,12,7,.96);border:1px solid rgba(75,255,125,.45);border-radius:24px;box-shadow:0 25px 80px rgba(0,0,0,.7);text-align:center}
+.onlineBox{width:520px;max-width:94vw;max-height:90vh;overflow-y:auto;overflow-x:hidden;padding:28px;background:rgba(5,12,7,.96);border:1px solid rgba(75,255,125,.45);border-radius:24px;box-shadow:0 25px 80px rgba(0,0,0,.7);text-align:center}
 .onlineCode{font-size:34px;letter-spacing:7px;font-weight:900;background:#111b14;border:1px solid #49604e;border-radius:12px;padding:12px;margin:14px 0;color:#9cffb5}
 .onlineStatus{min-height:24px;color:#bbb;margin:10px 0 8px}.onlineDebug{min-height:18px;color:#777;font-size:12px;line-height:1.35;margin:4px 0 14px;word-break:break-word}.onlineSmall{font-size:13px;color:#999;line-height:1.4}
 .historyItem{padding:10px 12px;margin:8px 0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px}.onlineHostOptions{margin:14px 0;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;text-align:left}.onlineLoading{display:none;margin:10px 0 14px}.onlineLoading.active{display:block}.onlineLoadingTrack{height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.12)}.onlineLoadingBar{height:100%;width:8%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);box-shadow:0 0 14px rgba(114,255,152,.45);transition:width .18s ease}.updatesList{text-align:left;color:#ddd;line-height:1.65;margin:16px 0}.updatesList div{padding:8px 10px;margin:7px 0;background:rgba(255,255,255,.05);border-radius:10px}.updatesDate{color:#9cffb5;font-weight:900;font-size:15px}
@@ -1386,6 +1386,7 @@ function fecharCreditos(){
 function voltarMenuPrincipal(){
 
     esconderMenus();
+    atualizarPerfilVisibilidade();
 
     document.getElementById("menu")
         .classList.remove("hidden");
@@ -1483,6 +1484,7 @@ function iniciarJogo(){
 function iniciarContagem(){
 
     if(contagemAtiva)return;
+    atualizarPerfilVisibilidade();
 
     contagemAtiva=true;
 
@@ -1530,6 +1532,7 @@ function iniciarContagem(){
 function iniciarPartida(){
 
     jogoAtivo=true;
+    atualizarPerfilVisibilidade();
     jogoPausado=false;
 
     tempo=120;
@@ -2662,6 +2665,7 @@ function atualizarIndicadorIA(){
 
 function finalizarJogo(){
     jogoAtivo=false;
+    atualizarPerfilVisibilidade();
     jogoPausado=false;
     pararReplay();
     clearInterval(intervaloTempo);
@@ -2690,6 +2694,7 @@ function finalizarJogo(){
 function voltarMenu(){
 
     jogoAtivo=false;
+    atualizarPerfilVisibilidade();
     jogoPausado=false;
 
     pararReplay();
@@ -3874,10 +3879,16 @@ function enviarEstadoOnline(){if(!online.host||!online.connected)return;const no
 /* ---------- dispositivo ---------- */
 function getNickname(){try{return (localStorage.getItem("soccerGolNickname")||"").trim()||"Jogador";}catch(e){return "Jogador";}}
 function setNickname(v){v=String(v||"").trim().replace(/[<>]/g,"").slice(0,16)||"Jogador";try{localStorage.setItem("soccerGolNickname",v);}catch(e){}const bp=document.getElementById("botaoPerfil"); if(bp)bp.textContent="👤 "+v;return v;}
-function salvarNicknameInicial(){const v=setNickname(document.getElementById("nicknameInput")?.value);document.getElementById("nicknamePanel")?.classList.add("hidden");document.getElementById("updatesPanel")?.classList.remove("hidden");}
+function salvarNicknameInicial(){const v=setNickname(document.getElementById("nicknameInput")?.value);document.getElementById("nicknamePanel")?.classList.add("hidden");document.getElementById("updatesPanel")?.classList.remove("hidden");atualizarPerfilVisibilidade();}
 function abrirPerfil(){const p=document.getElementById("profilePanel");const i=document.getElementById("profileNicknameInput");if(i)i.value=getNickname();p?.classList.remove("hidden");}
 function fecharPerfil(){document.getElementById("profilePanel")?.classList.add("hidden");}
-function salvarPerfil(){setNickname(document.getElementById("profileNicknameInput")?.value);fecharPerfil();}
+function salvarPerfil(){setNickname(document.getElementById("profileNicknameInput")?.value);fecharPerfil();atualizarPerfilVisibilidade();}
+function atualizarPerfilVisibilidade(){
+    const bp=document.getElementById("botaoPerfil");
+    if(!bp)return;
+    const ativo=!!jogoAtivo || contagemAtiva || executandoReplay;
+    bp.style.display=ativo?"none":"block";
+}
 function setDevice(device){
     SG.device=device;
     const box=document.getElementById("deviceChoice");
@@ -3887,8 +3898,14 @@ function setDevice(device){
     const nick=getNickname();
     const ni=document.getElementById("nicknameInput");
     if(ni)ni.value=nick;
-    document.getElementById("nicknamePanel")?.classList.remove("hidden");
     const bp=document.getElementById("botaoPerfil"); if(bp)bp.textContent="👤 "+nick;
+    if(nick){
+        document.getElementById("nicknamePanel")?.classList.add("hidden");
+        document.getElementById("updatesPanel")?.classList.remove("hidden");
+    }else{
+        document.getElementById("nicknamePanel")?.classList.remove("hidden");
+    }
+    atualizarPerfilVisibilidade();
 }
 
 function fecharAtualizacoes(){
@@ -4463,6 +4480,7 @@ function loopSeguro(){
 /* ---------- iniciar jogo sem pausa fantasma ---------- */
 const _iniciarJogoOriginal=iniciarJogo;
 iniciarJogo=function(){
+    atualizarPerfilVisibilidade();
     SG.manualPause=false;
     SG.goalLock=false;
     kickAnim=null;
@@ -4616,6 +4634,7 @@ prepararChat();
 
 /* controles mobile visíveis apenas quando selecionado */
 atualizarControlesMobile();
+atualizarPerfilVisibilidade();
 
 </script>
 </body>
