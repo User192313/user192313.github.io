@@ -440,9 +440,11 @@ button{
     <div class="sg-row"><label>🎥 Replays</label><input id="onlineOptReplay" type="checkbox" checked></div>
     <div class="sg-row"><label>⏱️ Prorrogação de 30 segundos</label><input id="onlineOptOvertime" type="checkbox"></div>
     <div class="sg-row"><label>🧤 Goleiros</label><input id="onlineOptKeepers" type="checkbox"></div>
-    <button id="onlineStartButton" class="menuButton" onclick="iniciarSalaOnline()">⚽ INICIAR PARTIDA</button>
+    <button id="onlineStartButton" class="menuButton" onclick="iniciarSalaOnline()">⚽ ENVIAR CONVITE PARA ENTRAR</button>
    </div>
    <div id="onlineClientWaiting" class="onlineSmall hidden">O criador está escolhendo as opções da partida...</div>
+   <button id="onlineEnterMatch" class="menuButton blueButton hidden" onclick="entrarNaPartidaOnline()">⚽ ENTRAR NA PARTIDA</button>
+   <div id="onlineHostWaitingStart" class="onlineSmall hidden">Aguardando o segundo jogador entrar na partida...</div>
    <div class="chatBox">
     <div style="font-weight:900;margin-bottom:7px">💬 CHAT DA SALA</div>
     <div id="onlineChatLog" class="chatLog"></div>
@@ -3571,8 +3573,8 @@ const ONLINE_ICE_CONFIG={
 const online={
  active:false,host:false,peer:null,conn:null,roomCode:"",connected:false,
  remoteInput:{x:0,y:0,kick:false,dash:false},lastStateSent:0,lastInputSent:0,
- intentionalClose:false,waiting:false,lastError:"",starting:false,clientReady:false,connectAttempts:0,chatReady:false,connecting:false,
- startPacket:null,startRetries:0,startTimer:null,connectTimer:null,loadingTimer:null,lastStartNonce:""
+ intentionalClose:false,waiting:false,lastError:"",starting:false,clientReady:false,clientEntered:false,connectAttempts:0,chatReady:false,connecting:false,
+ startPacket:null,startRetries:0,startTimer:null,connectTimer:null,loadingTimer:null,lastStartNonce:"",startOffer:null
 };
 function onlineSetStatus(text){const e=document.getElementById("onlineStatus");if(e)e.textContent=text;}
 function onlineSetDebug(text){const e=document.getElementById("onlineDebug");if(e)e.textContent=text||"";}
@@ -3613,12 +3615,22 @@ function mostrarOpcoesHostOnline(show){
  if(host)host.classList.toggle("hidden",!show);
  if(client)client.classList.toggle("hidden",show);
 }
+function mostrarEntradaPartidaOnline(show){
+ const b=document.getElementById("onlineEnterMatch");
+ if(b)b.classList.toggle("hidden",!show);
+}
+function mostrarHostAguardandoEntradaOnline(show){
+ const e=document.getElementById("onlineHostWaitingStart");
+ if(e)e.classList.toggle("hidden",!show);
+}
 function abrirOnline(){
  esconderMenus();
  const p=document.getElementById("onlinePanel");if(p)p.classList.remove("hidden");
  document.getElementById("onlineHome")?.classList.remove("hidden");
  document.getElementById("onlineRoom")?.classList.add("hidden");
  mostrarOpcoesHostOnline(false);
+ mostrarEntradaPartidaOnline(false);
+ mostrarHostAguardandoEntradaOnline(false);
  onlineSetStatus("Aguardando jogador...");
  onlineSetDebug("");
  limparChat();prepararChat();
@@ -3644,7 +3656,7 @@ function encerrarOnline(){
  limparTimerConexaoOnline();clearInterval(online.loadingTimer);online.loadingTimer=null;clearTimeout(online.startTimer);online.startTimer=null;
  try{online.conn?.close()}catch(e){}
  try{online.peer?.destroy()}catch(e){}
- online.active=false;online.host=false;online.connected=false;online.waiting=false;online.starting=false;online.clientReady=false;online.startPacket=null;online.startRetries=0;online.lastStartNonce="";online.connecting=false;
+ online.active=false;online.host=false;online.connected=false;online.waiting=false;online.starting=false;online.clientReady=false;online.clientEntered=false;online.startPacket=null;online.startOffer=null;online.startRetries=0;online.lastStartNonce="";online.connecting=false;
  online.conn=null;online.peer=null;online.roomCode="";online.lastError="";
  online.remoteInput={x:0,y:0,kick:false,dash:false};
 }
@@ -3819,15 +3831,31 @@ function aplicarOpcoesOnline(o){
 }
 function iniciarSalaOnline(){
  if(!online.host||!online.connected){onlineSetStatus("Aguardando o segundo jogador conectar...");return;}
- if(!online.clientReady){onlineSetStatus("O segundo jogador ainda está sincronizando. Aguarde só mais um instante...");onlineSend({type:"pingStart",version:2});return;}
- if(online.starting)return;
- online.starting=true;
- aplicarOpcoesOnline(lerOpcoesOnline());
- iniciarOnlineHost();
+ if(!online.clientReady){onlineSetStatus("Aguardando o segundo jogador ficar pronto...");onlineSend({type:"pingStart",version:3});return;}
+ if(online.startOffer){onlineSetStatus("O convite para entrar já foi enviado ao segundo jogador.");return;}
+ const options=lerOpcoesOnline();
+ aplicarOpcoesOnline(options);
+ online.startOffer={type:"startOffer",version:4,skinA:SG.skinsA,skinB:SG.skinsB,options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,6)};
+ onlineSetStatus("Convite enviado! A partida só começa quando o segundo jogador clicar em ENTRAR NA PARTIDA.");
+ onlineSetDebug("Aguardando a confirmação de entrada do jogador Vermelho...");
+ onlineSend(online.startOffer);
+ mostrarOpcoesHostOnline(false);
+ mostrarHostAguardandoEntradaOnline(true);
+}
+function entrarNaPartidaOnline(){
+ if(online.host||!online.connected||!online.startOffer){onlineSetStatus("Aguardando a preparação da partida...");return;}
+ if(online.clientEntered)return;
+ online.clientEntered=true;
+ mostrarEntradaPartidaOnline(false);
+ onlineSetStatus("Entrando na partida...");
+ atualizarBarraOnline(99);
+ onlineSend({type:"clientWantsStart",version:4,nonce:online.startOffer.nonce,nickname:getNickname()});
 }
 function iniciarOnlineHost(){
+ if(!online.host||!online.connected||!online.clientEntered)return;
  modoJogo="online";timeHumano="azul";timeIA="vermelho";
- const options={replay:SG.replay,overtime:SG.overtime,keepers:SG.keepers};
+ const options=online.startOffer?.options||{replay:SG.replay,overtime:SG.overtime,keepers:SG.keepers};
+ aplicarOpcoesOnline(options);
  const packet={type:"start",version:2,skinA:SG.skinsA,skinB:SG.skinsB,options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,7)};
  online.startPacket=packet;online.startRetries=0;
  esconderMenus();document.getElementById("onlinePanel")?.classList.add("hidden");
@@ -3846,6 +3874,7 @@ function enviarStartOnline(){
  }
 }
 function iniciarOnlineClient(dados){
+ mostrarEntradaPartidaOnline(false);
  const nonce=String(dados?.nonce||"");
  if(nonce && online.lastStartNonce===nonce){onlineSend({type:"startAck",nonce});return;}
  if(nonce)online.lastStartNonce=nonce;
@@ -3946,11 +3975,31 @@ function processarMensagemOnline(d){
   online.clientReady=true;online.waiting=false;
   atualizarBarraOnline(95);
   onlineSetStatus(`Os dois jogadores estão prontos: ${getNickname()} e ${d.nickname||"Jogador"}.`);
+  onlineSetDebug("Escolha as opções da sala e clique em ENVIAR CONVITE PARA ENTRAR.");
+  mostrarOpcoesHostOnline(true);
+  mostrarHostAguardandoEntradaOnline(false);
   return;
  }
  if(d.type==="pingStart"&&online.host){onlineSend({type:"roomReady",version:3,hostNickname:getNickname(),guestNickname:"Jogador",skinA:SG.skinsA,skinB:SG.skinsB});return;}
+ if(d.type==="startOffer"&&!online.host){
+  online.startOffer=d;
+  aplicarOpcoesOnline(d.options||{});
+  onlineSetStatus("Partida pronta! Clique em ENTRAR NA PARTIDA para começar.");
+  onlineSetDebug("A partida ainda não começou. Falta somente sua entrada.");
+  mostrarEntradaPartidaOnline(true);
+  atualizarBarraOnline(97);
+  return;
+ }
+ if(d.type==="clientWantsStart"&&online.host){
+  if(!online.clientReady||!online.startOffer){onlineSetStatus("O segundo jogador ainda não está pronto.");return;}
+  online.clientEntered=true;
+  mostrarHostAguardandoEntradaOnline(false);
+  mostrarOpcoesHostOnline(false);
+  iniciarOnlineHost();
+  return;
+ }
  if(d.type==="start"&&!online.host){iniciarOnlineClient(d);return;}
- if(d.type==="startAck"&&online.host){clearTimeout(online.startTimer);online.startTimer=null;online.startPacket=null;online.startRetries=0;finalizarBarraOnline(true);onlineSetStatus("Partida online iniciada nos dois dispositivos!");enviarEstadoOnline();return;}
+ if(d.type==="startAck"&&online.host){clearTimeout(online.startTimer);online.startTimer=null;online.startPacket=null;online.startRetries=0;online.startOffer=null;finalizarBarraOnline(true);onlineSetStatus("Partida online iniciada nos dois dispositivos!");enviarEstadoOnline();return;}
  if(d.type==="chat"){addChatLine(d.nickname||"Jogador",d.text||"");return;}
  if(d.type==="input"&&online.host){online.remoteInput.x=Number(d.x)||0;online.remoteInput.y=Number(d.y)||0;if(d.kick)online.remoteInput.kick=true;if(d.dash)online.remoteInput.dash=true;return;}
  if(d.type==="state"&&!online.host){aplicarEstadoOnline(d.state);return;}
@@ -4644,18 +4693,51 @@ const _desenharCampo=desenharCampo;
 desenharCampo=function(){
     _desenharCampo();
     ctx.save();
-    for(let row=0;row<2;row++){
-        const y=25+row*24;
-        ctx.fillStyle="#a31522";
-        ctx.fillRect(0,y-7,canvas.width,14);
-        for(let i=0;i<40;i++){
-            const yy=y+Math.sin(performance.now()/180+i)*3;
-            const colors=["#fff","#ffd52e","#2580ff","#2bd66f","#ff4fa3","#111"];
-            ctx.fillStyle=colors[i%colors.length];
-            ctx.beginPath();
-            ctx.arc(14+i*28+(row?6:0),yy,4.5,0,Math.PI*2);
-            ctx.fill();
+    const t=performance.now()/1000;
+    const crowdColors=["#ffffff","#ffd52e","#2580ff","#2bd66f","#ff4fa3","#111111","#ff3030","#9b4dff"];
+    // Arquibancada superior: faixas, placas e 3 fileiras de torcedores.
+    ctx.fillStyle="#121a15";ctx.fillRect(0,6,canvas.width,54);
+    ctx.fillStyle="#a31522";ctx.fillRect(0,8,canvas.width,7);
+    ctx.fillStyle="#202b25";ctx.fillRect(0,51,canvas.width,9);
+    for(let row=0;row<3;row++){
+        const y=20+row*12;
+        for(let i=0;i<48;i++){
+            const x=12+i*26+(row%2?5:0);
+            const bob=Math.sin(t*3+i*.7+row)*1.5;
+            ctx.fillStyle=crowdColors[(i*3+row)%crowdColors.length];
+            ctx.beginPath();ctx.arc(x,y+bob,4.3,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle="rgba(255,255,255,.2)";
+            ctx.beginPath();ctx.arc(x-1.2,y-1.5+bob,1.2,0,Math.PI*2);ctx.fill();
         }
+    }
+    // Bandeiras e cartazes balançando.
+    for(let i=0;i<7;i++){
+        const x=80+i*165;
+        const y=7+Math.sin(t*1.8+i)*2;
+        ctx.strokeStyle="#ddd";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y+4);ctx.lineTo(x,y+35);ctx.stroke();
+        ctx.fillStyle=crowdColors[(i+2)%crowdColors.length];
+        ctx.beginPath();
+        ctx.moveTo(x,y+4);ctx.quadraticCurveTo(x+24,y+7+Math.sin(t*2+i)*2,x+39,y+4);
+        ctx.lineTo(x+39,y+19);ctx.quadraticCurveTo(x+22,y+16+Math.sin(t*2+i)*2,x,y+18);ctx.closePath();ctx.fill();
+    }
+    // Arquibancada inferior.
+    ctx.fillStyle="#121a15";ctx.fillRect(0,canvas.height-58,canvas.width,54);
+    ctx.fillStyle="#a31522";ctx.fillRect(0,canvas.height-15,canvas.width,7);
+    for(let row=0;row<3;row++){
+        const y=canvas.height-45+row*12;
+        for(let i=0;i<48;i++){
+            const x=10+i*27+(row%2?7:0);
+            const bob=Math.sin(t*2.7+i*.6+row)*1.4;
+            ctx.fillStyle=crowdColors[(i+row*2+3)%crowdColors.length];
+            ctx.beginPath();ctx.arc(x,y+bob,4.2,0,Math.PI*2);ctx.fill();
+        }
+    }
+    // Pequenos painéis luminosos nas laterais.
+    for(let side=0;side<2;side++){
+        const x=side?canvas.width-92:24;
+        ctx.fillStyle="rgba(0,0,0,.55)";ctx.fillRect(x,29,68,17);
+        ctx.strokeStyle="rgba(156,255,181,.45)";ctx.lineWidth=1;ctx.strokeRect(x,29,68,17);
+        ctx.fillStyle="#9cffb5";ctx.font="bold 9px Arial";ctx.textAlign="center";ctx.fillText("SOCCERGOL",x+34,41);
     }
     ctx.restore();
 };
