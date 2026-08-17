@@ -827,7 +827,7 @@ width="1200"
 height="650">
 </canvas>
 
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <script>
 /* =========================================================
    CANVAS
@@ -3555,6 +3555,19 @@ const SKINS={
 };
 
 /* ---------- ONLINE 1v1 ---------- */
+const ONLINE_ICE_CONFIG={
+ iceServers:[
+  {urls:"stun:stun.l.google.com:19302"},
+  {urls:"stun:stun1.l.google.com:19302"},
+  {urls:"stun:openrelay.metered.ca:80"},
+  {urls:"turn:openrelay.metered.ca:80",username:"openrelayproject",credential:"openrelayproject"},
+  {urls:"turn:openrelay.metered.ca:443",username:"openrelayproject",credential:"openrelayproject"},
+  {urls:"turn:openrelay.metered.ca:443?transport=tcp",username:"openrelayproject",credential:"openrelayproject"},
+  {urls:"turns:openrelay.metered.ca:443?transport=tcp",username:"openrelayproject",credential:"openrelayproject"}
+ ],
+ sdpSemantics:"unified-plan"
+};
+
 const online={
  active:false,host:false,peer:null,conn:null,roomCode:"",connected:false,
  remoteInput:{x:0,y:0,kick:false,dash:false},lastStateSent:0,lastInputSent:0,
@@ -3595,10 +3608,10 @@ function agendarTimeoutConexaoOnline(msg="Tempo de conexão esgotado. Tente nova
  online.connectTimer=setTimeout(()=>{
   if(!online.connected && online.active){
    onlineSetStatus(msg);
-   onlineSetDebug("Tempo máximo de conexão atingido (60s). O canal P2P não foi estabelecido.");
+   onlineSetDebug("Tempo máximo de conexão atingido (75s). O canal P2P não foi estabelecido.");
    finalizarBarraOnline(false);
   }
- },60000);
+ },75000);
 }
 function gerarCodigoSala(){return Math.random().toString(36).slice(2,8).toUpperCase();}
 function mostrarOpcoesHostOnline(show){
@@ -3649,12 +3662,16 @@ function resetOnlineUI(){
  onlineSetDebug("");
 }
 function configurarConexaoOnline(conn){
- online.conn=conn;online.active=true;
+ if(!conn)return;
+ if(conn.__sgConfigured)return;
+ conn.__sgConfigured=true;
+ online.conn=conn;online.active=true;online.connecting=false;
  try{conn.serialization="json";conn.reliable=true;}catch(e){}
- conn.on("open",()=>{
-  online.connected=true;online.waiting=false;online.clientReady=false;online.chatReady=true;online.connectAttempts=0;
+ const aoAbrir=()=>{
+  if(conn!==online.conn && online.conn)return;
+  online.conn=conn;online.connected=true;online.waiting=false;online.clientReady=false;online.chatReady=true;online.connecting=false;online.connectAttempts=0;
   limparTimerConexaoOnline();atualizarBarraOnline(65);
-  onlineSetDebug("Canal P2P aberto.");
+  onlineSetDebug("Canal P2P aberto. Chat e sincronização liberados.");
   if(online.host){
    onlineSetStatus("Jogador conectado! Sincronizando nickname e skin...");
    onlineSend({type:"helloHost",version:3,nickname:getNickname(),skin:SG.skinsA});
@@ -3662,16 +3679,46 @@ function configurarConexaoOnline(conn){
    onlineSetStatus("Conectado! Entrando na sala...");
    onlineSend({type:"join",version:3,nickname:getNickname(),skin:SG.skinsB});
   }
- });
+ };
+ const aoFechar=()=>{
+  if(conn!==online.conn && online.conn)return;
+  online.connected=false;online.chatReady=false;online.connecting=false;online.clientReady=false;
+  if(online.active&&!online.intentionalClose){
+   onlineSetStatus("O outro jogador saiu da sala.");
+   onlineSetDebug("Canal P2P encerrado.");
+   if(modoJogo==="online"){jogoAtivo=false;jogoPausado=true;}
+  }
+ };
+ const aoErro=(err)=>{
+  if(conn!==online.conn && online.conn)return;
+  online.connected=false;online.chatReady=false;
+  online.lastError=err?.type||"connection-error";
+  onlineSetStatus(onlineErroHumano(err));
+  onlineSetDebug("DataConnection: "+online.lastError);
+ };
+ conn.on("open",aoAbrir);
  conn.on("data",processarMensagemOnline);
- conn.on("close",()=>{online.connected=false;online.clientReady=false;if(online.active){onlineSetStatus("O outro jogador saiu da sala.");onlineSetDebug("Conexão P2P encerrada.");if(modoJogo==="online"){jogoAtivo=false;jogoPausado=true;}}});
- conn.on("error",err=>{online.connected=false;online.lastError=err?.type||"connection-error";onlineSetStatus(onlineErroHumano(err));onlineSetDebug("DataConnection: "+online.lastError);});
+ conn.on("close",aoFechar);
+ conn.on("error",aoErro);
+ if(conn.open)aoAbrir();
  agendarTimeoutConexaoOnline();
 }
+function verificarCanalOnline(){
+ if(!online.active||!online.conn)return;
+ if(online.connected&&online.conn.open){
+  onlineSetDebug("Canal P2P ativo. Chat e sincronização liberados.");
+  return;
+ }
+ if(!online.connected&&online.connecting){
+  onlineSetDebug("Negociando WebRTC... ICE/TURN em andamento.");
+ }
+}
+setInterval(verificarCanalOnline,1500);
+
 function criarPeerHost(code,tentativa=0){
  if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");return;}
  const peerId="soccergol-"+code;
- const peer=new Peer(peerId,{debug:1});online.peer=peer;
+ const peer=new Peer(peerId,{debug:2,config:ONLINE_ICE_CONFIG});online.peer=peer;
  peer.on("open",()=>{
   atualizarBarraOnline(35);
   document.getElementById("onlineHome")?.classList.add("hidden");
@@ -3727,18 +3774,23 @@ function entrarSalaOnline(){
  document.getElementById("onlineCode").textContent=code;mostrarOpcoesHostOnline(false);prepararChat();limparChat();
  onlineSetStatus("Conectando à sala...");onlineSetDebug("Procurando soccergol-"+code);iniciarBarraOnline();
  agendarTimeoutConexaoOnline("Tempo esgotado procurando a sala. Confira o código e tente novamente.");
- const peer=new Peer(undefined,{debug:1});online.peer=peer;
+ const peer=new Peer(undefined,{debug:2,config:ONLINE_ICE_CONFIG});online.peer=peer;
  const tentarCanal=()=>{
   if(!online.active||online.host||online.connected||online.connecting||!peer.open)return;
   online.connectAttempts++;online.connecting=true;
   onlineSetDebug(`Tentativa ${online.connectAttempts}/30 — abrindo canal P2P...`);
   let conn;
-  try{conn=peer.connect("soccergol-"+code,{reliable:true,serialization:"json",label:"soccerGol"});}catch(e){onlineSetDebug("peer.connect: "+(e?.message||e));return;}
+  try{conn=peer.connect("soccergol-"+code,{reliable:true,serialization:"json",label:"soccerGol",metadata:{nickname:getNickname(),version:3}});}catch(e){online.connecting=false;onlineSetDebug("peer.connect: "+(e?.message||e));setTimeout(tentarCanal,1500);return;}
   online.conn=conn;
-  let aberto=false;
-  conn.on("open",()=>{aberto=true;online.connecting=false;configurarConexaoOnline(conn);});
-  conn.on("error",err=>{if(!aberto&&online.active&&!online.connected){online.connecting=false;onlineSetDebug("Tentativa falhou: "+(err?.type||"connection-error"));setTimeout(tentarCanal,1500);}});
-  conn.on("close",()=>{if(!aberto&&online.active&&!online.connected){online.connecting=false;setTimeout(tentarCanal,1500);}});
+  const retry=()=>{
+   if(!online.active||online.host||online.connected)return;
+   try{conn.close()}catch(e){}
+   online.connecting=false;
+   setTimeout(tentarCanal,1500);
+  };
+  conn.on("error",err=>{if(online.active&&!online.connected){onlineSetDebug("Tentativa falhou: "+(err?.type||"connection-error"));retry();}});
+  conn.on("close",()=>{if(online.active&&!online.connected)retry();});
+  configurarConexaoOnline(conn);
  };
  peer.on("open",()=>{onlineSetDebug("Sinalização conectada ao PeerJS.");tentarCanal();});
  peer.on("disconnected",()=>{if(online.active&&!online.intentionalClose){onlineSetStatus("Servidor de sinalização desconectado. Tentando reconectar...");try{peer.reconnect()}catch(e){onlineSetDebug("reconnect: "+(e?.message||e));}}});
@@ -3746,7 +3798,7 @@ function entrarSalaOnline(){
   online.lastError=err?.type||"unknown";
   if(err?.type==="peer-unavailable")onlineSetDebug("Sala não encontrada neste momento. Tentando novamente...");
   else onlineSetDebug("Peer: "+online.lastError+" — "+onlineErroHumano(err));
-  if(online.active&&!online.connected)setTimeout(tentarCanal,2000);
+  if(online.active&&!online.connected&&!online.connecting)setTimeout(tentarCanal,2000);
  });
  const retryTimer=setInterval(()=>{if(!online.active||online.host||online.connected){clearInterval(retryTimer);return;}if(online.connectAttempts<30)tentarCanal();else clearInterval(retryTimer);},2000);
 }
@@ -3823,7 +3875,7 @@ function onlineSend(data){
 function escolherSkinDisponivel(excluirA,excluirB){return Object.keys(SKINS).find(k=>k!==excluirA&&k!==excluirB)||"black";}
 function addChatLine(name,text){const log=document.getElementById("onlineChatLog");if(!log)return;const safe=String(text||"").replace(/[<>]/g,"").slice(0,120);const safeName=String(name||"Jogador").replace(/[<>]/g,"").slice(0,16);const div=document.createElement("div");div.className="chatLine";div.innerHTML=`<span class="chatName">${safeName}</span>: ${safe}`;log.appendChild(div);log.scrollTop=log.scrollHeight;}
 function limparChat(){const log=document.getElementById("onlineChatLog");if(log)log.innerHTML="";}
-function enviarChatOnline(){const input=document.getElementById("onlineChatInput");const text=String(input?.value||"").trim();if(!text)return;if(!online.connected){onlineSetStatus("Ainda não conectado à sala.");return;}addChatLine(getNickname(),text);onlineSend({type:"chat",nickname:getNickname(),text:text});input.value="";input.focus();}
+function enviarChatOnline(){const input=document.getElementById("onlineChatInput");const text=String(input?.value||"").trim();if(!text)return;if(!online.connected||!online.conn?.open){onlineSetStatus("Ainda conectando à sala...");return;}if(!onlineSend({type:"chat",nickname:getNickname(),text:text})){onlineSetStatus("Mensagem não enviada. Aguardando conexão...");return;}addChatLine(getNickname(),text);input.value="";input.focus();}
 function prepararChat(){
  const input=document.getElementById("onlineChatInput");
  if(input&&!input.dataset.bound){input.dataset.bound="1";input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();enviarChatOnline();}});}
