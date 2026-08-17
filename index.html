@@ -369,7 +369,7 @@ button{
 #deviceChoice,#optionsPanel,#settingsPanel,#skinsPanel,#replaysPanel{z-index:120}
 .sg-panel{width:620px;max-width:94vw;max-height:88vh;overflow:auto;padding:28px;background:rgba(5,12,7,.96);border:1px solid rgba(75,255,125,.45);border-radius:24px;box-shadow:0 25px 80px rgba(0,0,0,.7)}
 .sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sg-row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:10px 0}.sg-row label{color:#ddd}.sg-select,.sg-input{background:#17201a;color:#fff;border:1px solid #49604e;border-radius:9px;padding:10px}
-.sg-skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.skinBtn{border:2px solid transparent;border-radius:11px;padding:12px 5px;color:#fff;font-weight:800;cursor:pointer}.skinBtn.sel{border-color:#fff;box-shadow:0 0 15px rgba(255,255,255,.4)}
+.sg-skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.skinBtn{border:2px solid transparent;border-radius:11px;padding:12px 5px;color:#fff;font-weight:800;cursor:pointer}.skinBtn.sel{border-color:#fff;box-shadow:0 0 15px rgba(255,255,255,.4)}.skinBtn:disabled{cursor:not-allowed;filter:grayscale(.35)}
 #mobileControls{display:none;position:fixed;inset:0;z-index:35;pointer-events:none}.joy{position:absolute;width:118px;height:118px;border-radius:50%;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.35);pointer-events:auto;touch-action:none}.joyKnob{position:absolute;width:48px;height:48px;left:33px;top:33px;border-radius:50%;background:rgba(255,255,255,.55)}#joyBlue{left:18px;bottom:28px}#joyRed{right:18px;bottom:28px}.kickBtn{position:absolute;bottom:30px;width:64px;height:64px;border-radius:50%;border:2px solid rgba(255,255,255,.5);color:#fff;font-size:27px;font-weight:900;pointer-events:auto;touch-action:none}.dashBtn{position:absolute;bottom:103px;width:43px;height:43px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.5);color:#fff;font-size:22px;pointer-events:auto}.cool{font-size:12px}.blueMobile{left:148px;background:rgba(37,128,255,.75)}.redMobile{right:148px;background:rgba(255,48,48,.75)}.blueDash{left:166px}.redDash{right:166px}
 #crowdLabel{display:none}
 #scoreColorTest{display:none}
@@ -440,11 +440,12 @@ button{
     <div class="sg-row"><label>🎥 Replays</label><input id="onlineOptReplay" type="checkbox" checked></div>
     <div class="sg-row"><label>⏱️ Prorrogação de 30 segundos</label><input id="onlineOptOvertime" type="checkbox"></div>
     <div class="sg-row"><label>🧤 Goleiros</label><input id="onlineOptKeepers" type="checkbox"></div>
-    <button id="onlineStartButton" class="menuButton" onclick="iniciarSalaOnline()">⚽ ENVIAR CONVITE PARA ENTRAR</button>
+    <button id="onlineStartButton" class="menuButton" onclick="iniciarSalaOnline()">⚽ PREPARAR PARTIDA</button>
    </div>
    <div id="onlineClientWaiting" class="onlineSmall hidden">O criador está escolhendo as opções da partida...</div>
    <button id="onlineEnterMatch" class="menuButton blueButton hidden" onclick="entrarNaPartidaOnline()">⚽ ENTRAR NA PARTIDA</button>
    <div id="onlineHostWaitingStart" class="onlineSmall hidden">Aguardando o segundo jogador entrar na partida...</div>
+   <button class="menuButton secondary" onclick="abrirSkinsOnline()">🎨 SKINS</button>
    <div class="chatBox">
     <div style="font-weight:900;margin-bottom:7px">💬 CHAT DA SALA</div>
     <div id="onlineChatLog" class="chatLog"></div>
@@ -458,6 +459,15 @@ button{
   </div>
   <p class="onlineSmall">O criador fica com o Azul. Quem entrar fica com o Vermelho.</p>
   <button class="menuButton secondary" onclick="fecharOnline()">◀️ VOLTAR</button>
+ </div>
+</div>
+
+<div id="onlineSkinsPanel" class="overlay hidden" style="z-index:130">
+ <div class="sg-panel" style="max-width:560px;text-align:center">
+  <h1 class="menuTitle">🎨 SKINS ONLINE</h1>
+  <p id="onlineSkinDescription" class="menuDescription">Escolha a sua skin para esta sala.</p>
+  <div id="onlineSkinsGrid" class="sg-skin-grid"></div>
+  <button class="menuButton secondary" onclick="fecharSkinsOnline()">◀️ VOLTAR</button>
  </div>
 </div>
 
@@ -544,6 +554,8 @@ button{
             <div>🧤 <b>Goleiros</b> — novo recurso opcional nas partidas.</div>
             <div>👤 <b>Perfil e nickname</b> — seu nome pode ser alterado e fica salvo neste PC.</div>
             <div>⌨️ <b>Remapeamento de teclado</b> — todos os controles de PC podem ser personalizados.</div>
+            <div>🎬 <b>Pular replay online</b> — só quem marcou o gol pode pular, e o outro jogador acompanha.</div>
+            <div>🎨 <b>Skins no modo online</b> — cada jogador escolhe sua própria skin na sala.</div>
             <div>💬 <b>Chat online</b> — converse com o outro jogador dentro da sala.</div>
         </div>
         <button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button>
@@ -3375,7 +3387,7 @@ function desenharBola(){
     ctx.stroke();
 
     ctx.fillStyle=
-        "rgba(30,30,30,.7)";
+        "rgba(150,150,150,.85)";
 
     ctx.beginPath();
 
@@ -3574,7 +3586,8 @@ const online={
  active:false,host:false,peer:null,conn:null,roomCode:"",connected:false,
  remoteInput:{x:0,y:0,kick:false,dash:false},lastStateSent:0,lastInputSent:0,
  intentionalClose:false,waiting:false,lastError:"",starting:false,clientReady:false,clientEntered:false,connectAttempts:0,chatReady:false,connecting:false,
- startPacket:null,startRetries:0,startTimer:null,connectTimer:null,loadingTimer:null,lastStartNonce:"",startOffer:null
+ startPacket:null,startRetries:0,startTimer:null,connectTimer:null,loadingTimer:null,lastStartNonce:"",startOffer:null,
+ scorerTeam:null,replaySkipSent:false,onlineSkinMode:false
 };
 function onlineSetStatus(text){const e=document.getElementById("onlineStatus");if(e)e.textContent=text;}
 function onlineSetDebug(text){const e=document.getElementById("onlineDebug");if(e)e.textContent=text||"";}
@@ -3656,7 +3669,7 @@ function encerrarOnline(){
  limparTimerConexaoOnline();clearInterval(online.loadingTimer);online.loadingTimer=null;clearTimeout(online.startTimer);online.startTimer=null;
  try{online.conn?.close()}catch(e){}
  try{online.peer?.destroy()}catch(e){}
- online.active=false;online.host=false;online.connected=false;online.waiting=false;online.starting=false;online.clientReady=false;online.clientEntered=false;online.startPacket=null;online.startOffer=null;online.startRetries=0;online.lastStartNonce="";online.connecting=false;
+ online.active=false;online.host=false;online.connected=false;online.waiting=false;online.starting=false;online.clientReady=false;online.clientEntered=false;online.startPacket=null;online.startOffer=null;online.startRetries=0;online.lastStartNonce="";online.connecting=false;online.scorerTeam=null;online.replaySkipSent=false;online.onlineSkinMode=false;
  online.conn=null;online.peer=null;online.roomCode="";online.lastError="";
  online.remoteInput={x:0,y:0,kick:false,dash:false};
 }
@@ -3847,9 +3860,13 @@ function entrarNaPartidaOnline(){
  if(online.clientEntered)return;
  online.clientEntered=true;
  mostrarEntradaPartidaOnline(false);
+ mostrarHostAguardandoEntradaOnline(false);
  onlineSetStatus("Entrando na partida...");
  atualizarBarraOnline(99);
  onlineSend({type:"clientWantsStart",version:4,nonce:online.startOffer.nonce,nickname:getNickname()});
+ // O cliente já possui as skins/opções confirmadas no startOffer.
+ // Iniciar localmente evita depender de um segundo pacote de sinalização.
+ iniciarOnlineClient({type:"start",version:4,skinA:online.startOffer.skinA,skinB:online.startOffer.skinB,options:online.startOffer.options,nonce:online.startOffer.nonce});
 }
 function iniciarOnlineHost(){
  if(!online.host||!online.connected||!online.clientEntered)return;
@@ -3998,8 +4015,48 @@ function processarMensagemOnline(d){
   iniciarOnlineHost();
   return;
  }
- if(d.type==="start"&&!online.host){iniciarOnlineClient(d);return;}
+ if(d.type==="start"&&!online.host){
+  if(!online.clientEntered) iniciarOnlineClient(d);
+  else onlineSend({type:"startAck",nonce:d.nonce});
+  return;
+ }
  if(d.type==="startAck"&&online.host){clearTimeout(online.startTimer);online.startTimer=null;online.startPacket=null;online.startRetries=0;online.startOffer=null;finalizarBarraOnline(true);onlineSetStatus("Partida online iniciada nos dois dispositivos!");enviarEstadoOnline();return;}
+ if(d.type==="skinChange"){
+   const requested=String(d.skin||"");
+   if(!SKINS[requested]) return;
+   if(online.host && d.side==="vermelho"){
+      if(requested===SG.skinsA){onlineSend({type:"skinReject",side:"vermelho",skin:SG.skinsA});return;}
+      SG.skinsB=requested;applySkin("vermelho",requested);onlineSend({type:"skinSync",side:"vermelho",skin:requested});
+      return;
+   }
+   if(!online.host && d.side==="azul"){
+      if(requested===SG.skinsB){onlineSend({type:"skinReject",side:"azul",skin:SG.skinsB});return;}
+      SG.skinsA=requested;applySkin("azul",requested);onlineSend({type:"skinSync",side:"azul",skin:requested});
+      return;
+   }
+ }
+ if(d.type==="skinSync"){
+   if(d.side==="azul" && SKINS[d.skin]){SG.skinsA=d.skin;applySkin("azul",d.skin);}
+   if(d.side==="vermelho" && SKINS[d.skin]){SG.skinsB=d.skin;applySkin("vermelho",d.skin);}
+   renderOnlineSkins();
+   return;
+ }
+ if(d.type==="skinReject"){
+   onlineSetStatus("Essa skin já está sendo usada pelo outro jogador.");
+   return;
+ }
+ if(d.type==="replayStart"&&!online.host){
+   online.scorerTeam=d.scorer||null;
+   online.replaySkipSent=false;
+   replayData=replayFrames.map(f=>({azul:{...f.azul},vermelho:{...f.vermelho},bola:{...f.bola},goleiroA:f.goleiroA?{...f.goleiroA}:null,goleiroB:f.goleiroB?{...f.goleiroB}:null}));
+   if(SG.replay) iniciarReplayLimpo();
+   return;
+ }
+ if(d.type==="replaySkip"){
+   pararReplay();
+   resetarDepoisReplay();
+   return;
+ }
  if(d.type==="chat"){addChatLine(d.nickname||"Jogador",d.text||"");return;}
  if(d.type==="input"&&online.host){online.remoteInput.x=Number(d.x)||0;online.remoteInput.y=Number(d.y)||0;if(d.kick)online.remoteInput.kick=true;if(d.dash)online.remoteInput.dash=true;return;}
  if(d.type==="state"&&!online.host){aplicarEstadoOnline(d.state);return;}
@@ -4027,6 +4084,38 @@ function aplicarEstadoOnline(s){
  jogoAtivo=!!s.jogoAtivo;jogoPausado=!!s.jogoPausado;atualizarControlesMobile();
 }
 function enviarEstadoOnline(){if(!online.host||!online.connected)return;const now=performance.now();if(now-online.lastStateSent<45)return;online.lastStateSent=now;onlineSend({type:"state",state:estadoOnline()});}
+
+function abrirSkinsOnline(){
+ if(!online.active){abrirSkins();return;}
+ online.onlineSkinMode=true;
+ const panel=document.getElementById("onlineSkinsPanel");
+ if(panel)panel.classList.remove("hidden");
+ const desc=document.getElementById("onlineSkinDescription");
+ if(desc)desc.textContent=(online.host?"Você joga de Azul.":"Você joga de Vermelho.")+" Escolha sua skin.";
+ renderOnlineSkins();
+}
+function fecharSkinsOnline(){
+ online.onlineSkinMode=false;
+ document.getElementById("onlineSkinsPanel")?.classList.add("hidden");
+}
+function renderOnlineSkins(){
+ const grid=document.getElementById("onlineSkinsGrid");
+ if(!grid)return;
+ const current=online.host?SG.skinsA:SG.skinsB;
+ const blocked=online.host?SG.skinsB:SG.skinsA;
+ grid.innerHTML=Object.entries(SKINS).map(([key,s])=>{
+   const disabled=key===blocked;
+   return `<button class="skinBtn ${key===current?"sel":""}" ${disabled?"disabled":""} style="background:${s.color};color:${s.color==="#fff"||s.color==="#ffd52e"?"#111":"#fff"};opacity:${disabled?.45:1}" onclick="selecionarSkinOnline('${key}')">${s.emoji} ${s.name}${disabled?" — ocupada":""}</button>`;
+ }).join("");
+}
+function selecionarSkinOnline(key){
+ if(!online.active||!SKINS[key])return;
+ const blocked=online.host?SG.skinsB:SG.skinsA;
+ if(key===blocked){onlineSetStatus("Essa skin já está sendo usada pelo outro jogador.");return;}
+ if(online.host){SG.skinsA=key;applySkin("azul",key);onlineSend({type:"skinChange",side:"azul",skin:key});}
+ else{SG.skinsB=key;applySkin("vermelho",key);onlineSend({type:"skinChange",side:"vermelho",skin:key});}
+ renderOnlineSkins();
+}
 
 /* ---------- dispositivo ---------- */
 function getNickname(){try{return (localStorage.getItem("soccerGolNickname")||"").trim()||"Jogador";}catch(e){return "Jogador";}}
@@ -4081,7 +4170,7 @@ function adicionarBotoesMenu(){
 adicionarBotoesMenu();
 
 function esconderExtras(){
-    ["optionsPanel","settingsPanel","skinsPanel","replaysPanel","creditsPanel","updatesPanel","onlinePanel","nicknamePanel","profilePanel"].forEach(id=>{
+    ["optionsPanel","settingsPanel","skinsPanel","replaysPanel","creditsPanel","updatesPanel","onlinePanel","onlineSkinsPanel","nicknamePanel","profilePanel"].forEach(id=>{
         const e=document.getElementById(id);
         if(e)e.classList.add("hidden");
     });
@@ -4463,7 +4552,16 @@ moverJogador=function(j,cima,baixo,esq,dir){
 /* ---------- teclado ---------- */
 document.addEventListener("keydown",e=>{
     if(isEditableTarget(e.target))return;
-    if(e.code==="Space" && executandoReplay){e.preventDefault();pararReplay();resetarDepoisReplay();}
+    if(e.code==="Space" && executandoReplay){
+        e.preventDefault();
+        if(modoJogo==="online"){
+            const meuTime=online.host?"azul":"vermelho";
+            if(online.scorerTeam!==meuTime)return;
+            if(!online.replaySkipSent){online.replaySkipSent=true;onlineSend({type:"replaySkip",team:meuTime});}
+        }
+        pararReplay();
+        resetarDepoisReplay();
+    }
 },true);
 
 /* ---------- carrinho ---------- */
@@ -4563,6 +4661,8 @@ const replayHistorico=[];
 function mostrarGol(time){
     const vencedor=(time==="azul"||/AZUL/i.test(String(time)))?"azul":"vermelho";
     SG.goalLock=true;
+    online.scorerTeam=(modoJogo==="online"?vencedor:null);
+    online.replaySkipSent=false;
     jogoPausado=true;
 
     const skin=styledTeam(vencedor);
@@ -4592,6 +4692,9 @@ function mostrarGol(time){
         goleiroB:f.goleiroB?{...f.goleiroB}:null
     }));
 
+    if(modoJogo==="online" && online.host && SG.replay){
+        onlineSend({type:"replayStart",scorer:vencedor});
+    }
     if(SG.replay) iniciarReplayLimpo();
     else setTimeout(resetarDepoisReplay,900);
 }
@@ -4602,6 +4705,16 @@ function loopSeguro(){
         if(modoJogo==="online" && !online.host){
             // Cliente: não executa a física local; recebe o estado do host.
             enviarInputOnline(false,false);
+            if(SG.replay && !SG.goalLock && jogoAtivo){
+                replayFrames.push({
+                    azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},
+                    vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},
+                    bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},
+                    goleiroA:{x:goleiroA.x,y:goleiroA.y,vx:goleiroA.vx,vy:goleiroA.vy,cor:goleiroA.cor},
+                    goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,cor:goleiroB.cor}
+                });
+                if(replayFrames.length>480)replayFrames.shift();
+            }
         }else{
             if(!SG.manualPause && !SG.goalLock)jogoPausado=false;
             if(!jogoAtivo || !jogoPausado){
@@ -4760,7 +4873,7 @@ desenharBola=function(){
     ctx.lineWidth=1.2;
     ctx.stroke();
 
-    ctx.fillStyle="#111";
+    ctx.fillStyle="rgba(150,150,150,.9)";
     ctx.beginPath();
     ctx.arc(bola.x,bola.y,2.2,0,Math.PI*2);
     ctx.fill();
