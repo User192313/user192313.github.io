@@ -541,26 +541,7 @@ button{
     </div>
 </div>
 
-<div id="updatesPanel" class="overlay hidden">
-    <div class="sg-panel" style="max-width:560px">
-        <h1 class="menuTitle" style="text-align:center">📢 NOVIDADES</h1>
-        <div class="updatesDate">Atualizações — 17/08/2026</div>
-        <div class="updatesList">
-            <div>👟 <b>Carrinho</b> — novo movimento especial disponível.</div>
-            <div>⏱️ <b>Prorrogação</b> — opção de 30 segundos.</div>
-            <div>🎨 <b>Skins</b> — novas opções e bloqueio de skins duplicadas entre os times.</div>
-            <div>🌐 <b>Modo Online 1v1</b> — crie ou entre em salas e jogue em dispositivos diferentes.</div>
-            <div>🤖 <b>Balanceamento da IA</b> — ajustes de comportamento e dificuldade.</div>
-            <div>🧤 <b>Goleiros</b> — novo recurso opcional nas partidas.</div>
-            <div>👤 <b>Perfil e nickname</b> — seu nome pode ser alterado e fica salvo neste PC.</div>
-            <div>⌨️ <b>Remapeamento de teclado</b> — todos os controles de PC podem ser personalizados.</div>
-            <div>🎬 <b>Pular replay online</b> — só quem marcou o gol pode pular, e o outro jogador acompanha.</div>
-            <div>🎨 <b>Skins no modo online</b> — cada jogador escolhe sua própria skin na sala.</div>
-            <div>💬 <b>Chat online</b> — converse com o outro jogador dentro da sala.</div>
-        </div>
-        <button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button>
-    </div>
-</div>
+<div id="updatesPanel" class="overlay hidden"><div class="sg-panel" style="max-width:580px"><h1 class="menuTitle" style="text-align:center">📢 NOVIDADES</h1><div class="sg-grid" style="margin:14px 0 10px"><button id="updatesTab17" class="menuButton blueButton" onclick="mostrarAtualizacao(17)">📁 17/08/2026</button><button id="updatesTab18" class="menuButton secondary" onclick="mostrarAtualizacao(18)">📁 18/08/2026</button></div><div id="updatesContent17"><div class="updatesDate">Atualizações — 17/08/2026</div><div class="updatesList"><div>👟 Carrinho</div><div>⏱️ Prorrogação de 30 segundos</div><div>🎨 Skins e bloqueio de duplicadas</div><div>🌐 Modo Online 1v1</div><div>🤖 Balanceamento da IA</div><div>🧤 Goleiros</div><div>👤 Perfil e nickname</div><div>⌨️ Remapeamento de teclado</div><div>🎬 Pular replay online</div><div>💬 Chat online</div></div></div><div id="updatesContent18" class="hidden"><div class="updatesDate">Atualizações — 18/08/2026</div><div class="updatesList"><div>🦶 Animação de chute</div><div>💨 Efeito visual de chute rápido</div><div>🎬 Zoom de gol</div><div>📜 Histórico com replay completo</div><div>👤 Nicknames no Online</div><div>⌨️ Tecla Ç corrigida</div><div>🧹 Limpeza do estado Online</div><div>📱 Carregamento inicial</div></div></div><button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button></div></div><div id="startupLoading" class="overlay hidden" style="z-index:200;background:rgba(4,12,7,.97)"><div class="sg-panel" style="max-width:420px;text-align:center"><div class="logo" style="font-size:44px">⚽</div><h2 class="menuTitle">Carregando SoccerGol...</h2><div style="height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:18px 0"><div id="startupLoadingBar" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);transition:width .12s linear"></div></div><div id="startupLoadingText" style="font-size:13px;color:#999">Preparando o campo...</div></div></div>
 
 <!-- MODOS -->
 
@@ -881,7 +862,7 @@ const DEFAULT_KEYS={
 let keyMap={...DEFAULT_KEYS};
 try{const saved=JSON.parse(localStorage.getItem("soccerGolKeyMap")||"null");if(saved&&typeof saved==="object")keyMap={...DEFAULT_KEYS,...saved};}catch(e){}
 function isEditableTarget(target){return !!target && (target.tagName==="INPUT"||target.tagName==="TEXTAREA"||target.tagName==="SELECT"||target.isContentEditable);}
-function keyLabel(code){const map={KeyW:"W",KeyS:"S",KeyA:"A",KeyD:"D",KeyE:"E",KeyC:"C",KeyP:"P",ShiftRight:"SHIFT DIREITO",ArrowUp:"↑",ArrowDown:"↓",ArrowLeft:"←",ArrowRight:"→",IntlRo:"Ç",Space:"ESPAÇO"};return map[code]||code.replace(/^Key/,'');}
+function keyLabel(code){const map={KeyW:"W",KeyS:"S",KeyA:"A",KeyD:"D",KeyE:"E",KeyC:"C",KeyP:"P",ShiftRight:"SHIFT DIREITO",ArrowUp:"↑",ArrowDown:"↓",ArrowLeft:"←",ArrowRight:"→",IntlRo:"Ç",Semicolon:"Ç",Space:"ESPAÇO"};return map[code]||code.replace(/^Key/,'');}
 function saveKeyMap(){try{localStorage.setItem("soccerGolKeyMap",JSON.stringify(keyMap));}catch(e){}}
 function refreshKeybindUI(){document.querySelectorAll(".keybindBtn[data-bind]").forEach(btn=>{const b=btn.dataset.bind;btn.textContent=btn.textContent.split(" — ")[0]+" — "+keyLabel(keyMap[b]);});}
 function setupKeybindButtons(){document.querySelectorAll(".keybindBtn[data-bind]").forEach(btn=>{btn.addEventListener("click",()=>{const b=btn.dataset.bind;btn.classList.add("bindingNow");btn.textContent="⌨️ Pressione uma tecla...";const handler=e=>{if(isEditableTarget(e.target))return;e.preventDefault();e.stopPropagation();keyMap[b]=e.code;saveKeyMap();btn.classList.remove("bindingNow");refreshKeybindUI();document.removeEventListener("keydown",handler,true);};document.addEventListener("keydown",handler,true);});});refreshKeybindUI();}
@@ -896,7 +877,7 @@ document.addEventListener("keydown",e=>{
     if(!e.repeat&&e.code===keyMap.blueKick){chute(azul);e.preventDefault();return;}
     if(!e.repeat&&e.code===keyMap.redKick){chute(vermelho);e.preventDefault();return;}
     if(!e.repeat&&e.code===keyMap.blueDash){if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(azul);e.preventDefault();return;}
-    if(!e.repeat&&e.code===keyMap.redDash){if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(vermelho);e.preventDefault();return;}
+    if(!e.repeat&&(e.code===keyMap.redDash||((keyMap.redDash==="IntlRo"||keyMap.redDash==="Semicolon")&&(e.key==="ç"||e.key==="Ç")))){if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(vermelho);e.preventDefault();return;}
 },true);
 document.addEventListener("keyup",e=>{teclas[e.key]=false;teclas[e.code]=false;},true);
 
@@ -1001,6 +982,11 @@ let contagemAtiva=false;
 */
 
 const replayFrames=[];
+let partidaGravada=[];
+let reproduzindoPartidaCompleta=false;
+let golZoom={active:false,scale:1,targetX:600,targetY:325,timer:null};
+let kickVisual={j:null,until:0};
+let bolaChuteFx=0;
 
 /*
     Aproximadamente 8 segundos de memória.
@@ -1055,6 +1041,12 @@ function criarFrame(){
         timestamp:performance.now()
     };
 }
+
+function frameCompletoAtual(){return{azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},goleiroA:{x:goleiroA.x,y:goleiroA.y,vx:goleiroA.vx,vy:goleiroA.vy,dx:goleiroA.dx||0,dy:goleiroA.dy||0,cor:goleiroA.cor},goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,dx:goleiroB.dx||0,dy:goleiroB.dy||0,cor:goleiroB.cor}};}
+function gravarFramePartida(){if(!jogoAtivo||jogoPausado||executandoReplay)return;partidaGravada.push(frameCompletoAtual());if(partidaGravada.length>9800)partidaGravada.shift();}
+function iniciarZoomGol(j){clearTimeout(golZoom.timer);golZoom.active=true;golZoom.scale=1.42;golZoom.targetX=j.x;golZoom.targetY=j.y;golZoom.timer=setTimeout(()=>{golZoom.active=false;if(SG.replay&&replayData.length>1)iniciarReplayLimpo();else setTimeout(resetarBolaDepoisDoGol,180);},620);}
+function pararZoomGol(){clearTimeout(golZoom.timer);golZoom.active=false;golZoom.scale=1;}
+function iniciarReplayPartidaCompleta(i){const r=replayHistorico[i];if(!r?.fullReplay?.length)return;reproduzindoPartidaCompleta=true;replayData=r.fullReplay.map(f=>JSON.parse(JSON.stringify(f)));esconderMenus();document.getElementById("replaysPanel")?.classList.add("hidden");iniciarReplayLimpo();}
 
 /* =========================================================
    SALVAR REPLAY
@@ -1447,6 +1439,7 @@ function alternarMusica(){
 function iniciarJogo(){
 
     clearInterval(intervaloTempo);
+    pararZoomGol();reproduzindoPartidaCompleta=false;partidaGravada=[];
     SG.otUsed=false;
 
     pararReplay();
@@ -2678,11 +2671,9 @@ function atualizarIndicadorIA(){
 ========================================================= */
 
 function finalizarJogo(){
-    jogoAtivo=false;
-    atualizarPerfilVisibilidade();
-    jogoPausado=false;
-    pararReplay();
-    clearInterval(intervaloTempo);
+    jogoAtivo=false;atualizarPerfilVisibilidade();jogoPausado=false;pararZoomGol();pararReplay();clearInterval(intervaloTempo);
+    if(partidaGravada.length>30){replayHistorico.unshift({score:golsAzul+" x "+golsVermelho,time:new Date().toLocaleTimeString(),skinA:SG.skinsA,skinB:SG.skinsB,fullReplay:partidaGravada.map(f=>JSON.parse(JSON.stringify(f)))});replayHistorico.splice(5);}
+
     document.getElementById('pausaOverlay').style.display='none';
 
     const skinA=getTeamSkin('azul');
@@ -2707,6 +2698,7 @@ function finalizarJogo(){
 
 function voltarMenu(){
 
+    if(online.active||modoJogo==="online")encerrarOnline();pararZoomGol();reproduzindoPartidaCompleta=false;
     jogoAtivo=false;
     atualizarPerfilVisibilidade();
     jogoPausado=false;
@@ -2746,7 +2738,7 @@ function reiniciarAtual(){
 ========================================================= */
 
 function reset(){
-    kickState=null;
+    kickState=null;kickVisual={j:null,until:0};bolaChuteFx=0;
 
     azul.x=260;
     azul.y=325;
@@ -3270,6 +3262,8 @@ function desenharJogador(j){
 
     ctx.fill();
 
+    if(kickVisual.j===j&&kickVisual.until>performance.now()){const p=(kickVisual.until-performance.now())/220;ctx.save();ctx.translate(j.x,j.y);ctx.rotate(Math.atan2(j.dy,j.dx));ctx.strokeStyle="rgba(255,255,255,"+(0.35+p*0.65)+")";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(j.r-1,0);ctx.lineTo(j.r+10+p*8,0);ctx.stroke();ctx.beginPath();ctx.arc(j.r+6,0,5+p*3,-.8,.8);ctx.stroke();ctx.restore();} if(modoJogo==="online"){const nome=j===azul?(online.hostNickname||"Jogador"):(online.guestNickname||"Jogador");ctx.save();ctx.font="bold 10px Arial";ctx.textAlign="center";ctx.fillStyle="rgba(0,0,0,.72)";ctx.fillRect(j.x-34,j.y-j.r-18,68,15);ctx.fillStyle="white";ctx.fillText(String(nome).slice(0,12),j.x,j.y-j.r-7);ctx.restore();}
+
     /*
        Indicador da IA
     */
@@ -3400,6 +3394,7 @@ function desenharBola(){
     );
 
     ctx.fill();
+    if(bolaChuteFx>0){ctx.save();ctx.globalAlpha=Math.min(.55,bolaChuteFx*.75);ctx.strokeStyle="rgba(255,255,255,.75)";ctx.lineWidth=2;for(let i=1;i<=4;i++){const len=i*7*bolaChuteFx;ctx.beginPath();ctx.moveTo(bola.x-bola.dx*(bola.r+len),bola.y-bola.dy*(bola.r+len));ctx.lineTo(bola.x-bola.dx*(bola.r+len+12),bola.y-bola.dy*(bola.r+len+12));ctx.stroke();}ctx.restore();}
 
     ctx.restore();
 }
@@ -3451,23 +3446,7 @@ function desenharHUD(){
    DESENHAR
 ========================================================= */
 
-function desenhar(){
-    desenharCampo();
-    desenharEfeitoDash();
-
-    if(SG && SG.keepers){
-        desenharJogador(goleiroA);
-        desenharJogador(goleiroB);
-    }
-
-    desenharJogador(azul);
-
-    desenharJogador(vermelho);
-
-    desenharBola();
-
-    desenharHUD();
-}
+function desenhar(){ctx.save();if(golZoom.active){ctx.translate(canvas.width/2,canvas.height/2);ctx.scale(golZoom.scale,golZoom.scale);ctx.translate(-golZoom.targetX,-golZoom.targetY);}desenharCampo();desenharEfeitoDash();if(SG&&SG.keepers){desenharJogador(goleiroA);desenharJogador(goleiroB);}desenharJogador(azul);desenharJogador(vermelho);desenharBola();ctx.restore();desenharHUD();}
 
 /* =========================================================
    LOOP PRINCIPAL
@@ -3587,7 +3566,7 @@ const online={
  remoteInput:{x:0,y:0,kick:false,dash:false},lastStateSent:0,lastInputSent:0,
  intentionalClose:false,waiting:false,lastError:"",starting:false,clientReady:false,clientEntered:false,connectAttempts:0,chatReady:false,connecting:false,
  startPacket:null,startRetries:0,startTimer:null,connectTimer:null,loadingTimer:null,lastStartNonce:"",startOffer:null,
- scorerTeam:null,replaySkipSent:false,onlineSkinMode:false
+ scorerTeam:null,replaySkipSent:false,onlineSkinMode:false,hostNickname:"Jogador",guestNickname:"Jogador"
 };
 function onlineSetStatus(text){const e=document.getElementById("onlineStatus");if(e)e.textContent=text;}
 function onlineSetDebug(text){const e=document.getElementById("onlineDebug");if(e)e.textContent=text||"";}
@@ -3971,7 +3950,7 @@ function processarMensagemOnline(d){
  if(d.type==="join"&&online.host){
   let skinB=d.skin||SG.skinsB;
   if(skinB===SG.skinsA)skinB=escolherSkinDisponivel(SG.skinsA,"");
-  SG.skinsB=skinB;applySkin("vermelho",skinB);
+  SG.skinsB=skinB;applySkin("vermelho",skinB);online.guestNickname=String(d.nickname||"Jogador").slice(0,16);
   online.waiting=false;online.clientReady=false;
   onlineSetStatus("Jogador conectado! Escolha as opções e aguarde a confirmação.");
   addChatLine("Sistema",`${d.nickname||"Jogador"} entrou na sala.`);
@@ -3981,7 +3960,7 @@ function processarMensagemOnline(d){
   return;
  }
  if(d.type==="roomReady"&&!online.host){
-  SG.skinsA=d.skinA||SG.skinsA;SG.skinsB=d.skinB||SG.skinsB;
+  online.hostNickname=String(d.hostNickname||"Jogador").slice(0,16);online.guestNickname=getNickname();SG.skinsA=d.skinA||SG.skinsA;SG.skinsB=d.skinB||SG.skinsB;
   applySkin("azul",SG.skinsA);applySkin("vermelho",SG.skinsB);
   onlineSetStatus(`Conectado! ${d.hostNickname||"Host"} está escolhendo as opções...`);onlineSetDebug("Sala sincronizada. Enviando confirmação...");
   addChatLine("Sistema",`Você entrou na sala de ${d.hostNickname||"Host"}.`);
@@ -4119,6 +4098,7 @@ function selecionarSkinOnline(key){
 
 /* ---------- dispositivo ---------- */
 function getNickname(){try{return (localStorage.getItem("soccerGolNickname")||"").trim()||"Jogador";}catch(e){return "Jogador";}}
+function hasSavedNickname(){try{return !!(localStorage.getItem("soccerGolNickname")||"").trim();}catch(e){return false;}}
 function setNickname(v){v=censurarTexto(String(v||"").trim()).replace(/[<>]/g,"").slice(0,16)||"Jogador";try{localStorage.setItem("soccerGolNickname",v);}catch(e){}const bp=document.getElementById("botaoPerfil"); if(bp)bp.textContent="👤 "+v;return v;}
 function salvarNicknameInicial(){const v=setNickname(document.getElementById("nicknameInput")?.value);document.getElementById("nicknamePanel")?.classList.add("hidden");document.getElementById("updatesPanel")?.classList.remove("hidden");atualizarPerfilVisibilidade();}
 function abrirPerfil(){const p=document.getElementById("profilePanel");const i=document.getElementById("profileNicknameInput");if(i)i.value=getNickname();p?.classList.remove("hidden");}
@@ -4138,9 +4118,9 @@ function setDevice(device){
     atualizarControlesMobile();
     const nick=getNickname();
     const ni=document.getElementById("nicknameInput");
-    if(ni)ni.value=nick;
+    if(ni)ni.value=hasSavedNickname()?nick:"";
     const bp=document.getElementById("botaoPerfil"); if(bp)bp.textContent="👤 "+nick;
-    if(nick){
+    if(hasSavedNickname()){
         document.getElementById("nicknamePanel")?.classList.add("hidden");
         document.getElementById("updatesPanel")?.classList.remove("hidden");
     }else{
@@ -4149,6 +4129,7 @@ function setDevice(device){
     atualizarPerfilVisibilidade();
 }
 
+function mostrarAtualizacao(dia){const a=dia===17;document.getElementById("updatesContent17")?.classList.toggle("hidden",!a);document.getElementById("updatesContent18")?.classList.toggle("hidden",a);document.getElementById("updatesTab17")?.classList.toggle("blueButton",a);document.getElementById("updatesTab17")?.classList.toggle("secondary",!a);document.getElementById("updatesTab18")?.classList.toggle("blueButton",!a);document.getElementById("updatesTab18")?.classList.toggle("secondary",a);}
 function fecharAtualizacoes(){
     document.getElementById("updatesPanel")?.classList.add("hidden");
     voltarMenuPrincipal();
@@ -4180,15 +4161,7 @@ esconderMenus=function(){_esconderMenus();esconderExtras()};
 
 function abrirConfiguracoes(){esconderMenus();document.getElementById("settingsPanel")?.classList.remove("hidden")}
 function abrirSkins(){esconderMenus();renderSkins();document.getElementById("skinsPanel")?.classList.remove("hidden")}
-function renderReplayList(){
- const el=document.getElementById("replayList");
- if(!el)return;
- if(!replayHistorico.length){el.innerHTML='<div class="onlineSmall">Nenhuma partida registrada nesta sessão.</div>';return;}
- el.innerHTML=replayHistorico.map((r,i)=>{
-   const skin=SKINS[r.team]||SKINS.blue;
-   return `<div class="historyItem"><b>#${i+1} — ${skin.emoji} ${skin.name}</b><br><span style="color:#bbb">Placar: ${r.score}</span><br><span style="color:#888;font-size:12px">${r.time}</span></div>`;
- }).join('');
-}
+function renderReplayList(){const el=document.getElementById("replayList");if(!el)return;if(!replayHistorico.length){el.innerHTML='<div class="onlineSmall">Nenhuma partida registrada nesta sessão.</div>';return;}el.innerHTML=replayHistorico.map((r,i)=>{const a=SKINS[r.skinA]||SKINS.blue,b=SKINS[r.skinB]||SKINS.red;return `<div class="historyItem"><b>#${i+1} — ${a.emoji} ${a.name} ${r.score} ${b.emoji} ${b.name}</b><br><span style="color:#888;font-size:12px">${r.time}</span><div style="display:flex;justify-content:flex-end"><button class="menuButton secondary" style="width:auto;padding:8px 12px;margin:6px 0 0" onclick="iniciarReplayPartidaCompleta(${i})">▶️ Rever partida inteira</button></div></div>`;}).join('');}
 function abrirReplays(){esconderMenus();renderReplayList();document.getElementById("replaysPanel")?.classList.remove("hidden")}
 
 const _abrirModos=abrirModos;
@@ -4362,6 +4335,7 @@ function tentarCanetaSeguro(j){
     bola.x=outro.x+dx*(outro.r+bola.r+10);
     bola.y=outro.y+dy*(outro.r+bola.r+10);
     bola.dx=dx;bola.dy=dy;bola.vel=14;bola.vx=dx*14;bola.vy=dy*14;
+    kickVisual={j,until:performance.now()+180};bolaChuteFx=1;
     kickAnim=null;
     return true;
 }
@@ -4374,7 +4348,7 @@ function chute(j){
     let dx=j.dx,dy=j.dy; const mag=Math.hypot(dx,dy);
     if(mag<.01){dx=(bola.x-j.x)/(d||1);dy=(bola.y-j.y)/(d||1)}else{dx/=mag;dy/=mag}
     const paraTras=(j.vx*dx+j.vy*dy)<-.35;
-    kickAnim={j,dx,dy,t:0,paraTras};
+    kickAnim={j,dx,dy,t:0,paraTras};kickVisual={j,until:performance.now()+220};bolaChuteFx=1;
     return true;
 }
 function atualizarChute(){
@@ -4616,6 +4590,7 @@ let replayIndex=0;
 let replayPlaying=false;
 
 function iniciarReplayLimpo(){
+    pararZoomGol();
     if(!SG.replay || replayData.length<2){
         resetarDepoisReplay();
         return;
@@ -4647,57 +4622,11 @@ function pararReplay(){
     executandoReplay=false;
     document.getElementById("replayTexto").style.display="none";
 }
-function resetarDepoisReplay(){
-    pararReplay();
-    document.getElementById("golOverlay").style.display="none";
-    reset();
-    SG.goalLock=false;
-    liberarPausa();
-    replayData=[];
-}
+function resetarDepoisReplay(){pararReplay();pararZoomGol();document.getElementById("golOverlay").style.display="none";reset();SG.goalLock=false;liberarPausa();reproduzindoPartidaCompleta=false;replayData=[];}
 
 /* ---------- gol seguro ---------- */
 const replayHistorico=[];
-function mostrarGol(time){
-    const vencedor=(time==="azul"||/AZUL/i.test(String(time)))?"azul":"vermelho";
-    SG.goalLock=true;
-    online.scorerTeam=(modoJogo==="online"?vencedor:null);
-    online.replaySkipSent=false;
-    jogoPausado=true;
-
-    const skin=styledTeam(vencedor);
-    const txt=document.getElementById("golTexto");
-    const sub=document.getElementById("golSub");
-
-    txt.textContent="⚽ GOL!";
-    txt.style.color="#fff";
-    txt.style.textShadow="0 0 5px #fff,0 0 14px #ffe600,0 0 30px #ff9d00,0 0 50px #ff3300";
-    sub.textContent=skin.emoji+" "+skin.name.toUpperCase()+" GOL!";
-    sub.style.color=skin.color;
-    sub.style.webkitTextStroke="1px "+skin.outline;
-    document.getElementById("golOverlay").style.display="flex";
-
-    replayHistorico.unshift({
-        team:vencedor,
-        score:golsAzul+" x "+golsVermelho,
-        time:new Date().toLocaleTimeString()
-    });
-    replayHistorico.splice(8);
-
-    replayData=replayFrames.map(f=>({
-        azul:{...f.azul},
-        vermelho:{...f.vermelho},
-        bola:{...f.bola},
-        goleiroA:f.goleiroA?{...f.goleiroA}:null,
-        goleiroB:f.goleiroB?{...f.goleiroB}:null
-    }));
-
-    if(modoJogo==="online" && online.host && SG.replay){
-        onlineSend({type:"replayStart",scorer:vencedor});
-    }
-    if(SG.replay) iniciarReplayLimpo();
-    else setTimeout(resetarDepoisReplay,900);
-}
+function mostrarGol(time){const vencedor=(time==="azul"||/AZUL/i.test(String(time)))?"azul":"vermelho";SG.goalLock=true;online.scorerTeam=(modoJogo==="online"?vencedor:null);online.replaySkipSent=false;jogoPausado=true;const skin=styledTeam(vencedor),txt=document.getElementById("golTexto"),sub=document.getElementById("golSub");txt.textContent="⚽ GOL!";txt.style.color="#fff";sub.textContent=skin.emoji+" "+skin.name.toUpperCase()+" GOL!";sub.style.color=skin.color;sub.style.webkitTextStroke="1px "+skin.outline;document.getElementById("golOverlay").style.display="flex";replayData=replayFrames.map(f=>({azul:{...f.azul},vermelho:{...f.vermelho},bola:{...f.bola},goleiroA:f.goleiroA?{...f.goleiroA}:null,goleiroB:f.goleiroB?{...f.goleiroB}:null}));if(modoJogo==="online"&&online.host&&SG.replay)onlineSend({type:"replayStart",scorer:vencedor,replay:replayData});iniciarZoomGol(vencedor==="azul"?azul:vermelho);}
 
 /* ---------- loop ÚNICO ---------- */
 function loopSeguro(){
@@ -4715,6 +4644,7 @@ function loopSeguro(){
                 });
                 if(replayFrames.length>480)replayFrames.shift();
             }
+            if(jogoAtivo&&!jogoPausado)gravarFramePartida();
         }else{
             if(!SG.manualPause && !SG.goalLock)jogoPausado=false;
             if(!jogoAtivo || !jogoPausado){
@@ -4724,6 +4654,8 @@ function loopSeguro(){
                 if(modoJogo==="online" && online.host && online.remoteInput.kick){chute(vermelho);online.remoteInput.kick=false;}
                 if(modoJogo==="online" && online.host && online.remoteInput.dash){carrinhoSeguro(vermelho);online.remoteInput.dash=false;}
                 atualizarChute(); atualizarBola(); atualizarEfeitoDash();
+                 bolaChuteFx=Math.max(0,bolaChuteFx-.07);if(kickVisual.until<performance.now())kickVisual.j=null;
+                 gravarFramePartida();
                 if(SG.replay && !SG.goalLock){
                     replayFrames.push({
                     azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},
@@ -4771,9 +4703,12 @@ iniciarJogo=function(){
     atualizarControlesMobile();
 };
 
+function limparEstadoOnlineAoTrocarModo(){if(online.active||modoJogo==="online")encerrarOnline();if(executandoReplay)pararReplay();pararZoomGol();reproduzindoPartidaCompleta=false;replayData=[];replayFrames.length=0;partidaGravada=[];}
+
 /* ---------- opções: botão jogar -> opções ---------- */
 const _selecionarDoisPlayers=selecionarDoisPlayers;
 selecionarDoisPlayers=function(){
+    limparEstadoOnlineAoTrocarModo();
     modoJogo="2players";
     timeHumano="azul";
     atualizarControlesMobile();
@@ -4784,6 +4719,8 @@ selecionarDoisPlayers=function(){
 atualizarControlesMobile();
 const _selecionarDificuldade=selecionarDificuldade;
 selecionarDificuldade=function(d){
+    limparEstadoOnlineAoTrocarModo();
+    modoJogo="ia";
     dificuldadeIA=d;
     atualizarControlesMobile();
     esconderMenus();
@@ -4924,11 +4861,14 @@ colisaoJogadores=function(){
     });
 };
 
-/* loop seguro é iniciado UMA única vez ainda bem */
+function iniciarCarregamentoInicial(){const panel=document.getElementById("startupLoading"),bar=document.getElementById("startupLoadingBar"),text=document.getElementById("startupLoadingText"),device=document.getElementById("deviceChoice");if(!panel||!bar||!device)return;device.classList.add("hidden");panel.classList.remove("hidden");let p=0;const timer=setInterval(()=>{p+=14;bar.style.width=Math.min(100,p)+"%";if(text)text.textContent=p<35?"Preparando o campo...":p<70?"Carregando controles...":"Pronto!";if(p>=100){clearInterval(timer);setTimeout(()=>{panel.classList.add("hidden");device.classList.remove("hidden");},180);}},55);}
+
+/* loop seguro é iniciado UMA única vez */
 loopSeguro();
 setupKeybindButtons();
 setNickname(getNickname());
 prepararChat();
+iniciarCarregamentoInicial();
 
 /* controles mobile visíveis apenas quando selecionado */
 atualizarControlesMobile();
