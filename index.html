@@ -369,7 +369,7 @@ button{
 #deviceChoice,#optionsPanel,#settingsPanel,#skinsPanel,#replaysPanel{z-index:120}
 .sg-panel{width:620px;max-width:94vw;max-height:88vh;overflow:auto;padding:28px;background:rgba(5,12,7,.96);border:1px solid rgba(75,255,125,.45);border-radius:24px;box-shadow:0 25px 80px rgba(0,0,0,.7)}
 .sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sg-row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:10px 0}.sg-row label{color:#ddd}.sg-select,.sg-input{background:#17201a;color:#fff;border:1px solid #49604e;border-radius:9px;padding:10px}
-.sg-skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.skinBtn{border:2px solid transparent;border-radius:11px;padding:12px 5px;color:#fff;font-weight:800;cursor:pointer}.skinBtn.sel{border-color:#fff;box-shadow:0 0 15px rgba(255,255,255,.4)}.skinBtn:disabled{cursor:not-allowed;filter:grayscale(.35)}
+.sg-skin-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.skinBtn{border:2px solid transparent;border-radius:11px;padding:12px 5px;color:#fff;font-weight:800;cursor:pointer}.skinBtn.sel{border-color:#fff;box-shadow:0 0 15px rgba(255,255,255,.4)}.skinBtn:disabled{cursor:not-allowed;filter:grayscale(.35)}
 #mobileControls{display:none;position:fixed;inset:0;z-index:35;pointer-events:none}.joy{position:absolute;width:118px;height:118px;border-radius:50%;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.35);pointer-events:auto;touch-action:none}.joyKnob{position:absolute;width:48px;height:48px;left:33px;top:33px;border-radius:50%;background:rgba(255,255,255,.55)}#joyBlue{left:18px;bottom:28px}#joyRed{right:18px;bottom:28px}.kickBtn{position:absolute;bottom:30px;width:64px;height:64px;border-radius:50%;border:2px solid rgba(255,255,255,.5);color:#fff;font-size:27px;font-weight:900;pointer-events:auto;touch-action:none}.dashBtn{position:absolute;bottom:103px;width:43px;height:43px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.5);color:#fff;font-size:22px;pointer-events:auto}.cool{font-size:12px}.blueMobile{left:148px;background:rgba(37,128,255,.75)}.redMobile{right:148px;background:rgba(255,48,48,.75)}.blueDash{left:166px}.redDash{right:166px}
 #crowdLabel{display:none}
 #scoreColorTest{display:none}
@@ -402,6 +402,18 @@ button{
 .chatLine{margin:4px 0;word-break:break-word}.chatName{font-weight:900;color:#9cffb5}.chatRow{display:flex;gap:8px;margin-top:8px}.chatRow input{flex:1;min-width:0}.chatRow button{width:88px}
 
 </style>
+
+<style id="sg-economy-css">
+#economyBar{position:fixed;top:62px;right:15px;z-index:112;display:flex;gap:8px;align-items:center}
+.economyBtn{padding:9px 13px;border:1px solid rgba(255,255,255,.25);border-radius:10px;background:rgba(5,15,9,.9);color:#fff;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.economyBtn:hover{transform:translateY(-1px)}
+.codeBox{width:420px;max-width:94vw;padding:28px;background:rgba(5,12,7,.97);border:1px solid rgba(75,255,125,.45);border-radius:24px;box-shadow:0 25px 80px rgba(0,0,0,.7);text-align:center}
+.codeInput{width:100%;padding:13px 14px;border-radius:12px;border:1px solid #49604e;background:#111b14;color:#fff;font-size:20px;text-align:center;text-transform:uppercase;letter-spacing:3px}
+.shopOwned{font-size:11px;margin-top:5px;opacity:.9}.shopPrice{display:block;font-size:11px;margin-top:4px;color:#ffe783}.skinLocked{filter:grayscale(.25);opacity:.88}
+#moedasResultado{margin-top:14px;padding:10px 12px;border-radius:12px;background:rgba(255,215,72,.08);border:1px solid rgba(255,215,72,.22);color:#ffe783;font-weight:900}
+@media(max-width:700px){#economyBar{top:auto;bottom:12px;right:12px}.economyBtn{font-size:13px;padding:8px 10px}}
+</style>
+
 </head>
 
 <body>
@@ -438,7 +450,8 @@ button{
    <div id="onlineHostOptions" class="onlineHostOptions hidden">
     <h3 style="margin:10px 0 6px">⚙️ OPÇÕES DA SALA</h3>
     <div class="sg-row"><label>🎥 Replays</label><input id="onlineOptReplay" type="checkbox" checked></div>
-    <div class="sg-row"><label>⏱️ Prorrogação de 30 segundos</label><input id="onlineOptOvertime" type="checkbox"></div>
+    <div class="sg-row"><label>⏱️ Duração da partida</label><select id="onlineOptDuration" class="sg-select"><option value="30">30 segundos</option><option value="45">45 segundos</option><option value="60">1 minuto</option><option value="75">1:15</option><option value="90">1:30</option><option value="120" selected>2 minutos</option><option value="150">2:30</option><option value="180">3 minutos</option><option value="210">3:30</option><option value="240">4 minutos</option><option value="300">5 minutos</option><option value="360">6 minutos</option><option value="420">7 minutos</option><option value="480">8 minutos</option><option value="600">10 minutos</option><option value="900">15 minutos</option><option value="1200">20 minutos</option><option value="1800">30 minutos</option><option value="2700">45 minutos</option><option value="3600">60 minutos</option></select></div>
+<div class="sg-row"><label>⏱️ Prorrogação</label><select id="onlineOptOvertimeSeconds" class="sg-select"><option value="0">Sem prorrogação</option><option value="15">15 segundos</option><option value="30" selected>30 segundos</option><option value="60">60 segundos</option><option value="90">90 segundos</option></select></div>
     <div class="sg-row"><label>🧤 Goleiros</label><input id="onlineOptKeepers" type="checkbox"></div>
     <button id="onlineStartButton" class="menuButton" onclick="iniciarSalaOnline()">⚽ PREPARAR PARTIDA</button>
    </div>
@@ -472,7 +485,8 @@ button{
 </div>
 
 <div id="optionsPanel" class="overlay hidden"><div class="sg-panel"><h1 class="menuTitle">⚙️ OPÇÕES DA PARTIDA</h1>
-<div class="sg-row"><label>⏱️ Prorrogação</label><input id="optOvertime" type="checkbox"></div>
+<div class="sg-row"><label>⏱️ Duração da partida</label><select id="optMatchDuration" class="sg-select"><option value="30">30 segundos</option><option value="45">45 segundos</option><option value="60">1 minuto</option><option value="75">1:15</option><option value="90">1:30</option><option value="120" selected>2 minutos</option><option value="150">2:30</option><option value="180">3 minutos</option><option value="210">3:30</option><option value="240">4 minutos</option><option value="300">5 minutos</option><option value="360">6 minutos</option><option value="420">7 minutos</option><option value="480">8 minutos</option><option value="600">10 minutos</option><option value="900">15 minutos</option><option value="1200">20 minutos</option><option value="1800">30 minutos</option><option value="2700">45 minutos</option><option value="3600">60 minutos</option></select></div>
+<div class="sg-row"><label>⏱️ Prorrogação</label><select id="optOvertimeSeconds" class="sg-select"><option value="0">Sem prorrogação</option><option value="15">15 segundos</option><option value="30" selected>30 segundos</option><option value="60">60 segundos</option><option value="90">90 segundos</option></select></div>
 <div class="sg-row"><label>🎥 Replays</label><input id="optReplay" type="checkbox" checked></div>
 <div class="sg-row"><label>🧤 Goleiros</label><input id="optKeepers" type="checkbox"></div>
 <button class="menuButton" onclick="confirmMatchOptions()">▶️ CONTINUAR</button><button class="menuButton secondary" onclick="voltarMenuPrincipal()">◀️ VOLTAR</button></div></div>
@@ -492,6 +506,8 @@ button{
 <p style="color:#999;font-size:13px">Clique em um comando e pressione a tecla desejada. O remapeamento é salvo automaticamente neste PC.</p>
 <button class="menuButton" onclick="saveSettings()">💾 SALVAR</button><button class="menuButton secondary" onclick="voltarMenuPrincipal()">◀️ VOLTAR</button></div></div>
 <div id="skinsPanel" class="overlay hidden"><div class="sg-panel"><h1 class="menuTitle">🎨 SKINS</h1><p class="menuDescription">Escolha a aparência de cada time.</p><h3>Time Azul / Jogador 1</h3><div id="skinsA" class="sg-skin-grid"></div><h3>Time Vermelho / Jogador 2</h3><div id="skinsB" class="sg-skin-grid"></div><button class="menuButton secondary" onclick="voltarMenuPrincipal()">🏠 VOLTAR</button></div></div>
+
+<div id="ballSkinsPanel" class="overlay hidden" style="z-index:130"><div class="sg-panel" style="max-width:620px"><h1 class="menuTitle">⚽ SKINS DA BOLA</h1><p class="menuDescription">Escolha a aparência da bola. As texturas são desenhadas pelo próprio jogo.</p><div id="ballSkinsGrid" class="sg-skin-grid"></div><button class="menuButton secondary" onclick="fecharSkinsBola()">◀️ VOLTAR</button></div></div>
 <div id="replaysPanel" class="overlay hidden"><div class="sg-panel"><h1 class="menuTitle">📜 HISTÓRICO DE PARTIDAS</h1><div id="replayList" style="color:#ddd;text-align:left">Nenhum replay salvo nesta sessão.</div><button class="menuButton secondary" onclick="voltarMenuPrincipal()">🏠 VOLTAR</button></div></div>
 <div id="mobileControls"><div id="joyBlue" class="joy"><div class="joyKnob"></div></div><button id="kickBlue" class="kickBtn blueMobile">⚽</button><button id="dashBlue" class="dashBtn blueDash">👟</button><div id="joyRed" class="joy"><div class="joyKnob"></div></div><button id="kickRed" class="kickBtn redMobile">⚽</button><button id="dashRed" class="dashBtn redDash">👟</button></div>
 
@@ -541,7 +557,7 @@ button{
     </div>
 </div>
 
-<div id="updatesPanel" class="overlay hidden"><div class="sg-panel" style="max-width:580px"><h1 class="menuTitle" style="text-align:center">📢 NOVIDADES</h1><div class="sg-grid" style="margin:14px 0 10px"><button id="updatesTab17" class="menuButton blueButton" onclick="mostrarAtualizacao(17)">📁 17/08/2026</button><button id="updatesTab18" class="menuButton secondary" onclick="mostrarAtualizacao(18)">📁 18/08/2026</button></div><div id="updatesContent17"><div class="updatesDate">Atualizações — 17/08/2026</div><div class="updatesList"><div>👟 Carrinho</div><div>⏱️ Prorrogação de 30 segundos</div><div>🎨 Skins e bloqueio de duplicadas</div><div>🌐 Modo Online 1v1</div><div>🤖 Balanceamento da IA</div><div>🧤 Goleiros</div><div>👤 Perfil e nickname</div><div>⌨️ Remapeamento de teclado</div><div>🎬 Pular replay online</div><div>💬 Chat online</div></div></div><div id="updatesContent18" class="hidden"><div class="updatesDate">Atualizações — 18/08/2026</div><div class="updatesList"><div>🦶 Animação de chute</div><div>💨 Efeito visual de chute rápido</div><div>🎬 Zoom de gol</div><div>📜 Histórico com replay completo</div><div>👤 Nicknames no Online</div><div>⌨️ Tecla Ç corrigida</div><div>🧹 Limpeza do estado Online</div><div>📱 Carregamento inicial</div></div></div><button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button></div></div><div id="startupLoading" class="overlay hidden" style="z-index:200;background:rgba(4,12,7,.97)"><div class="sg-panel" style="max-width:420px;text-align:center"><div class="logo" style="font-size:44px">⚽</div><h2 class="menuTitle">Carregando SoccerGol...</h2><div style="height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:18px 0"><div id="startupLoadingBar" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);transition:width .12s linear"></div></div><div id="startupLoadingText" style="font-size:13px;color:#999">Preparando o campo...</div></div></div>
+<div id="updatesPanel" class="overlay hidden"><div class="sg-panel" style="max-width:580px"><h1 class="menuTitle" style="text-align:center">📢 NOVIDADES</h1><div class="sg-grid" style="margin:14px 0 10px"><button id="updatesTab17" class="menuButton blueButton" onclick="mostrarAtualizacao(17)">📁 17/08/2026</button><button id="updatesTab18" class="menuButton secondary" onclick="mostrarAtualizacao(18)">📁 18/08/2026</button></div><div id="updatesContent17"><div class="updatesDate">Atualizações — 17/08/2026</div><div class="updatesList"><div>👟 Carrinho</div><div>⏱️ Prorrogação de 30 segundos</div><div>🎨 Skins e bloqueio de duplicadas</div><div>🌐 Modo Online 1v1</div><div>🤖 Balanceamento da IA</div><div>🧤 Goleiros</div><div>👤 Perfil e nickname</div><div>⌨️ Remapeamento de teclado</div><div>🎬 Pular replay online</div><div>💬 Chat online</div></div></div><div id="updatesContent18" class="hidden"><div class="updatesDate">Atualizações — 18/08/2026</div><div class="updatesList"><div>🦶 Animação de chute</div><div>💨 Efeito visual de chute rápido</div><div>⚽ Skins de bola e mais personalização visual</div><div>📜 Histórico com replay completo</div><div>👤 Nicknames no Online</div><div>⌨️ Tecla Ç corrigida</div><div>🧹 Limpeza do estado Online</div><div>📱 Carregamento inicial</div><div>⏱️ Duração da partida e prorrogação configuráveis</div><div>🎨 Mais skins disponíveis</div><div>🧤 Colisão dos goleiros</div><div>📝 Nickname corrigido e salvo corretamente</div><div>🧹 Limpeza extra do estado do Online</div></div></div><button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button></div></div><div id="startupLoading" class="overlay hidden" style="z-index:200;background:rgba(4,12,7,.97)"><div class="sg-panel" style="max-width:420px;text-align:center"><div class="logo" style="font-size:44px">⚽</div><h2 class="menuTitle">Carregando SoccerGol...</h2><div style="height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:18px 0"><div id="startupLoadingBar" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);transition:width .12s linear"></div></div><div id="startupLoadingText" style="font-size:13px;color:#999">Preparando o campo...</div></div></div>
 
 <!-- MODOS -->
 
@@ -734,6 +750,8 @@ button{
 
         <div id="resultado"></div>
 
+        <div id="moedasResultado"></div>
+
         <button class="menuButton"
         onclick="voltarMenu()">
             🏠 MENU
@@ -785,6 +803,21 @@ onclick="alternarPausa()">
 onclick="alternarMusica()">
     🔊 Música: ON
 </button>
+
+<div id="economyBar">
+ <button id="botaoMoedas" class="economyBtn" onclick="abrirCodigoMoedas(false)">🪙 0</button>
+ <button id="botaoCodigo" class="economyBtn" onclick="abrirCodigoMoedas(true)">🎁 CÓDIGO</button>
+</div>
+
+<div id="codePanel" class="overlay hidden" style="z-index:140">
+ <div class="codeBox">
+  <h1 class="menuTitle">🎁 CÓDIGO</h1>
+  <p class="menuDescription">Digite um código promocional.</p>
+  <input id="coinCodeInput" class="codeInput" maxlength="16" autocomplete="off" placeholder="CÓDIGO">
+  <button class="menuButton" onclick="resgatarCodigoMoedas()">💰 RESGATAR</button>
+  <button class="menuButton secondary" onclick="fecharCodigoMoedas()">◀️ VOLTAR</button>
+ </div>
+</div>
 
 <div id="indicadorIA" class="hidden"></div>
 
@@ -856,7 +889,7 @@ const campo={
 const teclas={};
 const DEFAULT_KEYS={
  blueUp:"KeyW",blueDown:"KeyS",blueLeft:"KeyA",blueRight:"KeyD",blueKick:"KeyE",blueDash:"KeyC",
- redUp:"ArrowUp",redDown:"ArrowDown",redLeft:"ArrowLeft",redRight:"ArrowRight",redKick:"ShiftRight",redDash:"IntlRo",
+ redUp:"ArrowUp",redDown:"ArrowDown",redLeft:"ArrowLeft",redRight:"ArrowRight",redKick:"ShiftRight",redDash:"Semicolon",
  pause:"KeyP"
 };
 let keyMap={...DEFAULT_KEYS};
@@ -868,6 +901,7 @@ function refreshKeybindUI(){document.querySelectorAll(".keybindBtn[data-bind]").
 function setupKeybindButtons(){document.querySelectorAll(".keybindBtn[data-bind]").forEach(btn=>{btn.addEventListener("click",()=>{const b=btn.dataset.bind;btn.classList.add("bindingNow");btn.textContent="⌨️ Pressione uma tecla...";const handler=e=>{if(isEditableTarget(e.target))return;e.preventDefault();e.stopPropagation();keyMap[b]=e.code;saveKeyMap();btn.classList.remove("bindingNow");refreshKeybindUI();document.removeEventListener("keydown",handler,true);};document.addEventListener("keydown",handler,true);});});refreshKeybindUI();}
 function resetarTeclasPadrao(){keyMap={...DEFAULT_KEYS};saveKeyMap();refreshKeybindUI();}
 function codeDown(code){return !!teclas[code];}
+function eventoCarrinhoVermelho(e){return e.code===keyMap.redDash || ((keyMap.redDash==="Semicolon"||keyMap.redDash==="IntlRo")&&(e.key==="ç"||e.key==="Ç"));}
 
 document.addEventListener("keydown",e=>{
     if(isEditableTarget(e.target))return;
@@ -877,7 +911,7 @@ document.addEventListener("keydown",e=>{
     if(!e.repeat&&e.code===keyMap.blueKick){chute(azul);e.preventDefault();return;}
     if(!e.repeat&&e.code===keyMap.redKick){chute(vermelho);e.preventDefault();return;}
     if(!e.repeat&&e.code===keyMap.blueDash){if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(azul);e.preventDefault();return;}
-    if(!e.repeat&&(e.code===keyMap.redDash||((keyMap.redDash==="IntlRo"||keyMap.redDash==="Semicolon")&&(e.key==="ç"||e.key==="Ç")))){if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(vermelho);e.preventDefault();return;}
+    if(!e.repeat&&eventoCarrinhoVermelho(e)){if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(vermelho);e.preventDefault();return;}
 },true);
 document.addEventListener("keyup",e=>{teclas[e.key]=false;teclas[e.code]=false;},true);
 
@@ -984,7 +1018,6 @@ let contagemAtiva=false;
 const replayFrames=[];
 let partidaGravada=[];
 let reproduzindoPartidaCompleta=false;
-let golZoom={active:false,scale:1,targetX:600,targetY:325,timer:null};
 let kickVisual={j:null,until:0};
 let bolaChuteFx=0;
 
@@ -1043,10 +1076,9 @@ function criarFrame(){
 }
 
 function frameCompletoAtual(){return{azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},goleiroA:{x:goleiroA.x,y:goleiroA.y,vx:goleiroA.vx,vy:goleiroA.vy,dx:goleiroA.dx||0,dy:goleiroA.dy||0,cor:goleiroA.cor},goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,dx:goleiroB.dx||0,dy:goleiroB.dy||0,cor:goleiroB.cor}};}
-function gravarFramePartida(){if(!jogoAtivo||jogoPausado||executandoReplay)return;partidaGravada.push(frameCompletoAtual());if(partidaGravada.length>9800)partidaGravada.shift();}
-function iniciarZoomGol(j){clearTimeout(golZoom.timer);golZoom.active=true;golZoom.scale=1.42;golZoom.targetX=j.x;golZoom.targetY=j.y;golZoom.timer=setTimeout(()=>{golZoom.active=false;if(SG.replay&&replayData.length>1)iniciarReplayLimpo();else setTimeout(resetarBolaDepoisDoGol,180);},620);}
-function pararZoomGol(){clearTimeout(golZoom.timer);golZoom.active=false;golZoom.scale=1;}
-function iniciarReplayPartidaCompleta(i){const r=replayHistorico[i];if(!r?.fullReplay?.length)return;reproduzindoPartidaCompleta=true;replayData=r.fullReplay.map(f=>JSON.parse(JSON.stringify(f)));esconderMenus();document.getElementById("replaysPanel")?.classList.add("hidden");iniciarReplayLimpo();}
+let partidaGravadaTick=0;
+function gravarFramePartida(){if(!jogoAtivo||jogoPausado||executandoReplay)return;if((partidaGravadaTick++%2)!==0)return;partidaGravada.push(frameCompletoAtual());if(partidaGravada.length>18000)partidaGravada.shift();}
+function iniciarReplayPartidaCompleta(i){const r=replayHistorico[i];if(!r?.fullReplay?.length)return;limparEstadoOnlineAoTrocarModo?.();window._sgReplayPreviousMode=modoJogo;modoJogo="replay";reproduzindoPartidaCompleta=true;replayData=r.fullReplay.map(f=>JSON.parse(JSON.stringify(f)));esconderMenus();document.getElementById("replaysPanel")?.classList.add("hidden");iniciarReplayLimpo();}
 
 /* =========================================================
    SALVAR REPLAY
@@ -1392,10 +1424,12 @@ function fecharCreditos(){
 function voltarMenuPrincipal(){
 
     esconderMenus();
+    atualizarMoedasUI();
     atualizarPerfilVisibilidade();
 
     document.getElementById("menu")
         .classList.remove("hidden");
+    atualizarEconomiaVisibilidade();
 }
 
 /* =========================================================
@@ -1438,8 +1472,9 @@ function alternarMusica(){
 
 function iniciarJogo(){
 
+    recompensaEntregue=false;
     clearInterval(intervaloTempo);
-    pararZoomGol();reproduzindoPartidaCompleta=false;partidaGravada=[];
+    reproduzindoPartidaCompleta=false;partidaGravada=[];partidaGravadaTick=0;
     SG.otUsed=false;
 
     pararReplay();
@@ -1447,7 +1482,7 @@ function iniciarJogo(){
     golsAzul=0;
     golsVermelho=0;
 
-    tempo=120;
+    tempo=SG.matchSeconds||120;
 
     jogoAtivo=false;
     jogoPausado=false;
@@ -1492,6 +1527,7 @@ function iniciarContagem(){
 
     if(contagemAtiva)return;
     atualizarPerfilVisibilidade();
+    atualizarEconomiaVisibilidade();
 
     contagemAtiva=true;
 
@@ -1539,10 +1575,11 @@ function iniciarContagem(){
 function iniciarPartida(){
 
     jogoAtivo=true;
+    atualizarEconomiaVisibilidade();
     atualizarPerfilVisibilidade();
     jogoPausado=false;
 
-    tempo=120;
+    tempo=SG.matchSeconds||120;
 
     if(typeof atualizarControlesMobile==="function"){
         atualizarControlesMobile();
@@ -1572,7 +1609,7 @@ function iniciarPartida(){
 
             if(SG.overtime && !SG.otUsed && golsAzul===golsVermelho){
                 SG.otUsed=true;
-                tempo=30;
+                tempo=SG.overtimeSeconds||30;
                 atualizarCronometro();
                 if(modoJogo==="online" && online.host){
                     onlineSetStatus("⏱️ Prorrogação de 30 segundos!");
@@ -2671,7 +2708,9 @@ function atualizarIndicadorIA(){
 ========================================================= */
 
 function finalizarJogo(){
-    jogoAtivo=false;atualizarPerfilVisibilidade();jogoPausado=false;pararZoomGol();pararReplay();clearInterval(intervaloTempo);
+    const ganhouMoedas=entregarRecompensaPartida();
+    atualizarEconomiaVisibilidade();
+    jogoAtivo=false;atualizarPerfilVisibilidade();jogoPausado=false;pararReplay();clearInterval(intervaloTempo);
     if(partidaGravada.length>30){replayHistorico.unshift({score:golsAzul+" x "+golsVermelho,time:new Date().toLocaleTimeString(),skinA:SG.skinsA,skinB:SG.skinsB,fullReplay:partidaGravada.map(f=>JSON.parse(JSON.stringify(f)))});replayHistorico.splice(5);}
 
     document.getElementById('pausaOverlay').style.display='none';
@@ -2688,6 +2727,7 @@ function finalizarJogo(){
     const scoreA='<span style="color:'+skinA.color+';'+(skinA.color==='#111'?'text-shadow:0 0 2px #fff':'')+'">'+golsAzul+'</span>';
     const scoreB='<span style="color:'+skinB.color+';'+(skinB.color==='#111'?'text-shadow:0 0 2px #fff':'')+'">'+golsVermelho+'</span>';
     document.getElementById('resultado').innerHTML=texto+'<br><br>'+scoreA+' <span style="color:white">×</span> '+scoreB;
+    const rewardBox=document.getElementById('moedasResultado');if(rewardBox)rewardBox.innerHTML=modoJogo==='2players'?'⚪ 2 Players não rende moedas.':('🪙 Você ganhou <b>+'+ganhouMoedas.toLocaleString('pt-BR')+'</b> moedas por esta partida.');
     document.getElementById('fim').style.display='flex';
     if(typeof atualizarControlesMobile==='function') atualizarControlesMobile();
 }
@@ -2698,7 +2738,7 @@ function finalizarJogo(){
 
 function voltarMenu(){
 
-    if(online.active||modoJogo==="online")encerrarOnline();pararZoomGol();reproduzindoPartidaCompleta=false;
+    if(online.active||modoJogo==="online")encerrarOnline();reproduzindoPartidaCompleta=false;
     jogoAtivo=false;
     atualizarPerfilVisibilidade();
     jogoPausado=false;
@@ -3262,7 +3302,16 @@ function desenharJogador(j){
 
     ctx.fill();
 
-    if(kickVisual.j===j&&kickVisual.until>performance.now()){const p=(kickVisual.until-performance.now())/220;ctx.save();ctx.translate(j.x,j.y);ctx.rotate(Math.atan2(j.dy,j.dx));ctx.strokeStyle="rgba(255,255,255,"+(0.35+p*0.65)+")";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(j.r-1,0);ctx.lineTo(j.r+10+p*8,0);ctx.stroke();ctx.beginPath();ctx.arc(j.r+6,0,5+p*3,-.8,.8);ctx.stroke();ctx.restore();} if(modoJogo==="online"){const nome=j===azul?(online.hostNickname||"Jogador"):(online.guestNickname||"Jogador");ctx.save();ctx.font="bold 10px Arial";ctx.textAlign="center";ctx.fillStyle="rgba(0,0,0,.72)";ctx.fillRect(j.x-34,j.y-j.r-18,68,15);ctx.fillStyle="white";ctx.fillText(String(nome).slice(0,12),j.x,j.y-j.r-7);ctx.restore();}
+    if(kickVisual.j===j&&kickVisual.until>performance.now()){
+        const p=Math.max(0,Math.min(1,(kickVisual.until-performance.now())/170));
+        const swing=Math.sin((1-p)*Math.PI);
+        ctx.save();
+        const ang=Math.atan2(j.dy,j.dx);
+        ctx.translate(j.x,j.y);ctx.rotate(ang);
+        ctx.strokeStyle="rgba(255,255,255,"+(0.18+0.34*swing)+")";ctx.lineWidth=2;ctx.lineCap="round";
+        for(let q=0;q<2;q++){ctx.beginPath();ctx.moveTo(-j.r-5-q*4,(-4+q*7)*swing);ctx.lineTo(-j.r-13-q*4,(-6+q*8)*swing);ctx.stroke();}
+        ctx.restore();
+    }
 
     /*
        Indicador da IA
@@ -3446,7 +3495,7 @@ function desenharHUD(){
    DESENHAR
 ========================================================= */
 
-function desenhar(){ctx.save();if(golZoom.active){ctx.translate(canvas.width/2,canvas.height/2);ctx.scale(golZoom.scale,golZoom.scale);ctx.translate(-golZoom.targetX,-golZoom.targetY);}desenharCampo();desenharEfeitoDash();if(SG&&SG.keepers){desenharJogador(goleiroA);desenharJogador(goleiroB);}desenharJogador(azul);desenharJogador(vermelho);desenharBola();ctx.restore();desenharHUD();}
+function desenhar(){desenharCampo();desenharEfeitoDash();if(SG&&SG.keepers){desenharJogador(goleiroA);desenharJogador(goleiroB);}desenharJogador(azul);desenharJogador(vermelho);desenharBola();desenharHUD();}
 
 /* =========================================================
    LOOP PRINCIPAL
@@ -3533,7 +3582,10 @@ const SG={
     skinsB:"red",
     otUsed:false,
     goalLock:false,
-    manualPause:false
+    manualPause:false,
+    matchSeconds:120,
+    overtimeSeconds:30,
+    ballSkin:"classic"
 };
 
 const SKINS={
@@ -3544,8 +3596,118 @@ const SKINS={
  purple:{name:"Roxo",color:"#9b4dff",emoji:"🟣",outline:"#000"},
  green:{name:"Verde",color:"#2bd66f",emoji:"🟢",outline:"#000"},
  pink:{name:"Rosa",color:"#ff4fa3",emoji:"🩷",outline:"#000"},
- yellow:{name:"Amarelo",color:"#ffd52e",emoji:"🟡",outline:"#000"}
+ yellow:{name:"Amarelo",color:"#ffd52e",emoji:"🟡",outline:"#000"},
+ orange:{name:"Laranja",color:"#ff7a18",emoji:"🟠",outline:"#000"},
+ cyan:{name:"Ciano",color:"#19d3e6",emoji:"🔷",outline:"#000"},
+ blue2:{name:"Azul Claro",color:"#49b8ff",emoji:"🔹",outline:"#000"},
+ magenta:{name:"Magenta",color:"#e83cff",emoji:"🟣",outline:"#000"},
+ lime:{name:"Limão",color:"#a8e63b",emoji:"🟢",outline:"#111"},
+ brown:{name:"Marrom",color:"#9b5a32",emoji:"🟤",outline:"#000"},
+ navy:{name:"Marinho",color:"#1737a5",emoji:"🔵",outline:"#fff"},
+ gold:{name:"Dourado",color:"#f0b90b",emoji:"🟡",outline:"#111"},
+ silver:{name:"Prata",color:"#aeb7c4",emoji:"⚪",outline:"#111"},
+ coral:{name:"Coral",color:"#ff6f61",emoji:"🔴",outline:"#000"},
+ violet:{name:"Violeta",color:"#6d3dcc",emoji:"🟣",outline:"#fff"},
+ teal:{name:"Verde-Água",color:"#16c79a",emoji:"🟢",outline:"#000"}, turquoise:{name:"Turquesa",color:"#22d3c5",emoji:"🔹",outline:"#000"}, mint:{name:"Menta",color:"#7ff0c0",emoji:"🟢",outline:"#123"}, peach:{name:"Pêssego",color:"#ffb38a",emoji:"🟠",outline:"#111"}, salmon:{name:"Salmão",color:"#ff8f8f",emoji:"🔴",outline:"#111"}, ice:{name:"Gelo",color:"#c8f4ff",emoji:"❄️",outline:"#245"}, sky:{name:"Céu",color:"#6fd6ff",emoji:"🌤️",outline:"#123"}, royal:{name:"Azul Royal",color:"#3056d3",emoji:"🔵",outline:"#fff"}, indigo:{name:"Índigo",color:"#4b3ca7",emoji:"🟣",outline:"#fff"}, plum:{name:"Ameixa",color:"#7a345b",emoji:"🟣",outline:"#fff"}, wine:{name:"Vinho",color:"#7d1935",emoji:"🍷",outline:"#fff"}, ruby:{name:"Rubi",color:"#d61f3d",emoji:"♦️",outline:"#fff"}, mint2:{name:"Verde Neon",color:"#39ff88",emoji:"🟢",outline:"#111"}, electric:{name:"Azul Elétrico",color:"#00aaff",emoji:"⚡",outline:"#111"}, ultraviolet:{name:"Ultravioleta",color:"#8a2be2",emoji:"💜",outline:"#fff"}, midnight:{name:"Meia-Noite",color:"#0b163d",emoji:"🌑",outline:"#fff"}, lava:{name:"Lava",color:"#ff3b00",emoji:"🔥",outline:"#111"}, forest:{name:"Floresta",color:"#155d27",emoji:"🌲",outline:"#fff"}, ocean:{name:"Oceano",color:"#0b7285",emoji:"🌊",outline:"#fff"}, sand:{name:"Areia",color:"#d6b36a",emoji:"🏖️",outline:"#111"}, copper:{name:"Cobre",color:"#b87333",emoji:"🟤",outline:"#111"}, pink2:{name:"Rosa Chiclete",color:"#ff75c3",emoji:"🩷",outline:"#111"}, hotpink:{name:"Pink Neon",color:"#ff1493",emoji:"💗",outline:"#fff"}, lemon:{name:"Limão Neon",color:"#d7ff00",emoji:"🍋",outline:"#111"}, snow:{name:"Neve",color:"#eef8ff",emoji:"❄️",outline:"#111"},
+aqua:{name:"Aqua Neon",color:"#00ffd5",emoji:"💧",outline:"#053b3b"},roseGold:{name:"Rose Gold",color:"#d98c8c",emoji:"🌹",outline:"#fff"},emerald2:{name:"Esmeralda Lux",color:"#00a86b",emoji:"💎",outline:"#fff"},sapphire:{name:"Safira",color:"#0f52ba",emoji:"💠",outline:"#fff"},ruby2:{name:"Rubi Lux",color:"#9b111e",emoji:"♦️",outline:"#fff"},amethyst:{name:"Ametista",color:"#9966cc",emoji:"🔮",outline:"#fff"},obsidian:{name:"Obsidiana",color:"#0a0a0f",emoji:"🖤",outline:"#7f8c8d"},pearl:{name:"Pérola",color:"#f8f7ff",emoji:"🤍",outline:"#8d99ae"},cobalt:{name:"Cobalto",color:"#0047ab",emoji:"🔷",outline:"#fff"},scarlet:{name:"Escarlate",color:"#ff2400",emoji:"🔥",outline:"#111"},violet2:{name:"Violeta Neon",color:"#b000ff",emoji:"💜",outline:"#fff"},cyan2:{name:"Ciano Neon",color:"#00fff0",emoji:"🧊",outline:"#111"},yellow2:{name:"Amarelo Solar",color:"#fff200",emoji:"☀️",outline:"#111"},orange2:{name:"Laranja Neon",color:"#ff5e00",emoji:"🟠",outline:"#111"},green2:{name:"Verde Plasma",color:"#39ff14",emoji:"🟩",outline:"#111"},blue3:{name:"Azul Plasma",color:"#00e5ff",emoji:"🔵",outline:"#111"},pink3:{name:"Pink Cristal",color:"#ff69f4",emoji:"💗",outline:"#111"},red2:{name:"Vermelho Neon",color:"#ff3131",emoji:"❤️",outline:"#111"},darkcyan:{name:"Abismo",color:"#003b46",emoji:"🌊",outline:"#61f2f2"},darkred:{name:"Sangue",color:"#5a0000",emoji:"🩸",outline:"#fff"},darkgreen:{name:"Selva",color:"#064e3b",emoji:"🌿",outline:"#8ef0bd"},lavender:{name:"Lavanda",color:"#c4a7e7",emoji:"🪻",outline:"#3b2f4a"},cream:{name:"Creme",color:"#f3e9d2",emoji:"🍦",outline:"#5c4b3e"},denim:{name:"Jeans",color:"#224f75",emoji:"👖",outline:"#d7efff"},rubyglass:{name:"Rubi Vidro",color:"#b91c52",emoji:"🍷",outline:"#ffd1dc"}
 };
+
+const BALL_SKINS={
+ classic:{name:"Clássica",base:"#ffffff",detail:"#4b4b4b",pattern:"dots"},
+ redblack:{name:"Vermelho & Preto",base:"#f4f4f4",detail:"#b91c1c",pattern:"panels"},
+ bluewhite:{name:"Azul & Branco",base:"#ffffff",detail:"#2563eb",pattern:"panels"},
+ neon:{name:"Neon",base:"#d9ff3f",detail:"#00c2ff",pattern:"rings"},
+ sunset:{name:"Sunset",base:"#ffb15e",detail:"#8b2d5f",pattern:"swirl"},
+ galaxy:{name:"Galáxia",base:"#11172f",detail:"#8b5cf6",pattern:"stars"},
+ lava:{name:"Lava",base:"#ffcf4a",detail:"#e03131",pattern:"swirl"},
+ ocean:{name:"Oceano",base:"#8be8ff",detail:"#075985",pattern:"rings"},
+ mint:{name:"Menta",base:"#d5ffe7",detail:"#10b981",pattern:"dots"},
+ gold:{name:"Dourada",base:"#f8e7a2",detail:"#b7791f",pattern:"rings"},
+ purple:{name:"Roxa",base:"#eadcff",detail:"#7c3aed",pattern:"panels"},
+ toxic:{name:"Tóxica",base:"#caff70",detail:"#2f9e44",pattern:"swirl"},
+ carbon:{name:"Carbono",base:"#333941",detail:"#9aa3ad",pattern:"panels"},
+ candy:{name:"Candy",base:"#ffd8f5",detail:"#ec4899",pattern:"dots"},
+ steel:{name:"Aço",base:"#d7dde5",detail:"#475569",pattern:"rings"},
+ fire:{name:"Fogo",base:"#ffe066",detail:"#f03e3e",pattern:"flames"},
+ ice:{name:"Gelo",base:"#e8fbff",detail:"#38bdf8",pattern:"stars"},
+ mono:{name:"Monocromática",base:"#e8e8e8",detail:"#333333",pattern:"dots"},
+ emerald:{name:"Esmeralda",base:"#d6ffe7",detail:"#047857",pattern:"panels"},
+ 
+aurora:{name:"Aurora",base:"#d9fff7",detail:"#0ea5e9",pattern:"swirl"},
+checker:{name:"Xadrez",base:"#f2f2f2",detail:"#222222",pattern:"checker"},
+stripes:{name:"Listras",base:"#ffffff",detail:"#ef4444",pattern:"stripes"},
+royal:{name:"Royal",base:"#e9edff",detail:"#1d4ed8",pattern:"panels"},
+goldenblack:{name:"Ouro Negro",base:"#1d1d1d",detail:"#f5c542",pattern:"panels"},
+plasma:{name:"Plasma",base:"#1a0b2e",detail:"#ff4fd8",pattern:"rings"},
+meteor:{name:"Meteoro",base:"#3b3f58",detail:"#f97316",pattern:"stars"},
+volcano:{name:"Vulcão",base:"#2a1712",detail:"#fb4934",pattern:"flames"},
+forest:{name:"Floresta",base:"#e7ffe6",detail:"#166534",pattern:"stripes"},
+arctic:{name:"Ártica",base:"#f0fcff",detail:"#38bdf8",pattern:"checker"},
+cyber:{name:"Cyber",base:"#101522",detail:"#00f5d4",pattern:"rings"},
+cyberpink:{name:"Cyber Pink",base:"#241021",detail:"#ff2bd6",pattern:"rings"},
+royalpurple:{name:"Realeza",base:"#1d143b",detail:"#a855f7",pattern:"swirl"},
+meteorite:{name:"Meteorito",base:"#27272a",detail:"#d4d4d8",pattern:"dots"},
+coralreef:{name:"Recife",base:"#dbffff",detail:"#0e7490",pattern:"swirl"},
+cherry:{name:"Cereja",base:"#fff1f2",detail:"#be123c",pattern:"dots"},
+bluefire:{name:"Fogo Azul",base:"#0b1b38",detail:"#38bdf8",pattern:"flames"},
+greenfire:{name:"Fogo Verde",base:"#0b281c",detail:"#4ade80",pattern:"flames"},
+rosegold:{name:"Rose Gold",base:"#fff1f2",detail:"#f59e9e",pattern:"rings"},
+prism:{name:"Prisma",base:"#ffffff",detail:"#7c3aed",pattern:"checker"},
+cosmic:{name:"Cósmica",base:"#0c1026",detail:"#22d3ee",pattern:"stars"},
+nebulosa:{name:"Nebulosa",base:"#25113b",detail:"#ec4899",pattern:"swirl"},
+blackgold:{name:"Preto Dourado",base:"#111111",detail:"#eab308",pattern:"stripes"},
+whitegold:{name:"Branco Dourado",base:"#fffdf2",detail:"#d4a017",pattern:"panels"},
+stealth:{name:"Stealth",base:"#18181b",detail:"#52525b",pattern:"checker"},
+terminal:{name:"Terminal",base:"#08120b",detail:"#39ff14",pattern:"rings"},
+zigzag:{name:"Zig Zag",base:"#fff7ed",detail:"#f97316",pattern:"zigzag"},
+royalchecker:{name:"Royal Xadrez",base:"#eef2ff",detail:"#3730a3",pattern:"checker"},
+redzigzag:{name:"Vermelho Turbo",base:"#fff1f2",detail:"#dc2626",pattern:"zigzag"},
+bluesteel:{name:"Azul Aço",base:"#dbeafe",detail:"#334155",pattern:"stripes"},
+purplegold:{name:"Roxo Ouro",base:"#2e1065",detail:"#facc15",pattern:"rings"},
+blackred:{name:"Preto Rubi",base:"#111827",detail:"#ef4444",pattern:"swirl"},
+whitecyan:{name:"Branco Ciano",base:"#f8ffff",detail:"#06b6d4",pattern:"checker"},
+laser:{name:"Laser",base:"#0f172a",detail:"#22c55e",pattern:"zigzag"},
+sakura:{name:"Sakura",base:"#fff1f2",detail:"#f472b6",pattern:"dots"}
+};
+
+const CLASSIC_BALL_IMAGE_DATA="data:image/jpeg;base64,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";
+const classicBallImage=new Image();classicBallImage.src=CLASSIC_BALL_IMAGE_DATA;
+
+
+/* ---------- ECONOMIA / LOJA ---------- */
+const FREE_PLAYER_SKINS=new Set(["blue","red"]);
+const FREE_BALL_SKINS=new Set(["classic"]);
+const COIN_STORAGE_KEY="soccerGolCoins";
+const OWNED_PLAYER_KEY="soccerGolOwnedSkins";
+const OWNED_BALL_KEY="soccerGolOwnedBallSkins";
+const CODE_STORAGE_KEY="soccerGolCodeDRF26";
+let moedas=0;
+try{moedas=Math.max(0,Number(localStorage.getItem(COIN_STORAGE_KEY)||0)||0);}catch(e){moedas=0;}
+const PREMIUM_PLAYER_PRICES={gold:1500,silver:900,ultraviolet:1800,lava:1400,hotpink:1200,electric:1300,midnight:1100,royal:850,ruby:1000,forest:700,ocean:700,snow:650,lemon:1200,mint2:1000,aqua:1100,roseGold:1350,emerald2:1500,sapphire:1400,ruby2:1350,amethyst:1300,obsidian:1800,pearl:900,cobalt:1000,scarlet:1100,violet2:1600,cyan2:1500,yellow2:1000,orange2:1050,green2:1600,blue3:1500,pink3:1350,red2:1200,darkcyan:1100,darkred:1450,darkgreen:1000,lavender:700,cream:500,denim:650,rubyglass:1700};
+const PREMIUM_BALL_PRICES={gold:1200,galaxy:1500,fire:1800,carbon:950,aurora:1700,checker:350,stripes:300,goldenblack:1800,plasma:1900,meteor:1100,volcano:1200,cyber:1700,cyberpink:1900,royalpurple:1500,meteorite:1000,bluefire:1600,greenfire:1600,rosegold:1600,zigzag:700,royalchecker:900,redzigzag:850,bluesteel:850,purplegold:1600,blackred:1200,whitecyan:1000,laser:1700,sakura:750};
+function salvarMoedas(){try{localStorage.setItem(COIN_STORAGE_KEY,String(Math.max(0,Math.floor(moedas))));}catch(e){}}
+function atualizarMoedasUI(){const b=document.getElementById("botaoMoedas");if(b)b.textContent="🪙 "+Math.floor(moedas).toLocaleString("pt-BR");}
+function adicionarMoedas(qtd){const n=Math.max(0,Math.floor(Number(qtd)||0));moedas+=n;salvarMoedas();atualizarMoedasUI();return n;}
+function gastarMoedas(qtd){const n=Math.max(0,Math.floor(Number(qtd)||0));if(moedas<n)return false;moedas-=n;salvarMoedas();atualizarMoedasUI();return true;}
+function getOwnedSet(storageKey,defaults){let arr=[];try{arr=JSON.parse(localStorage.getItem(storageKey)||"[]");}catch(e){arr=[];}if(!Array.isArray(arr))arr=[];return new Set([...defaults,...arr]);}
+function saveOwnedSet(storageKey,set){try{localStorage.setItem(storageKey,JSON.stringify([...set]));}catch(e){}}
+function ownedPlayerSkins(){return getOwnedSet(OWNED_PLAYER_KEY,[...FREE_PLAYER_SKINS]);}
+function ownedBallSkins(){return getOwnedSet(OWNED_BALL_KEY,[...FREE_BALL_SKINS]);}
+function playerSkinPrice(key){if(FREE_PLAYER_SKINS.has(key))return 0;if(PREMIUM_PLAYER_PRICES[key])return PREMIUM_PLAYER_PRICES[key];const idx=Math.max(1,Object.keys(SKINS).indexOf(key));return Math.min(1600,Math.ceil(idx*35/25)*25);}
+function ballSkinPrice(key){if(FREE_BALL_SKINS.has(key))return 0;if(PREMIUM_BALL_PRICES[key])return PREMIUM_BALL_PRICES[key];const idx=Math.max(1,Object.keys(BALL_SKINS).indexOf(key));return Math.min(2200,Math.ceil(idx*45/50)*50);}
+function isPlayerSkinOwned(key){return ownedPlayerSkins().has(key);}
+function isBallSkinOwned(key){return ownedBallSkins().has(key);}
+function comprarPlayerSkin(key){if(FREE_PLAYER_SKINS.has(key)||isPlayerSkinOwned(key))return true;const price=playerSkinPrice(key);if(!gastarMoedas(price)){alert("🪙 Você precisa de "+price.toLocaleString("pt-BR")+" moedas para desbloquear esta skin.");return false;}const set=ownedPlayerSkins();set.add(key);saveOwnedSet(OWNED_PLAYER_KEY,set);renderSkins();return true;}
+function comprarBallSkin(key){if(FREE_BALL_SKINS.has(key)||isBallSkinOwned(key))return true;const price=ballSkinPrice(key);if(!gastarMoedas(price)){alert("🪙 Você precisa de "+price.toLocaleString("pt-BR")+" moedas para desbloquear esta bola.");return false;}const set=ownedBallSkins();set.add(key);saveOwnedSet(OWNED_BALL_KEY,set);renderSkinsBola();return true;}
+function abrirCodigoMoedas(foco=true){const p=document.getElementById("codePanel");if(p)p.classList.remove("hidden");const i=document.getElementById("coinCodeInput");if(i){i.value="";if(foco)setTimeout(()=>i.focus(),50);}}
+function fecharCodigoMoedas(){document.getElementById("codePanel")?.classList.add("hidden");}
+function resgatarCodigoMoedas(){const input=document.getElementById("coinCodeInput");const code=String(input?.value||"").trim();if(code!=="DRF26"){alert("❌ Código inválido.");return;}let used=false;try{used=localStorage.getItem(CODE_STORAGE_KEY)==="1";}catch(e){}if(used){alert("⚠️ Esse código já foi resgatado neste dispositivo.");return;}adicionarMoedas(10000000);try{localStorage.setItem(CODE_STORAGE_KEY,"1");}catch(e){}alert("💰 Código resgatado! +10.000.000 moedas.");fecharCodigoMoedas();}
+function atualizarEconomiaVisibilidade(){const bar=document.getElementById("economyBar");if(!bar)return;const menu=document.getElementById("menu");const vis=!jogoAtivo&&!contagemAtiva&&!executandoReplay&&!menu?.classList.contains("hidden");bar.style.display=vis?"flex":"none";}
+function moedasPorPartida(){if(modoJogo==="2players")return 0;if(modoJogo==="ia"){const base={facil:10,medio:20,dificil:35,impossivel:55}[dificuldadeIA]||10;const bonus={facil:25,medio:50,dificil:90,impossivel:150}[dificuldadeIA]||25;const venceu=(timeHumano==="azul"?golsAzul>golsVermelho:golsVermelho>golsAzul);return base+(venceu?bonus:0);}if(modoJogo==="online"){const meu=online.host?"azul":"vermelho";const venceu=(meu==="azul"?golsAzul>golsVermelho:golsVermelho>golsAzul);return 25+(venceu?75:0);}return 0;}
+let recompensaEntregue=false;
+function entregarRecompensaPartida(){if(recompensaEntregue)return 0;recompensaEntregue=true;const ganho=moedasPorPartida();if(ganho>0)adicionarMoedas(ganho);return ganho;}
+function normalizarSkinsCompradas(){if(!isPlayerSkinOwned(SG.skinsA))SG.skinsA="blue";if(!isPlayerSkinOwned(SG.skinsB))SG.skinsB="red";if(!isBallSkinOwned(SG.ballSkin))SG.ballSkin="classic";}
+
 
 /* ---------- ONLINE 1v1 ---------- */
 const ONLINE_ICE_CONFIG={
@@ -3812,14 +3974,19 @@ async function copiarSalaOnline(){
  try{await navigator.clipboard.writeText(code);onlineSetStatus("Código copiado: "+code);}catch(e){onlineSetStatus("Código da sala: "+code);}
 }
 function lerOpcoesOnline(){
- return {
-  replay:!!document.getElementById("onlineOptReplay")?.checked,
-  overtime:!!document.getElementById("onlineOptOvertime")?.checked,
-  keepers:!!document.getElementById("onlineOptKeepers")?.checked
- };
+ const duration=Number(document.getElementById("onlineOptDuration")?.value||120);
+ const overtimeSeconds=Number(document.getElementById("onlineOptOvertimeSeconds")?.value||0);
+ return {matchSeconds:Number.isFinite(duration)&&duration>0?duration:120,replay:!!document.getElementById("onlineOptReplay")?.checked,overtimeSeconds:Number.isFinite(overtimeSeconds)&&overtimeSeconds>=0?overtimeSeconds:0,overtime:overtimeSeconds>0,keepers:!!document.getElementById("onlineOptKeepers")?.checked};
 }
 function aplicarOpcoesOnline(o){
- SG.replay=!!o?.replay;SG.overtime=!!o?.overtime;SG.keepers=!!o?.keepers;SG.otUsed=false;
+ SG.matchSeconds=Number.isFinite(Number(o?.matchSeconds))&&Number(o.matchSeconds)>0?Number(o.matchSeconds):120;
+ SG.overtimeSeconds=Number.isFinite(Number(o?.overtimeSeconds))&&Number(o.overtimeSeconds)>=0?Number(o.overtimeSeconds):((o?.overtime)?30:0);
+ SG.replay=!!o?.replay;SG.overtime=SG.overtimeSeconds>0;SG.keepers=!!o?.keepers;SG.otUsed=false;
+}
+function lerOpcoesLocais(){
+ const duration=Number(document.getElementById("optMatchDuration")?.value||120);
+ const overtimeSeconds=Number(document.getElementById("optOvertimeSeconds")?.value||0);
+ return {matchSeconds:Number.isFinite(duration)&&duration>0?duration:120,replay:!!document.getElementById("optReplay")?.checked,overtimeSeconds:Number.isFinite(overtimeSeconds)&&overtimeSeconds>=0?overtimeSeconds:0,overtime:overtimeSeconds>0,keepers:!!document.getElementById("optKeepers")?.checked};
 }
 function iniciarSalaOnline(){
  if(!online.host||!online.connected){onlineSetStatus("Aguardando o segundo jogador conectar...");return;}
@@ -3827,7 +3994,7 @@ function iniciarSalaOnline(){
  if(online.startOffer){onlineSetStatus("O convite para entrar já foi enviado ao segundo jogador.");return;}
  const options=lerOpcoesOnline();
  aplicarOpcoesOnline(options);
- online.startOffer={type:"startOffer",version:4,skinA:SG.skinsA,skinB:SG.skinsB,options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,6)};
+ online.startOffer={type:"startOffer",version:4,skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin,options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,6)};
  onlineSetStatus("Convite enviado! A partida só começa quando o segundo jogador clicar em ENTRAR NA PARTIDA.");
  onlineSetDebug("Aguardando a confirmação de entrada do jogador Vermelho...");
  onlineSend(online.startOffer);
@@ -3852,7 +4019,7 @@ function iniciarOnlineHost(){
  modoJogo="online";timeHumano="azul";timeIA="vermelho";
  const options=online.startOffer?.options||{replay:SG.replay,overtime:SG.overtime,keepers:SG.keepers};
  aplicarOpcoesOnline(options);
- const packet={type:"start",version:2,skinA:SG.skinsA,skinB:SG.skinsB,options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,7)};
+ const packet={type:"start",version:2,skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin,options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,7)};
  online.startPacket=packet;online.startRetries=0;
  esconderMenus();document.getElementById("onlinePanel")?.classList.add("hidden");
  iniciarJogo();
@@ -3875,9 +4042,9 @@ function iniciarOnlineClient(dados){
  if(nonce && online.lastStartNonce===nonce){onlineSend({type:"startAck",nonce});return;}
  if(nonce)online.lastStartNonce=nonce;
  modoJogo="online";timeHumano="vermelho";timeIA="azul";
- SG.skinsA=dados.skinA||SG.skinsA;SG.skinsB=dados.skinB||SG.skinsB;
+ SG.skinsA=dados.skinA||SG.skinsA;SG.skinsB=dados.skinB||SG.skinsB;SG.ballSkin=(dados.ballSkin&&BALL_SKINS[dados.ballSkin])?dados.ballSkin:SG.ballSkin;
  aplicarOpcoesOnline(dados.options||{});
- applySkin("azul",SG.skinsA);applySkin("vermelho",SG.skinsB);
+ applySkin("azul",SG.skinsA);applySkin("vermelho",SG.skinsB);renderSkinsBola();
  esconderMenus();document.getElementById("onlinePanel")?.classList.add("hidden");
  iniciarJogo();
  onlineSend({type:"startAck",nonce});
@@ -3906,9 +4073,18 @@ function normalizarTextoFiltro(valor){
 }
 const PALAVRAS_BLOQUEADAS=[
  "filha da puta","filho da puta","filho de puta","puta que pariu","vai tomar no cu","tomar no cu","vai se foder","vai se fuder","se foder","se fuder","foder","fuder","fodase","foda se",
- "caralho","porra","merda","puta","puto","piranha","vadia","viado","viadao","bicha","bichinha","retardado","retardada",
- "macaco","macaca","macac@","nigger","nigga","niga","coon","spic","kike","cracker","whore","bitch","fuck","fucking","motherfucker","shit","asshole","bastard","slut","dick","pussy"
+ "caralho","porra","merda","puta","puto","piranha","vadia","vadiazinha","vagabunda","vagabundo","canalha","babaca","imbecil","idiota","otario","otária","otariozinho","retardado","retardada","mongoloide","burro","burra","jumento","animal","lixo","desgraçado","desgracado","desgraçada","desgracada","escroto","escrota","nojento","nojenta","verme","arrombado","arrombada","corno","corna","cuzão","cusao","cuzao","safado","safada","sem vergonha",
+ "viado","viadao","bicha","bichinha","boiola","traveco","maricas","macaco","macaca","preto de merda","negro de merda","nigger","nigga","niga","coon","spic","kike","chink","gook","wetback","cracker","sandnigger",
+ "whore","bitch","fuck","fucking","motherfucker","shit","asshole","bastard","slut","dick","pussy","cunt","bullshit","son of a bitch","piece of shit","dumbass","jackass","idiot","moron","jerk","loser","trash","suck","sucker","damn",
+ "nazista","hitler","estupro","estuprador","estupradora","rape","rapist","pedofilo","pedofilia","pedófilo","pedófila","terrorista","suicida","matar","morte","vai morrer","se mata","morre",
+ "otariozinho","otario","otária","otaria","idiotinha","idiotão","idiotao","imbecilzinho","burra","burro","burrao","burra","palhaco","palhaço","palhaca","palhaça","trouxa","cretino","cretina","babaca","babacão","babacao","babaca","idiota","lesado","lesada","inutil","inútil","inúteis","incompetente","fracassado","fracassada","fracasso","ridiculo","ridícula","ridiculo","nojento","nojenta","asqueroso","asquerosa","porcaria","merdinha","merdao","merdaço","merdinha","fdp","vsf","vai se ferrar","vai tomar","vai pro inferno","inferno","sua anta","anta","mula","asno","jumento","animalzinho","verme","verminoso","verminosa","lixo humano","escoria","escória","desprezivel","desprezível","canalha","safado","safada","vagabundo","vagabunda","prostituta","prostituto","rampeira","rampeiro","piriguete","quenga","piranha","cachorra","cachorro","cuzão","cusao","cuzao","cuzona","pau no cu","vai pra puta que pariu","tomar no cu","vai a merda","vai à merda", "homofobico","homofóbico","racista","sexista","misogino","misógino","misogina","misógina","fascista","comunista","retardado mental","doente mental","aidético","aidetico","lepra","leproso"
 ];
+PALAVRAS_BLOQUEADAS.push(
+ "idiot","moron","loser","stupid","dumb","dumbass","jerk","scumbag","trash","garbage","piece of trash","piece of garbage","shut up","screw you","go to hell",
+ "cracker","chink","gook","spic","kike","coon","wetback","beaner","raghead","towelhead","terrorist pig",
+ "homofobico","homofobica","transfobico","transfobica","xenofobo","xenofoba","machista","sexista","preconceituoso","preconceituosa",
+ "seu merda","sua merda","seu lixo","seu animal","seu otario","sua otaria","vai se ferrar","foda-se","fodase","cuzona","bichona","boiola","traveco","sapatão","sapatona","piranha","vadia","vagabunda","quenga","rampeira"
+);
 function censurarTexto(valor){
  const original=String(valor||"").replace(/[<>]/g,"").slice(0,120);
  let out=original;
@@ -3924,7 +4100,7 @@ function censurarTexto(valor){
  for(const termo of PALAVRAS_BLOQUEADAS.filter(x=>!x.includes(" "))){
   const n=normalizarTextoFiltro(termo);
   if(n.length>=3 && normal.includes(n)){
-   const re=new RegExp(n.split("").join("[^a-z0-9]*"),"gi");
+   const re=new RegExp(n.split("").map(ch=>ch.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("[^a-z0-9]*"),"gi");
    out=out.replace(re,m=>"#".repeat(Math.max(3,m.replace(/\W/g,"").length)));
   }
  }
@@ -3944,7 +4120,7 @@ function processarMensagemOnline(d){
  if(d.type==="helloHost"&&online.host){
   onlineSetDebug("Jogador remoto confirmou a conexão.");
   onlineSetStatus("Sincronizando sala...");
-  onlineSend({type:"hostInfo",version:3,nickname:getNickname(),skin:SG.skinsA});
+  onlineSend({type:"hostInfo",version:3,nickname:getNickname(),skin:SG.skinsA,ballSkin:SG.ballSkin});
   return;
  }
  if(d.type==="join"&&online.host){
@@ -3955,12 +4131,12 @@ function processarMensagemOnline(d){
   onlineSetStatus("Jogador conectado! Escolha as opções e aguarde a confirmação.");
   addChatLine("Sistema",`${d.nickname||"Jogador"} entrou na sala.`);
   atualizarBarraOnline(78);
-  onlineSend({type:"roomReady",version:3,hostNickname:getNickname(),guestNickname:d.nickname||"Jogador",skinA:SG.skinsA,skinB:SG.skinsB});
+  onlineSend({type:"roomReady",version:3,hostNickname:getNickname(),guestNickname:d.nickname||"Jogador",skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin});
   mostrarOpcoesHostOnline(true);
   return;
  }
  if(d.type==="roomReady"&&!online.host){
-  online.hostNickname=String(d.hostNickname||"Jogador").slice(0,16);online.guestNickname=getNickname();SG.skinsA=d.skinA||SG.skinsA;SG.skinsB=d.skinB||SG.skinsB;
+  online.hostNickname=String(d.hostNickname||"Jogador").slice(0,16);online.guestNickname=getNickname();SG.skinsA=d.skinA||SG.skinsA;SG.skinsB=d.skinB||SG.skinsB;SG.ballSkin=(d.ballSkin&&BALL_SKINS[d.ballSkin])?d.ballSkin:SG.ballSkin;
   applySkin("azul",SG.skinsA);applySkin("vermelho",SG.skinsB);
   onlineSetStatus(`Conectado! ${d.hostNickname||"Host"} está escolhendo as opções...`);onlineSetDebug("Sala sincronizada. Enviando confirmação...");
   addChatLine("Sistema",`Você entrou na sala de ${d.hostNickname||"Host"}.`);
@@ -3976,7 +4152,7 @@ function processarMensagemOnline(d){
   mostrarHostAguardandoEntradaOnline(false);
   return;
  }
- if(d.type==="pingStart"&&online.host){onlineSend({type:"roomReady",version:3,hostNickname:getNickname(),guestNickname:"Jogador",skinA:SG.skinsA,skinB:SG.skinsB});return;}
+ if(d.type==="pingStart"&&online.host){onlineSend({type:"roomReady",version:3,hostNickname:getNickname(),guestNickname:"Jogador",skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin});return;}
  if(d.type==="startOffer"&&!online.host){
   online.startOffer=d;
   aplicarOpcoesOnline(d.options||{});
@@ -4058,9 +4234,11 @@ function enviarInputOnline(kick=false,dash=false){
 function estadoOnline(){return{azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},goleiroA:{x:goleiroA.x,y:goleiroA.y,vx:goleiroA.vx,vy:goleiroA.vy,cor:goleiroA.cor},goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,cor:goleiroB.cor},golsAzul,golsVermelho,tempo,jogoAtivo,jogoPausado,otUsed:SG.otUsed};}
 function aplicarEstadoOnline(s){
  if(!s)return;
+ const estavaAtivo=jogoAtivo;
  Object.assign(azul,s.azul||{});Object.assign(vermelho,s.vermelho||{});Object.assign(bola,s.bola||{});Object.assign(goleiroA,s.goleiroA||{});Object.assign(goleiroB,s.goleiroB||{});
  golsAzul=Number(s.golsAzul)||0;golsVermelho=Number(s.golsVermelho)||0;tempo=Number.isFinite(s.tempo)?s.tempo:tempo;SG.otUsed=!!s.otUsed;
  jogoAtivo=!!s.jogoAtivo;jogoPausado=!!s.jogoPausado;atualizarControlesMobile();
+ if(!online.host && estavaAtivo && !jogoAtivo)finalizarJogo();
 }
 function enviarEstadoOnline(){if(!online.host||!online.connected)return;const now=performance.now();if(now-online.lastStateSent<45)return;online.lastStateSent=now;onlineSend({type:"state",state:estadoOnline()});}
 
@@ -4078,23 +4256,32 @@ function fecharSkinsOnline(){
  document.getElementById("onlineSkinsPanel")?.classList.add("hidden");
 }
 function renderOnlineSkins(){
- const grid=document.getElementById("onlineSkinsGrid");
- if(!grid)return;
+ const grid=document.getElementById("onlineSkinsGrid");if(!grid)return;
  const current=online.host?SG.skinsA:SG.skinsB;
  const blocked=online.host?SG.skinsB:SG.skinsA;
  grid.innerHTML=Object.entries(SKINS).map(([key,s])=>{
-   const disabled=key===blocked;
-   return `<button class="skinBtn ${key===current?"sel":""}" ${disabled?"disabled":""} style="background:${s.color};color:${s.color==="#fff"||s.color==="#ffd52e"?"#111":"#fff"};opacity:${disabled?.45:1}" onclick="selecionarSkinOnline('${key}')">${s.emoji} ${s.name}${disabled?" — ocupada":""}</button>`;
+   const owned=isPlayerSkinOwned(key),price=playerSkinPrice(key),blockedSame=key===blocked;
+   return `<button class="skinBtn ${key===current?"sel":""} ${!owned?"skinLocked":""}" ${blockedSame?"disabled":""} style="background:${s.color};color:${s.color==="#fff"||s.color==="#ffd52e"?"#111":"#fff"}" onclick="selecionarSkinOnline('${key}')">${s.emoji} ${s.name}${blockedSame?" — ocupada":!owned?`<span class="shopPrice">🪙 ${price.toLocaleString("pt-BR")}</span>`:`<span class="shopOwned">✅ Liberada</span>`}</button>`;
  }).join("");
 }
 function selecionarSkinOnline(key){
  if(!online.active||!SKINS[key])return;
+ if(!isPlayerSkinOwned(key)&&!comprarPlayerSkin(key))return;
  const blocked=online.host?SG.skinsB:SG.skinsA;
  if(key===blocked){onlineSetStatus("Essa skin já está sendo usada pelo outro jogador.");return;}
  if(online.host){SG.skinsA=key;applySkin("azul",key);onlineSend({type:"skinChange",side:"azul",skin:key});}
  else{SG.skinsB=key;applySkin("vermelho",key);onlineSend({type:"skinChange",side:"vermelho",skin:key});}
  renderOnlineSkins();
 }
+
+function abrirSkinsBola(){esconderMenus();renderSkinsBola();document.getElementById("ballSkinsPanel")?.classList.remove("hidden");}
+function fecharSkinsBola(){document.getElementById("ballSkinsPanel")?.classList.add("hidden");voltarMenuPrincipal();}
+function renderSkinsBola(){
+ const grid=document.getElementById("ballSkinsGrid");if(!grid)return;
+ grid.innerHTML=Object.entries(BALL_SKINS).map(([key,b])=>{const owned=isBallSkinOwned(key),locked=!owned,price=ballSkinPrice(key);return `<button class="skinBtn ${key===SG.ballSkin?"sel":""} ${locked?"skinLocked":""}" style="background:linear-gradient(135deg,${b.base},${b.detail});color:${b.base==="#333941"||b.base==="#11172f"||b.base==="#101522"||b.base==="#0c1026"?"#fff":"#111"}" onclick="selecionarSkinBola('${key}')">⚽ ${b.name}${locked?`<span class="shopPrice">🪙 ${price.toLocaleString("pt-BR")}</span>`:`<span class="shopOwned">✅ Liberada</span>`}</button>`;}).join("");
+}
+function selecionarSkinBola(key){if(!BALL_SKINS[key])return;if(!isBallSkinOwned(key)&&!comprarBallSkin(key))return;SG.ballSkin=key;try{localStorage.setItem("soccerGolBallSkin",key);}catch(e){}renderSkinsBola();}
+try{const savedBall=localStorage.getItem("soccerGolBallSkin");if(savedBall&&BALL_SKINS[savedBall])SG.ballSkin=savedBall;}catch(e){}
 
 /* ---------- dispositivo ---------- */
 function getNickname(){try{return (localStorage.getItem("soccerGolNickname")||"").trim()||"Jogador";}catch(e){return "Jogador";}}
@@ -4145,13 +4332,14 @@ function adicionarBotoesMenu(){
     extras.innerHTML=`
       <button class="menuButton secondary" onclick="abrirConfiguracoes()">⚙️ CONFIGURAÇÕES</button>
       <button class="menuButton secondary" onclick="abrirSkins()">🎨 SKINS</button>
+      <button class="menuButton secondary" onclick="abrirSkinsBola()">⚽ SKINS DA BOLA</button>
       <button class="menuButton secondary" onclick="abrirReplays()">📜 HISTÓRICO DE PARTIDAS</button>`;
     box.appendChild(extras);
 }
 adicionarBotoesMenu();
 
 function esconderExtras(){
-    ["optionsPanel","settingsPanel","skinsPanel","replaysPanel","creditsPanel","updatesPanel","onlinePanel","onlineSkinsPanel","nicknamePanel","profilePanel"].forEach(id=>{
+    ["optionsPanel","settingsPanel","skinsPanel","ballSkinsPanel","replaysPanel","creditsPanel","updatesPanel","onlinePanel","onlineSkinsPanel","nicknamePanel","profilePanel"].forEach(id=>{
         const e=document.getElementById(id);
         if(e)e.classList.add("hidden");
     });
@@ -4168,12 +4356,10 @@ const _abrirModos=abrirModos;
 abrirModos=function(){esconderMenus();document.getElementById("modoMenu").classList.remove("hidden")};
 
 function confirmMatchOptions(){
-    SG.overtime=!!document.getElementById("optOvertime")?.checked;
-    SG.replay=!!document.getElementById("optReplay")?.checked;
-    SG.keepers=!!document.getElementById("optKeepers")?.checked;
-    esconderMenus();
-    iniciarJogo();
-    atualizarControlesMobile();
+ const o=lerOpcoesLocais();aplicarOpcoesOnline(o);
+ esconderMenus();
+ iniciarJogo();
+ atualizarControlesMobile();
 }
 
 /* ---------- configurações ---------- */
@@ -4190,9 +4376,9 @@ function saveSettings(){
 function aplicarIdioma(){
     const lang=SG.lang;
     const dict={
-      pt:{play:"▶️ JOGAR",credits:"👤 CRÉDITOS",tutorial:"📖 TUTORIAL",settings:"⚙️ CONFIGURAÇÕES",skins:"🎨 SKINS",replays:"📜 HISTÓRICO DE PARTIDAS"},
-      en:{play:"▶️ PLAY",credits:"👤 CREDITS",tutorial:"📖 TUTORIAL",settings:"⚙️ SETTINGS",skins:"🎨 SKINS",replays:"📜 MATCH HISTORY"},
-      es:{play:"▶️ JUGAR",credits:"👤 CRÉDITOS",tutorial:"📖 TUTORIAL",settings:"⚙️ AJUSTES",skins:"🎨 SKINS",replays:"📜 HISTORIAL DE PARTIDAS"}
+      pt:{play:"▶️ JOGAR",credits:"👤 CRÉDITOS",tutorial:"📖 TUTORIAL",settings:"⚙️ CONFIGURAÇÕES",skins:"🎨 SKINS",ballSkins:"⚽ SKINS DA BOLA",replays:"📜 HISTÓRICO DE PARTIDAS"},
+      en:{play:"▶️ PLAY",credits:"👤 CREDITS",tutorial:"📖 TUTORIAL",settings:"⚙️ SETTINGS",skins:"🎨 SKINS",ballSkins:"⚽ BALL SKINS",replays:"📜 MATCH HISTORY"},
+      es:{play:"▶️ JUGAR",credits:"👤 CRÉDITOS",tutorial:"📖 TUTORIAL",settings:"⚙️ AJUSTES",skins:"🎨 SKINS",ballSkins:"⚽ SKINS DE LA BOLA",replays:"📜 HISTORIAL DE PARTIDAS"}
     }[lang]||null;
     if(!dict)return;
     const buttons=document.querySelectorAll("#menu .menuButton");
@@ -4204,7 +4390,8 @@ function aplicarIdioma(){
         const b=ex.querySelectorAll("button");
         if(b[0])b[0].textContent=dict.settings;
         if(b[1])b[1].textContent=dict.skins;
-        if(b[2])b[2].textContent=dict.replays;
+        if(b[2])b[2].textContent=dict.ballSkins;
+        if(b[3])b[3].textContent=dict.replays;
     }
 }
 
@@ -4250,9 +4437,11 @@ function renderSkins(){
         const el=document.getElementById(id);
         if(!el)return;
         const current=i===0?SG.skinsA:SG.skinsB;
-        el.innerHTML=Object.entries(SKINS).map(([key,s])=>
-          `<button class="skinBtn ${key===current?"sel":""}" style="background:${s.color};color:${s.color==="#fff"||s.color==="#ffd52e"?"#111":"#fff"}" onclick="selecionarSkin(${i},'${key}')">${s.emoji} ${s.name}</button>`
-        ).join("");
+        const blocked=i===0?SG.skinsB:SG.skinsA;
+        el.innerHTML=Object.entries(SKINS).map(([key,s])=>{
+          const owned=isPlayerSkinOwned(key),price=playerSkinPrice(key),locked=!owned,disabled=key===blocked;
+          return `<button class="skinBtn ${key===current?"sel":""} ${locked?"skinLocked":""}" ${disabled?"disabled":""} style="background:${s.color};color:${s.color==="#fff"||s.color==="#ffd52e"?"#111":"#fff"}" onclick="selecionarSkin(${i},'${key}')">${s.emoji} ${s.name}${disabled?" — ocupada":locked?`<span class="shopPrice">🪙 ${price.toLocaleString("pt-BR")}</span>`:`<span class="shopOwned">✅ Liberada</span>`}</button>`;
+        }).join("");
     });
 }
 function atualizarBotoesTimeIA(){
@@ -4285,20 +4474,14 @@ function atualizarBotoesTimeIA(){
 }
 
 function selecionarSkin(side,key){
-    if(side===0 && key===SG.skinsB){
-        alert("⚠️ Essa skin já está sendo usada pelo outro time. Escolha outra.");
-        return;
-    }
-    if(side===1 && key===SG.skinsA){
-        alert("⚠️ Essa skin já está sendo usada pelo outro time. Escolha outra.");
-        return;
-    }
-    if(side===0){SG.skinsA=key;applySkin("azul",key)}
-    else {SG.skinsB=key;applySkin("vermelho",key)}
-    atualizarSkinsGoleiros();
-    atualizarControlesMobile();
-    renderSkins();
-    atualizarBotoesTimeIA();
+    if(!SKINS[key])return;
+    if(side===0 && key===SG.skinsB){alert("⚠️ Essa skin já está sendo usada pelo outro time. Escolha outra.");return;}
+    if(side===1 && key===SG.skinsA){alert("⚠️ Essa skin já está sendo usada pelo outro time. Escolha outra.");return;}
+    if(!isPlayerSkinOwned(key) && !comprarPlayerSkin(key))return;
+    if(side===0)SG.skinsA=key;
+    else SG.skinsB=key;
+    applySkin(side===0?"azul":"vermelho",key);
+    atualizarSkinsGoleiros();atualizarControlesMobile();renderSkins();atualizarBotoesTimeIA();
 }
 
 /* ---------- pausa: SOMENTE botão ou tecla P ---------- */
@@ -4328,14 +4511,14 @@ function tentarCanetaSeguro(j){
     const dj=Math.hypot(j.x-outro.x,j.y-outro.y);
     const dbj=Math.hypot(bola.x-j.x,bola.y-j.y);
     const dbo=Math.hypot(bola.x-outro.x,bola.y-outro.y);
-    const prensando=dj<=j.r+outro.r+bola.r+5 && dbj<=j.r+bola.r+10 && dbo<=outro.r+bola.r+10;
+    const prensando=dj<=j.r+outro.r+bola.r+9 && dbj<=j.r+bola.r+15 && dbo<=outro.r+bola.r+15;
     if(!prensando)return false;
     let dx=j.dx,dy=j.dy; const m=Math.hypot(dx,dy)||1; dx/=m;dy/=m;
     // A direção é SEMPRE a do jogador que chutou, então o vermelho também pode fazer a caneta.
     bola.x=outro.x+dx*(outro.r+bola.r+10);
     bola.y=outro.y+dy*(outro.r+bola.r+10);
     bola.dx=dx;bola.dy=dy;bola.vel=14;bola.vx=dx*14;bola.vy=dy*14;
-    kickVisual={j,until:performance.now()+180};bolaChuteFx=1;
+    kickVisual={j,until:performance.now()+150};bolaChuteFx=1;
     kickAnim=null;
     return true;
 }
@@ -4344,11 +4527,11 @@ function chute(j){
     if(modoJogo==="online" && !online.host && j===vermelho){enviarInputOnline(true,false);return true;}
     if(tentarCanetaSeguro(j))return true;
     const d=Math.hypot(bola.x-j.x,bola.y-j.y);
-    if(d>j.r+bola.r+9)return false;
+    if(d>j.r+bola.r+16)return false;
     let dx=j.dx,dy=j.dy; const mag=Math.hypot(dx,dy);
     if(mag<.01){dx=(bola.x-j.x)/(d||1);dy=(bola.y-j.y)/(d||1)}else{dx/=mag;dy/=mag}
     const paraTras=(j.vx*dx+j.vy*dy)<-.35;
-    kickAnim={j,dx,dy,t:0,paraTras};kickVisual={j,until:performance.now()+220};bolaChuteFx=1;
+    kickAnim={j,dx,dy,t:0,paraTras};kickVisual={j,until:performance.now()+170};bolaChuteFx=1;
     return true;
 }
 function atualizarChute(){
@@ -4377,8 +4560,9 @@ function atualizarChute(){
     if(k.t<=9){
         const t=k.t/9;
         const smooth=t*t*(3-2*t);
-        bola.x += (alvoX-bola.x)*(0.22+smooth*0.18);
-        bola.y += (alvoY-bola.y)*(0.22+smooth*0.18);
+        const ease=0.10+smooth*0.18;
+        bola.x += (alvoX-bola.x)*ease;
+        bola.y += (alvoY-bola.y)*ease;
         bola.vx=0;
         bola.vy=0;
         bola.vel=0;
@@ -4590,7 +4774,7 @@ let replayIndex=0;
 let replayPlaying=false;
 
 function iniciarReplayLimpo(){
-    pararZoomGol();
+    
     if(!SG.replay || replayData.length<2){
         resetarDepoisReplay();
         return;
@@ -4622,11 +4806,11 @@ function pararReplay(){
     executandoReplay=false;
     document.getElementById("replayTexto").style.display="none";
 }
-function resetarDepoisReplay(){pararReplay();pararZoomGol();document.getElementById("golOverlay").style.display="none";reset();SG.goalLock=false;liberarPausa();reproduzindoPartidaCompleta=false;replayData=[];}
+function resetarDepoisReplay(){pararReplay();document.getElementById("golOverlay").style.display="none";reset();SG.goalLock=false;liberarPausa();if(reproduzindoPartidaCompleta&&window._sgReplayPreviousMode)modoJogo=window._sgReplayPreviousMode;reproduzindoPartidaCompleta=false;window._sgReplayPreviousMode=null;replayData=[];atualizarControlesMobile();}
 
 /* ---------- gol seguro ---------- */
 const replayHistorico=[];
-function mostrarGol(time){const vencedor=(time==="azul"||/AZUL/i.test(String(time)))?"azul":"vermelho";SG.goalLock=true;online.scorerTeam=(modoJogo==="online"?vencedor:null);online.replaySkipSent=false;jogoPausado=true;const skin=styledTeam(vencedor),txt=document.getElementById("golTexto"),sub=document.getElementById("golSub");txt.textContent="⚽ GOL!";txt.style.color="#fff";sub.textContent=skin.emoji+" "+skin.name.toUpperCase()+" GOL!";sub.style.color=skin.color;sub.style.webkitTextStroke="1px "+skin.outline;document.getElementById("golOverlay").style.display="flex";replayData=replayFrames.map(f=>({azul:{...f.azul},vermelho:{...f.vermelho},bola:{...f.bola},goleiroA:f.goleiroA?{...f.goleiroA}:null,goleiroB:f.goleiroB?{...f.goleiroB}:null}));if(modoJogo==="online"&&online.host&&SG.replay)onlineSend({type:"replayStart",scorer:vencedor,replay:replayData});iniciarZoomGol(vencedor==="azul"?azul:vermelho);}
+function mostrarGol(time){const vencedor=(time==="azul"||/AZUL/i.test(String(time)))?"azul":"vermelho";SG.goalLock=true;online.scorerTeam=(modoJogo==="online"?vencedor:null);online.replaySkipSent=false;jogoPausado=true;const skin=styledTeam(vencedor),txt=document.getElementById("golTexto"),sub=document.getElementById("golSub");txt.textContent="⚽ GOL!";txt.style.color="#fff";sub.textContent=skin.emoji+" "+skin.name.toUpperCase()+" GOL!";sub.style.color=skin.color;sub.style.webkitTextStroke="1px "+skin.outline;document.getElementById("golOverlay").style.display="flex";replayData=replayFrames.map(f=>({azul:{...f.azul},vermelho:{...f.vermelho},bola:{...f.bola},goleiroA:f.goleiroA?{...f.goleiroA}:null,goleiroB:f.goleiroB?{...f.goleiroB}:null}));if(modoJogo==="online"&&online.host&&SG.replay)onlineSend({type:"replayStart",scorer:vencedor,replay:replayData});if(SG.replay&&replayData.length>1) iniciarReplayLimpo(); else setTimeout(resetarBolaDepoisDoGol,180);}
 
 /* ---------- loop ÚNICO ---------- */
 function loopSeguro(){
@@ -4703,7 +4887,7 @@ iniciarJogo=function(){
     atualizarControlesMobile();
 };
 
-function limparEstadoOnlineAoTrocarModo(){if(online.active||modoJogo==="online")encerrarOnline();if(executandoReplay)pararReplay();pararZoomGol();reproduzindoPartidaCompleta=false;replayData=[];replayFrames.length=0;partidaGravada=[];}
+function limparEstadoOnlineAoTrocarModo(){if(online.active||modoJogo==="online")encerrarOnline();if(executandoReplay)pararReplay();reproduzindoPartidaCompleta=false;window._sgReplayPreviousMode=null;replayData=[];replayFrames.length=0;partidaGravada=[];partidaGravadaTick=0;modoJogo="2players";online.scorerTeam=null;online.replaySkipSent=false;}
 
 /* ---------- opções: botão jogar -> opções ---------- */
 const _selecionarDoisPlayers=selecionarDoisPlayers;
@@ -4796,24 +4980,31 @@ desenharCampo=function(){
 const _desenharBola=desenharBola;
 desenharBola=function(){
     ctx.save();
-    ctx.fillStyle="rgba(0,0,0,.32)";
-    ctx.beginPath();
-    ctx.ellipse(bola.x+2,bola.y+5,bola.r+2,bola.r*.6,0,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.fillStyle="#fff";
-    ctx.beginPath();
-    ctx.arc(bola.x,bola.y,bola.r,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.strokeStyle="rgba(0,0,0,.25)";
-    ctx.lineWidth=1.2;
-    ctx.stroke();
-
-    ctx.fillStyle="rgba(150,150,150,.9)";
-    ctx.beginPath();
-    ctx.arc(bola.x,bola.y,2.2,0,Math.PI*2);
-    ctx.fill();
+    const bs=BALL_SKINS[SG.ballSkin]||BALL_SKINS.classic;
+    ctx.fillStyle="rgba(0,0,0,.30)";
+    ctx.beginPath();ctx.ellipse(bola.x+2,bola.y+5,bola.r+2,bola.r*.58,0,0,Math.PI*2);ctx.fill();
+    ctx.save();ctx.beginPath();ctx.arc(bola.x,bola.y,bola.r,0,Math.PI*2);ctx.clip();
+    if(SG.ballSkin==="classic" && classicBallImage.complete){
+        ctx.drawImage(classicBallImage,bola.x-bola.r,bola.y-bola.r,bola.r*2,bola.r*2);
+    }else{
+        const g=ctx.createRadialGradient(bola.x-3,bola.y-4,1,bola.x,bola.y,bola.r);
+        g.addColorStop(0,bs.base);g.addColorStop(.72,bs.base);g.addColorStop(1,bs.detail);
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(bola.x,bola.y,bola.r,0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle=bs.detail;ctx.fillStyle=bs.detail;ctx.globalAlpha=.9;ctx.lineWidth=1.6;const t=performance.now()/500;
+        if(bs.pattern==='dots'){for(let i=0;i<8;i++){const a=i*Math.PI/4+t*.15;ctx.beginPath();ctx.arc(bola.x+Math.cos(a)*6,bola.y+Math.sin(a)*6,1.5,0,Math.PI*2);ctx.fill();}}
+        if(bs.pattern==='rings'){for(let r=3;r<=10;r+=4){ctx.beginPath();ctx.arc(bola.x,bola.y,r,0,Math.PI*2);ctx.stroke();}}
+        if(bs.pattern==='panels'){for(let i=-12;i<=12;i+=6){ctx.beginPath();ctx.moveTo(bola.x-12,i+bola.y);ctx.lineTo(bola.x+12,i+bola.y+6);ctx.stroke();}}
+        if(bs.pattern==='swirl'){ctx.beginPath();ctx.arc(bola.x-2,bola.y+1,8,t,t+4.2);ctx.stroke();ctx.beginPath();ctx.arc(bola.x+3,bola.y-3,5,t+2,t+5.3);ctx.stroke();}
+        if(bs.pattern==='stars'){for(let i=0;i<7;i++){const a=i*1.7+t*.1;const x=bola.x+Math.cos(a)*7,y=bola.y+Math.sin(a)*7;ctx.beginPath();ctx.arc(x,y,1.2,0,Math.PI*2);ctx.fill();}}
+        if(bs.pattern==='flames'){ctx.beginPath();ctx.moveTo(bola.x-9,bola.y+5);ctx.quadraticCurveTo(bola.x-4,bola.y-6,bola.x,bola.y+2);ctx.quadraticCurveTo(bola.x+4,bola.y-8,bola.x+9,bola.y+5);ctx.stroke();}
+        if(bs.pattern==='stripes'){for(let x=-18;x<=18;x+=7){ctx.beginPath();ctx.moveTo(bola.x+x-10,bola.y-12);ctx.lineTo(bola.x+x+5,bola.y+12);ctx.stroke();}}
+        if(bs.pattern==='checker'){const size=5;for(let yy=-15;yy<15;yy+=size){for(let xx=-15;xx<15;xx+=size){if(((xx+15)/size+(yy+15)/size)%2<1){ctx.fillRect(bola.x+xx,bola.y+yy,size,size);}}}}
+        if(bs.pattern==='zigzag'){for(let y=-12;y<=12;y+=8){ctx.beginPath();ctx.moveTo(bola.x-15,bola.y+y);for(let x=-15;x<=15;x+=5)ctx.lineTo(bola.x+x,bola.y+y+(x%10===0?5:-5));ctx.stroke();}}
+    }
+    ctx.restore();
+    ctx.strokeStyle="rgba(0,0,0,.28)";ctx.lineWidth=1.1;ctx.beginPath();ctx.arc(bola.x,bola.y,bola.r,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle="#3a3a3a";ctx.beginPath();ctx.arc(bola.x,bola.y,2.15,0,Math.PI*2);ctx.fill();
+    if(bolaChuteFx>0){ctx.save();const f=Math.min(1,bolaChuteFx);ctx.globalAlpha=.28*f;ctx.lineCap="round";for(let i=1;i<=5;i++){const len=(i*4+5)*f;const tail=8+i*2;ctx.strokeStyle=i%2?"rgba(255,255,255,.7)":"rgba(145,220,255,.52)";ctx.lineWidth=i===1?2.6:1.25;ctx.beginPath();ctx.moveTo(bola.x-bola.dx*(bola.r+len),bola.y-bola.dy*(bola.r+len));ctx.lineTo(bola.x-bola.dx*(bola.r+len+tail),bola.y-bola.dy*(bola.r+len+tail));ctx.stroke();}ctx.restore();}
     ctx.restore();
 };
 
@@ -4866,8 +5057,13 @@ function iniciarCarregamentoInicial(){const panel=document.getElementById("start
 /* loop seguro é iniciado UMA única vez */
 loopSeguro();
 setupKeybindButtons();
-setNickname(getNickname());
+const _initialNick=getNickname();const _profileButton=document.getElementById("botaoPerfil");if(_profileButton)_profileButton.textContent="👤 "+(hasSavedNickname()?_initialNick:"Jogador");
 prepararChat();
+const _coinInput=document.getElementById("coinCodeInput");if(_coinInput)_coinInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();resgatarCodigoMoedas();}});
+normalizarSkinsCompradas();
+applySkin("azul",SG.skinsA);applySkin("vermelho",SG.skinsB);atualizarSkinsGoleiros();
+atualizarMoedasUI();
+atualizarEconomiaVisibilidade();
 iniciarCarregamentoInicial();
 
 /* controles mobile visíveis apenas quando selecionado */
