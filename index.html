@@ -557,7 +557,7 @@ button{
     </div>
 </div>
 
-<div id="updatesPanel" class="overlay hidden"><div class="sg-panel" style="max-width:580px"><h1 class="menuTitle" style="text-align:center">📢 NOVIDADES</h1><div class="sg-grid" style="margin:14px 0 10px"><button id="updatesTab17" class="menuButton blueButton" onclick="mostrarAtualizacao(17)">📁 17/08/2026</button><button id="updatesTab18" class="menuButton secondary" onclick="mostrarAtualizacao(18)">📁 18/08/2026</button></div><div id="updatesContent17"><div class="updatesDate">Atualizações — 17/08/2026</div><div class="updatesList"><div>👟 Carrinho</div><div>⏱️ Prorrogação de 30 segundos</div><div>🎨 Skins e bloqueio de duplicadas</div><div>🌐 Modo Online 1v1</div><div>🤖 Balanceamento da IA</div><div>🧤 Goleiros</div><div>👤 Perfil e nickname</div><div>⌨️ Remapeamento de teclado</div><div>🎬 Pular replay online</div><div>💬 Chat online</div></div></div><div id="updatesContent18" class="hidden"><div class="updatesDate">Atualizações — 18/08/2026</div><div class="updatesList"><div>🦶 Animação de chute</div><div>💨 Efeito visual de chute rápido</div><div>⚽ Skins de bola e mais personalização visual</div><div>📜 Histórico com replay completo</div><div>👤 Nicknames no Online</div><div>⌨️ Tecla Ç corrigida</div><div>🧹 Limpeza do estado Online</div><div>📱 Carregamento inicial</div><div>⏱️ Duração da partida e prorrogação configuráveis</div><div>🎨 Mais skins disponíveis</div><div>🧤 Colisão dos goleiros</div><div>📝 Nickname corrigido e salvo corretamente</div><div>🧹 Limpeza extra do estado do Online</div></div></div><button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button></div></div><div id="startupLoading" class="overlay hidden" style="z-index:200;background:rgba(4,12,7,.97)"><div class="sg-panel" style="max-width:420px;text-align:center"><div class="logo" style="font-size:44px">⚽</div><h2 class="menuTitle">Carregando SoccerGol...</h2><div style="height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:18px 0"><div id="startupLoadingBar" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);transition:width .12s linear"></div></div><div id="startupLoadingText" style="font-size:13px;color:#999">Preparando o campo...</div></div></div>
+<div id="updatesPanel" class="overlay hidden"><div class="sg-panel" style="max-width:620px"><h1 class="menuTitle" style="text-align:center">📢 NOVIDADES</h1><div class="sg-grid" style="margin:14px 0 10px"><button id="updatesTab18" class="menuButton blueButton" onclick="mostrarAtualizacao(18)">📁 18/08/2026</button><button id="updatesTab20" class="menuButton secondary" onclick="mostrarAtualizacao(20)">📁 20/08/2026</button></div><div id="updatesContent18"><div class="updatesDate">Atualizações — 18/08/2026</div><div class="updatesList"><div>🦶 Animação de chute</div><div>💨 Efeito visual de chute rápido</div><div>⚽ Skins de bola e mais personalização visual</div><div>📜 Histórico com replay completo</div><div>👤 Nicknames no Online</div><div>⌨️ Tecla Ç corrigida</div><div>🧹 Limpeza do estado Online</div><div>📱 Carregamento inicial</div><div>⏱️ Duração da partida e prorrogação configuráveis</div><div>🎨 Mais skins disponíveis</div><div>🧤 Colisão dos goleiros</div><div>📝 Nickname corrigido e salvo corretamente</div><div>🧹 Limpeza extra do estado do Online</div></div></div><div id="updatesContent20" class="hidden"><div class="updatesDate">Atualizações — 20/08/2026</div><div class="updatesList"><div>🪙 Sistema de moedas e recompensas por partida</div><div>🏪 Loja de skins com compras salvas no dispositivo</div><div>⚽ Loja de skins de bola</div><div>🔑 Código especial de moedas</div><div>🧹 Correção do estado após gols com replay desligado</div><div>💾 Skins equipadas agora ficam salvas</div><div>🎮 Mais ajustes de jogabilidade e estabilidade</div></div></div><button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button></div></div><div id="startupLoading" class="overlay hidden" style="z-index:200;background:rgba(4,12,7,.97)"><div class="sg-panel" style="max-width:420px;text-align:center"><div class="logo" style="font-size:44px">⚽</div><h2 class="menuTitle">Carregando SoccerGol...</h2><div style="height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:18px 0"><div id="startupLoadingBar" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);transition:width .12s linear"></div></div><div id="startupLoadingText" style="font-size:13px;color:#999">Preparando o campo...</div></div></div>
 
 <!-- MODOS -->
 
@@ -2476,6 +2476,9 @@ function resetarBolaDepoisDoGol(){
 
     replayFrames.length=0;
 
+    // Libera totalmente a partida após o gol, inclusive quando os replays estão desligados.
+    SG.goalLock=false;
+    kickAnim=null;
     jogoPausado=false;
 }
 
@@ -3680,6 +3683,7 @@ const FREE_BALL_SKINS=new Set(["classic"]);
 const COIN_STORAGE_KEY="soccerGolCoins";
 const OWNED_PLAYER_KEY="soccerGolOwnedSkins";
 const OWNED_BALL_KEY="soccerGolOwnedBallSkins";
+const EQUIPPED_PLAYER_KEY="soccerGolEquippedSkins";
 const CODE_STORAGE_KEY="soccerGolCodeDRF26";
 let moedas=0;
 try{moedas=Math.max(0,Number(localStorage.getItem(COIN_STORAGE_KEY)||0)||0);}catch(e){moedas=0;}
@@ -3706,7 +3710,28 @@ function atualizarEconomiaVisibilidade(){const bar=document.getElementById("econ
 function moedasPorPartida(){if(modoJogo==="2players")return 0;if(modoJogo==="ia"){const base={facil:10,medio:20,dificil:35,impossivel:55}[dificuldadeIA]||10;const bonus={facil:25,medio:50,dificil:90,impossivel:150}[dificuldadeIA]||25;const venceu=(timeHumano==="azul"?golsAzul>golsVermelho:golsVermelho>golsAzul);return base+(venceu?bonus:0);}if(modoJogo==="online"){const meu=online.host?"azul":"vermelho";const venceu=(meu==="azul"?golsAzul>golsVermelho:golsVermelho>golsAzul);return 25+(venceu?75:0);}return 0;}
 let recompensaEntregue=false;
 function entregarRecompensaPartida(){if(recompensaEntregue)return 0;recompensaEntregue=true;const ganho=moedasPorPartida();if(ganho>0)adicionarMoedas(ganho);return ganho;}
-function normalizarSkinsCompradas(){if(!isPlayerSkinOwned(SG.skinsA))SG.skinsA="blue";if(!isPlayerSkinOwned(SG.skinsB))SG.skinsB="red";if(!isBallSkinOwned(SG.ballSkin))SG.ballSkin="classic";}
+function carregarSkinsEquipadas(){
+    try{
+        const saved=JSON.parse(localStorage.getItem(EQUIPPED_PLAYER_KEY)||"null");
+        if(saved&&typeof saved==="object"){
+            if(saved.azul&&SKINS[saved.azul]&&isPlayerSkinOwned(saved.azul))SG.skinsA=saved.azul;
+            if(saved.vermelho&&SKINS[saved.vermelho]&&isPlayerSkinOwned(saved.vermelho))SG.skinsB=saved.vermelho;
+        }
+    }catch(e){}
+    if(SG.skinsA===SG.skinsB){
+        SG.skinsB=Object.keys(SKINS).find(k=>k!==SG.skinsA&&isPlayerSkinOwned(k))||"red";
+    }
+}
+function salvarSkinsEquipadas(){
+    try{localStorage.setItem(EQUIPPED_PLAYER_KEY,JSON.stringify({azul:SG.skinsA,vermelho:SG.skinsB}));}catch(e){}
+}
+function normalizarSkinsCompradas(){
+    if(!isPlayerSkinOwned(SG.skinsA))SG.skinsA="blue";
+    if(!isPlayerSkinOwned(SG.skinsB))SG.skinsB="red";
+    if(SG.skinsA===SG.skinsB)SG.skinsB=Object.keys(SKINS).find(k=>k!==SG.skinsA&&isPlayerSkinOwned(k))||"red";
+    if(!isBallSkinOwned(SG.ballSkin))SG.ballSkin="classic";
+    salvarSkinsEquipadas();
+}
 
 
 /* ---------- ONLINE 1v1 ---------- */
@@ -4316,7 +4341,7 @@ function setDevice(device){
     atualizarPerfilVisibilidade();
 }
 
-function mostrarAtualizacao(dia){const a=dia===17;document.getElementById("updatesContent17")?.classList.toggle("hidden",!a);document.getElementById("updatesContent18")?.classList.toggle("hidden",a);document.getElementById("updatesTab17")?.classList.toggle("blueButton",a);document.getElementById("updatesTab17")?.classList.toggle("secondary",!a);document.getElementById("updatesTab18")?.classList.toggle("blueButton",!a);document.getElementById("updatesTab18")?.classList.toggle("secondary",a);}
+function mostrarAtualizacao(dia){const a=dia===20;document.getElementById("updatesContent18")?.classList.toggle("hidden",a);document.getElementById("updatesContent20")?.classList.toggle("hidden",!a);document.getElementById("updatesTab18")?.classList.toggle("blueButton",!a);document.getElementById("updatesTab18")?.classList.toggle("secondary",a);document.getElementById("updatesTab20")?.classList.toggle("blueButton",a);document.getElementById("updatesTab20")?.classList.toggle("secondary",!a);}
 function fecharAtualizacoes(){
     document.getElementById("updatesPanel")?.classList.add("hidden");
     voltarMenuPrincipal();
@@ -4480,6 +4505,7 @@ function selecionarSkin(side,key){
     if(!isPlayerSkinOwned(key) && !comprarPlayerSkin(key))return;
     if(side===0)SG.skinsA=key;
     else SG.skinsB=key;
+    salvarSkinsEquipadas();
     applySkin(side===0?"azul":"vermelho",key);
     atualizarSkinsGoleiros();atualizarControlesMobile();renderSkins();atualizarBotoesTimeIA();
 }
@@ -5060,6 +5086,7 @@ setupKeybindButtons();
 const _initialNick=getNickname();const _profileButton=document.getElementById("botaoPerfil");if(_profileButton)_profileButton.textContent="👤 "+(hasSavedNickname()?_initialNick:"Jogador");
 prepararChat();
 const _coinInput=document.getElementById("coinCodeInput");if(_coinInput)_coinInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();resgatarCodigoMoedas();}});
+carregarSkinsEquipadas();
 normalizarSkinsCompradas();
 applySkin("azul",SG.skinsA);applySkin("vermelho",SG.skinsB);atualizarSkinsGoleiros();
 atualizarMoedasUI();
