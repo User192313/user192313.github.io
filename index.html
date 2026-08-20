@@ -855,6 +855,7 @@ width="1200"
 height="650">
 </canvas>
 
+<script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <script>
 /* =========================================================
@@ -1437,6 +1438,7 @@ function voltarMenuPrincipal(){
 ========================================================= */
 
 function alternarMusica(){
+    if(crazySdkSettings.muteAudio)return;
 
     const musica=
         document.getElementById("musicaJogo");
@@ -2711,6 +2713,8 @@ function atualizarIndicadorIA(){
 ========================================================= */
 
 function finalizarJogo(){
+    crazyStopGameplay();
+    if(modoJogo==="online"&&online.connected) crazyUpdateRoom({roomId:"soccergol-"+online.roomCode,isJoinable:true,inviteParams:{roomCode:online.roomCode}});
     const ganhouMoedas=entregarRecompensaPartida();
     atualizarEconomiaVisibilidade();
     jogoAtivo=false;atualizarPerfilVisibilidade();jogoPausado=false;pararReplay();clearInterval(intervaloTempo);
@@ -2741,6 +2745,7 @@ function finalizarJogo(){
 
 function voltarMenu(){
 
+    crazyStopGameplay();
     if(online.active||modoJogo==="online")encerrarOnline();reproduzindoPartidaCompleta=false;
     jogoAtivo=false;
     atualizarPerfilVisibilidade();
@@ -3591,6 +3596,90 @@ const SG={
     ballSkin:"classic"
 };
 
+/* =========================================================
+   CRAZYGAMES SDK v3 — integração segura para GitHub + CrazyGames
+========================================================= */
+let crazySdkReady=false;
+let crazySdkSettings={disableChat:false,muteAudio:false};
+let crazyInviteRoomCode=null;
+let crazyInstantMultiplayer=false;
+
+async function inicializarCrazyGamesSDK(){
+    try{
+        if(!window.CrazyGames?.SDK) return false;
+        await window.CrazyGames.SDK.init();
+        crazySdkReady=true;
+        const game=window.CrazyGames.SDK.game;
+        crazyInstantMultiplayer=!!game?.isInstantMultiplayer;
+        crazySdkSettings={...crazySdkSettings,...(game?.settings||{})};
+        aplicarConfiguracoesCrazyGames();
+        if(game?.addSettingsChangeListener){
+            game.addSettingsChangeListener(n=>{crazySdkSettings={...crazySdkSettings,...(n||{})};aplicarConfiguracoesCrazyGames();});
+        }
+        if(game?.addJoinRoomListener){
+            game.addJoinRoomListener(params=>{
+                const code=String(params?.roomCode||params?.roomName||params?.roomId||'').trim().toUpperCase();
+                if(code) prepararEntradaCrazyRoom(code);
+            });
+        }
+        const params=game?.inviteParams;
+        const initialCode=String(params?.roomCode||params?.roomName||params?.roomId||game?.getInviteParam?.('roomCode')||'').trim().toUpperCase();
+        if(initialCode) crazyInviteRoomCode=initialCode;
+        return true;
+    }catch(e){
+        crazySdkReady=false;
+        return false;
+    }
+}
+function aplicarConfiguracoesCrazyGames(){
+    const chat=document.getElementById('onlineChatLog');
+    const input=document.getElementById('onlineChatInput');
+    const send=[...document.querySelectorAll('#onlinePanel .chatRow button')][0];
+    const disabled=!!crazySdkSettings.disableChat;
+    if(input) input.disabled=disabled;
+    if(send) send.disabled=disabled;
+    if(chat && disabled) chat.innerHTML='<div class="chatLine" style="color:#888">💬 Chat desativado pela CrazyGames.</div>';
+    const audio=document.getElementById('musicaJogo');
+    if(audio && crazySdkSettings.muteAudio){audio.pause();audio.muted=true;}
+}
+function crazyUpdateRoom(data){
+    try{
+        if(crazySdkReady&&window.CrazyGames?.SDK?.game?.updateRoom){
+            window.CrazyGames.SDK.game.updateRoom(data||{});
+        }
+    }catch(e){}
+}
+function crazyLeftRoom(){
+    try{if(crazySdkReady&&window.CrazyGames?.SDK?.game?.leftRoom)window.CrazyGames.SDK.game.leftRoom();}catch(e){}
+}
+function crazyStartGameplay(){
+    try{if(crazySdkReady&&window.CrazyGames?.SDK?.game?.gameplayStart)window.CrazyGames.SDK.game.gameplayStart();}catch(e){}
+}
+function crazyStopGameplay(){
+    try{if(crazySdkReady&&window.CrazyGames?.SDK?.game?.gameplayStop)window.CrazyGames.SDK.game.gameplayStop();}catch(e){}
+}
+function prepararEntradaCrazyRoom(code){
+    crazyInviteRoomCode=code;
+    const input=document.getElementById('onlineJoinCode');
+    if(input) input.value=code;
+    if(typeof abrirOnline==='function') abrirOnline();
+    if(hasSavedNickname() && SG.device){
+        setTimeout(()=>{try{entrarSalaOnline();}catch(e){}},120);
+    }
+}
+function convidarCrazyGames(){
+    if(!crazySdkReady||!online.roomCode||!window.CrazyGames?.SDK?.game?.inviteLink){
+        onlineSetStatus('O convite da CrazyGames só funciona dentro da CrazyGames.');
+        return;
+    }
+    try{
+        const link=window.CrazyGames.SDK.game.inviteLink({roomCode:online.roomCode});
+        if(link) navigator.clipboard?.writeText(link).catch(()=>{});
+        onlineSetStatus('🔗 Convite da CrazyGames copiado!');
+        onlineSetDebug(link||'Link de convite criado pela CrazyGames.');
+    }catch(e){onlineSetStatus('Não foi possível criar o convite da CrazyGames.');}
+}
+
 const SKINS={
  blue:{name:"Azul",color:"#2580ff",emoji:"🔵",outline:"#000"},
  red:{name:"Vermelho",color:"#ff3030",emoji:"🔴",outline:"#000"},
@@ -3832,6 +3921,7 @@ function onlineErroHumano(err){
 }
 function encerrarOnline(){
  online.intentionalClose=true;
+ crazyLeftRoom();
  limparTimerConexaoOnline();clearInterval(online.loadingTimer);online.loadingTimer=null;clearTimeout(online.startTimer);online.startTimer=null;
  try{online.conn?.close()}catch(e){}
  try{online.peer?.destroy()}catch(e){}
@@ -3909,6 +3999,7 @@ function criarPeerHost(code,tentativa=0){
   document.getElementById("onlineRoom")?.classList.remove("hidden");
   document.getElementById("onlineCode").textContent=code;
   online.roomCode=code;online.waiting=true;online.clientReady=false;
+  crazyUpdateRoom({roomId:"soccergol-"+code,isJoinable:true,inviteParams:{roomCode:code}});
   mostrarOpcoesHostOnline(true);
   onlineSetStatus("Sala criada. Aguardando jogador...");
   onlineSetDebug("ID da sala ativo: "+peerId);
@@ -4133,7 +4224,7 @@ function censurarTexto(valor){
 }
 function addChatLine(name,text){const log=document.getElementById("onlineChatLog");if(!log)return;const safe=censurarTexto(text);const safeName=censurarTexto(String(name||"Jogador").slice(0,16));const div=document.createElement("div");div.className="chatLine";const n=document.createElement("span");n.className="chatName";n.textContent=safeName||"Jogador";div.appendChild(n);div.appendChild(document.createTextNode(": "+safe));log.appendChild(div);log.scrollTop=log.scrollHeight;}
 function limparChat(){const log=document.getElementById("onlineChatLog");if(log)log.innerHTML="";}
-function enviarChatOnline(){const input=document.getElementById("onlineChatInput");const text=String(input?.value||"").trim();if(!text)return;if(!online.connected||!online.conn?.open){onlineSetStatus("Ainda conectando à sala...");return;}const filtrado=censurarTexto(text);if(!onlineSend({type:"chat",nickname:getNickname(),text:filtrado})){onlineSetStatus("Mensagem não enviada. Aguardando conexão...");return;}addChatLine(getNickname(),filtrado);input.value="";input.focus();}
+function enviarChatOnline(){if(crazySdkSettings.disableChat){onlineSetStatus("O chat está desativado pela CrazyGames.");return;}const input=document.getElementById("onlineChatInput");const text=String(input?.value||"").trim();if(!text)return;if(!online.connected||!online.conn?.open){onlineSetStatus("Ainda conectando à sala...");return;}const filtrado=censurarTexto(text);if(!onlineSend({type:"chat",nickname:getNickname(),text:filtrado})){onlineSetStatus("Mensagem não enviada. Aguardando conexão...");return;}addChatLine(getNickname(),filtrado);input.value="";input.focus();}
 function prepararChat(){
  const input=document.getElementById("onlineChatInput");
  if(input&&!input.dataset.bound){input.dataset.bound="1";input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();enviarChatOnline();}});}
@@ -4153,6 +4244,7 @@ function processarMensagemOnline(d){
   if(skinB===SG.skinsA)skinB=escolherSkinDisponivel(SG.skinsA,"");
   SG.skinsB=skinB;applySkin("vermelho",skinB);online.guestNickname=String(d.nickname||"Jogador").slice(0,16);
   online.waiting=false;online.clientReady=false;
+  crazyUpdateRoom({roomId:"soccergol-"+online.roomCode,isJoinable:false});
   onlineSetStatus("Jogador conectado! Escolha as opções e aguarde a confirmação.");
   addChatLine("Sistema",`${d.nickname||"Jogador"} entrou na sala.`);
   atualizarBarraOnline(78);
@@ -4165,7 +4257,7 @@ function processarMensagemOnline(d){
   applySkin("azul",SG.skinsA);applySkin("vermelho",SG.skinsB);
   onlineSetStatus(`Conectado! ${d.hostNickname||"Host"} está escolhendo as opções...`);onlineSetDebug("Sala sincronizada. Enviando confirmação...");
   addChatLine("Sistema",`Você entrou na sala de ${d.hostNickname||"Host"}.`);
-  online.clientReady=true;atualizarBarraOnline(90);onlineSend({type:"clientReady",version:3,nickname:getNickname()});
+  online.clientReady=true;crazyUpdateRoom({roomId:"soccergol-"+online.roomCode,isJoinable:false});atualizarBarraOnline(90);onlineSend({type:"clientReady",version:3,nickname:getNickname()});
   return;
  }
  if(d.type==="clientReady"&&online.host){
@@ -4180,6 +4272,7 @@ function processarMensagemOnline(d){
  if(d.type==="pingStart"&&online.host){onlineSend({type:"roomReady",version:3,hostNickname:getNickname(),guestNickname:"Jogador",skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin});return;}
  if(d.type==="startOffer"&&!online.host){
   online.startOffer=d;
+  crazyUpdateRoom({roomId:"soccergol-"+online.roomCode,isJoinable:false});
   aplicarOpcoesOnline(d.options||{});
   onlineSetStatus("Partida pronta! Clique em ENTRAR NA PARTIDA para começar.");
   onlineSetDebug("A partida ainda não começou. Falta somente sua entrada.");
@@ -4339,6 +4432,7 @@ function setDevice(device){
         document.getElementById("nicknamePanel")?.classList.remove("hidden");
     }
     atualizarPerfilVisibilidade();
+    if(hasSavedNickname()&&crazyInviteRoomCode){const c=crazyInviteRoomCode;crazyInviteRoomCode=null;setTimeout(()=>{try{prepararEntradaCrazyRoom(c);}catch(e){}},120);}
 }
 
 function mostrarAtualizacao(dia){const a=dia===20;document.getElementById("updatesContent18")?.classList.toggle("hidden",a);document.getElementById("updatesContent20")?.classList.toggle("hidden",!a);document.getElementById("updatesTab18")?.classList.toggle("blueButton",!a);document.getElementById("updatesTab18")?.classList.toggle("secondary",a);document.getElementById("updatesTab20")?.classList.toggle("blueButton",a);document.getElementById("updatesTab20")?.classList.toggle("secondary",!a);}
@@ -5078,13 +5172,14 @@ colisaoJogadores=function(){
     });
 };
 
-function iniciarCarregamentoInicial(){const panel=document.getElementById("startupLoading"),bar=document.getElementById("startupLoadingBar"),text=document.getElementById("startupLoadingText"),device=document.getElementById("deviceChoice");if(!panel||!bar||!device)return;device.classList.add("hidden");panel.classList.remove("hidden");let p=0;const timer=setInterval(()=>{p+=14;bar.style.width=Math.min(100,p)+"%";if(text)text.textContent=p<35?"Preparando o campo...":p<70?"Carregando controles...":"Pronto!";if(p>=100){clearInterval(timer);setTimeout(()=>{panel.classList.add("hidden");device.classList.remove("hidden");},180);}},55);}
+function iniciarCarregamentoInicial(){const panel=document.getElementById("startupLoading"),bar=document.getElementById("startupLoadingBar"),text=document.getElementById("startupLoadingText"),device=document.getElementById("deviceChoice");if(!panel||!bar||!device)return;try{if(crazySdkReady&&window.CrazyGames?.SDK?.game?.loadingStart)window.CrazyGames.SDK.game.loadingStart();}catch(e){}device.classList.add("hidden");panel.classList.remove("hidden");let p=0;const timer=setInterval(()=>{p+=14;bar.style.width=Math.min(100,p)+"%";if(text)text.textContent=p<35?"Preparando o campo...":p<70?"Carregando controles...":"Pronto!";if(p>=100){clearInterval(timer);try{if(crazySdkReady&&window.CrazyGames?.SDK?.game?.loadingStop)window.CrazyGames.SDK.game.loadingStop();}catch(e){}setTimeout(()=>{panel.classList.add("hidden");device.classList.remove("hidden");if(crazyInstantMultiplayer&&hasSavedNickname())setTimeout(()=>criarSalaOnline(),120);},180);}},55);}
 
 /* loop seguro é iniciado UMA única vez */
 loopSeguro();
 setupKeybindButtons();
 const _initialNick=getNickname();const _profileButton=document.getElementById("botaoPerfil");if(_profileButton)_profileButton.textContent="👤 "+(hasSavedNickname()?_initialNick:"Jogador");
 prepararChat();
+inicializarCrazyGamesSDK();
 const _coinInput=document.getElementById("coinCodeInput");if(_coinInput)_coinInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();resgatarCodigoMoedas();}});
 carregarSkinsEquipadas();
 normalizarSkinsCompradas();
