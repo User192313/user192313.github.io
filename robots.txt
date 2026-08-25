@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://user192313.github.io/soccer-gol/sitemap.xml
