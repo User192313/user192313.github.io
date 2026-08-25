@@ -5,18 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SoccerGol ⚽ — Table Football Online</title>
 <meta name="description" content="SoccerGol is a fast-paced tabletop football game playable in your browser. Play 2 Players, challenge the AI, customize skins, or play online."/>
+<meta name="theme-color" content="#07150b"/>
+<meta name="color-scheme" content="dark"/>
 <meta name="robots" content="index,follow,max-image-preview:large"/>
-<link rel="canonical" href="https://user192313.github.io/soccer-gol/"/>
+<link rel="canonical" href="https://user192313.github.io/"/>
 <meta property="og:type" content="website"/>
 <meta property="og:title" content="SoccerGol ⚽ — Table Football Online"/>
 <meta property="og:description" content="Play SoccerGol in your browser: local multiplayer, AI, skins, mobile controls and online 1v1."/>
-<meta property="og:url" content="https://user192313.github.io/soccer-gol/"/>
+<meta property="og:url" content="https://user192313.github.io/"/>
 <meta property="og:site_name" content="SoccerGol"/>
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SoccerGol ⚽ — Table Football Online"/>
 <meta name="twitter:description" content="Table football in your browser with AI, local multiplayer and online 1v1."/>
-<link rel="sitemap" type="application/xml" title="Sitemap" href="/soccer-gol/sitemap.xml"/>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"SoccerGol","description":"A fast-paced tabletop football game playable directly in the browser.","genre":["Sports","Football"],"gamePlatform":["Web Browser"],"applicationCategory":"Game","url":"https://user192313.github.io/soccer-gol/","inLanguage":["pt-BR","en","es"]}</script>
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"SoccerGol","description":"A fast-paced tabletop football game playable directly in the browser.","genre":["Sports","Football"],"gamePlatform":["Web Browser"],"applicationCategory":"Game","url":"https://user192313.github.io/","inLanguage":["pt-BR","en","es"]}</script>
 
 
 <style>
@@ -377,7 +379,13 @@ button{
         font-size:100px;
     }
 }
-</style>
+
+/* QA / browser usability */
+html,body{touch-action:manipulation;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+input,textarea,select{user-select:text;-webkit-user-select:text}
+canvas{touch-action:none}
+button{touch-action:manipulation}
+
 <style>
 /* ===== SoccerGol Ultimate additions ===== */
 #deviceChoice,#optionsPanel,#settingsPanel,#skinsPanel,#replaysPanel{z-index:120}
@@ -444,6 +452,75 @@ button{
 .sgQuickGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.sgQuickCard{min-height:105px;padding:15px 12px;text-align:left;border:1px solid rgba(255,255,255,.08);border-radius:17px;background:rgba(255,255,255,.035);color:#fff;cursor:pointer;transition:.18s}.sgQuickCard:hover{transform:translateY(-3px);background:rgba(255,255,255,.07);border-color:rgba(67,233,111,.25)}.sgQuickCard span{display:block;font-size:23px;margin-bottom:12px}.sgQuickCard b{display:block;font-size:13px}.sgQuickCard small{display:block;color:#718078;margin-top:4px;font-size:10px}
 .sgBottomRow{display:flex;align-items:center;gap:8px;margin-top:17px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)}.sgTextButton{border:0;background:transparent;color:#aebbb2;padding:8px 10px;border-radius:9px;cursor:pointer;font-weight:700;font-size:12px}.sgTextButton:hover{color:#fff;background:rgba(255,255,255,.05)}.sgMenuHint{margin-left:auto;color:#56635b;font-size:9px;letter-spacing:1px;font-weight:800}.sgLegacyMenuButtons{display:none!important}
 @media(max-width:720px){.sgMainMenu{padding:20px;border-radius:24px}.sgMenuTop{padding-bottom:15px}.sgBrandName{font-size:25px}.sgBrandBall{width:44px;height:44px;font-size:23px}.sgMenuVersion{display:none}.sgHero{grid-template-columns:1fr;gap:18px;padding:25px 4px}.sgHero h1{font-size:38px}.sgHero p{font-size:13px}.sgPlayButton{min-height:88px!important}.sgQuickGrid{grid-template-columns:1fr 1fr}.sgBottomRow{flex-wrap:wrap}.sgMenuHint{width:100%;margin-left:0}.sgQuickCard{min-height:92px}}
+</style>
+<style id="sg-quality-v21-css">
+/* =========================================================
+   SoccerGol Quality Pass — responsive game feel / QA polish
+========================================================= */
+:root{
+  --sg-green:#34e875;
+  --sg-panel:rgba(7,14,10,.96);
+  --sg-line:rgba(255,255,255,.10);
+  --sg-muted:#829187;
+}
+body{overscroll-behavior:none}
+button,input,select,textarea{font:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--sg-green);outline-offset:2px}
+#jogo{image-rendering:auto}
+.sg-device-frame{
+  width:min(760px,94vw);padding:30px;border-radius:28px;background:
+  radial-gradient(circle at 18% 0%,rgba(56,232,117,.18),transparent 34%),
+  linear-gradient(145deg,rgba(11,23,16,.98),rgba(4,9,7,.98));
+  border:1px solid rgba(93,241,137,.28);box-shadow:0 35px 100px rgba(0,0,0,.72);
+}
+.sg-device-frame .devicePreview{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;
+}
+.sg-device-frame .devicePreviewCard{
+  min-height:170px;padding:22px;border-radius:20px;border:1px solid var(--sg-line);
+  background:rgba(255,255,255,.035);display:flex;flex-direction:column;justify-content:space-between;
+}
+.sg-device-frame .devicePreviewCard:hover{transform:translateY(-3px);border-color:rgba(52,232,117,.35);background:rgba(255,255,255,.055)}
+.sgModeGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 14px}
+.sgModeCard{min-height:220px!important;padding:22px!important;text-align:left!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;position:relative!important;overflow:hidden!important;border:1px solid rgba(255,255,255,.10)!important;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025))!important}
+.sgModeCard:hover{border-color:rgba(52,232,117,.35)!important;background:linear-gradient(145deg,rgba(52,232,117,.14),rgba(255,255,255,.035))!important}
+.modeIcon{font-size:42px!important;margin-bottom:auto}.modeNumber{position:absolute;right:15px;top:12px;font-size:11px;color:#65746b;font-weight:900}.sgModeCard strong{font-size:18px;margin-bottom:7px}.sgModeCard small{color:#91a198;line-height:1.45}.modeCta{margin-top:14px;color:#4be97a;font-size:11px;font-weight:900;letter-spacing:.5px}
+.sgTeamGrid,.sgDifficultyGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.sgTeamCard,.sgDifficultyCard{min-height:185px!important;padding:22px!important;text-align:left!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-end!important;border:1px solid rgba(255,255,255,.10)!important;background:rgba(255,255,255,.035)!important}
+.sgTeamCard:hover{transform:translateY(-3px)}.sgTeamCard.blue:hover{border-color:rgba(52,132,255,.65)!important}.sgTeamCard.red:hover{border-color:rgba(255,72,72,.65)!important}
+.teamIcon,.diffIcon{font-size:40px;margin-bottom:auto}.sgTeamCard strong,.sgDifficultyCard strong{font-size:20px}.sgTeamCard small,.sgDifficultyCard small{margin-top:7px;color:#8b9a92;line-height:1.45;text-align:left}
+.diffBars{display:flex;gap:4px;margin-top:14px}.diffBars i{width:28px;height:5px;border-radius:99px;background:#26352d}.sgDifficultyCard[data-level="1"] .diffBars i:nth-child(-n+1){background:#34d774}.sgDifficultyCard[data-level="2"] .diffBars i:nth-child(-n+2){background:#dfbd34}.sgDifficultyCard[data-level="3"] .diffBars i:nth-child(-n+3){background:#f0714b}.sgDifficultyCard[data-level="4"] .diffBars i{background:#d43e4c}
+.sgOnlineHome{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px}.sgOnlineHome>.sgQuickPlayButton{grid-column:1/-1}
+.sgOnlineCard{padding:19px;border-radius:18px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035);display:flex;flex-direction:column}.sgOnlineCard h3{margin:0 0 5px}.sgOnlineCard p{color:#85958b;font-size:12px;line-height:1.45;min-height:50px}.sgQuickPlayButton{background:linear-gradient(135deg,#1fbf58,#087535)!important;position:relative;overflow:hidden}
+.sgQuickPlayButton:after{content:"";position:absolute;inset:-50%;background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.13) 50%,transparent 65%);transform:translateX(-60%);animation:sgShine 3.4s infinite}
+@keyframes sgShine{0%,35%{transform:translateX(-60%)}65%,100%{transform:translateX(60%)}}
+#quickPlayWait{padding:26px;text-align:center;margin-top:14px;border:1px solid rgba(52,232,117,.18);background:rgba(52,232,117,.05);border-radius:18px}
+.qSpin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:#46ea7c;margin:0 auto 13px;animation:sgSpin .8s linear infinite}
+@keyframes sgSpin{to{transform:rotate(360deg)}}
+.sgResultStats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 6px}
+.sgStat{padding:11px 8px;border-radius:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);text-align:center}
+.sgStat b{display:block;font-size:18px}.sgStat small{display:block;color:#75837b;font-size:9px;margin-top:4px;text-transform:uppercase;letter-spacing:.7px}
+#sgMatchHint{position:fixed;left:50%;top:94px;transform:translate(-50%,-12px);z-index:180;max-width:min(620px,92vw);padding:12px 16px;border-radius:15px;background:rgba(7,13,9,.92);border:1px solid rgba(85,235,130,.25);box-shadow:0 16px 45px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:.25s;color:#fff;text-align:center}
+#sgMatchHint.show{opacity:1;transform:translate(-50%,0)}
+#sgFpsBadge{position:fixed;right:15px;bottom:14px;z-index:110;color:#64746b;font:700 9px Arial;opacity:.45;pointer-events:none}
+.sgProfileLine{display:flex;align-items:center;gap:9px;margin:8px 0 14px;padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.035)}
+.sgAvatar{width:34px;height:34px;border-radius:50%;object-fit:cover;background:#1a281f}
+@media(max-width:800px){
+  .sgModeGrid,.sgOnlineHome{grid-template-columns:1fr!important}
+  .sgTeamGrid,.sgDifficultyGrid{grid-template-columns:1fr 1fr}
+  .sgResultStats{grid-template-columns:1fr 1fr}
+  .sgDevice-frame,.sg-device-frame .devicePreview{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .sgTeamGrid,.sgDifficultyGrid{grid-template-columns:1fr}
+  .sg-panel,.menuBox{max-height:92vh}
+  .sgModeCard{min-height:180px!important}
+  #jogo{max-height:74vh}
+  #sgMatchHint{top:76px;font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 
@@ -598,6 +675,11 @@ button{
 </div>
 
 <div id="profilePanel" class="overlay hidden">
+  <div id="sgCrazyProfileInfo" class="sgProfileLine hidden">
+    <img id="sgCrazyAvatar" class="sgAvatar" alt="">
+    <div><strong id="sgCrazyName">CrazyGames Player</strong><div style="font-size:10px;color:#718078">Conta CrazyGames</div></div>
+  </div>
+
  <div class="nicknameBox">
   <h1 class="menuTitle">👤 PERFIL</h1>
   <p class="menuDescription">Mude seu nickname. Ele fica salvo neste dispositivo.</p>
@@ -4550,6 +4632,7 @@ function confirmMatchOptions(){
 function saveSettings(){
     SG.volume=(Number(document.getElementById("volumeRange")?.value||35))/100;
     SG.lang=document.getElementById("languageSelect")?.value||"pt";
+    try{localStorage.setItem("soccerGolLanguage",SG.lang);}catch(e){}
     SG.invertControls=!!document.getElementById("invertControlsToggle")?.checked;
     try{localStorage.setItem("soccerGolInvertControls",SG.invertControls?"1":"0");}catch(e){}
     const m=document.getElementById("musicaJogo");
@@ -5036,78 +5119,114 @@ function mostrarGol(time){
 }
 
 /* ---------- loop ÚNICO ---------- */
-function loopSeguro(){
-    if(!executandoReplay){
-        if(modoJogo==="online" && !online.host){
-            // Cliente: não executa a física local; recebe o estado do host.
-            enviarInputOnline(false,false);
-            if(SG.replay && !SG.goalLock && jogoAtivo){
-                replayFrames.push({
-                    azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},
-                    vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},
-                    bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},
-                    goleiroA:{x:goleiroA.x,y:goleiroA.y,vx:goleiroA.vx,vy:goleiroA.vy,cor:goleiroA.cor},
-                    goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,cor:goleiroB.cor}
-                });
-                if(replayFrames.length>240)replayFrames.shift();
-            }
-            
-        }else{
-            if(!SG.manualPause && !SG.goalLock)jogoPausado=false;
-            if(!jogoAtivo || !jogoPausado){
-                /*
-                   CONTROLES HUMANOS — uma única fonte de verdade.
-                   Inverter controles troca apenas o conjunto de teclas,
-                   nunca o personagem escolhido pelo jogador.
-                */
-                const moveKeys=(team)=>{
-                    const normal=team==="azul"
-                      ? [keyMap.blueUp,keyMap.blueDown,keyMap.blueLeft,keyMap.blueRight]
-                      : [keyMap.redUp,keyMap.redDown,keyMap.redLeft,keyMap.redRight];
-                    if((modoJogo==="ia"||modoJogo==="online") && team===equipeControleLocal() && SG.invertControls){
-                      return team==="azul"
-                        ? [keyMap.redUp,keyMap.redDown,keyMap.redLeft,keyMap.redRight]
-                        : [keyMap.blueUp,keyMap.blueDown,keyMap.blueLeft,keyMap.blueRight];
-                    }
-                    return normal;
-                };
-                if(modoJogo==="2players"){
-                    const a=moveKeys("azul"),b=moveKeys("vermelho");
-                    moverJogador(azul,...a);
-                    moverJogador(vermelho,...b);
-                }else if(modoJogo==="ia"){
-                    const human=equipeControleLocal();
-                    const k=moveKeys(human);
-                    moverJogador(human==="azul"?azul:vermelho,...k);
-                }else if(modoJogo==="online"){
-                    const local=equipeControleLocal();
-                    const k=moveKeys(local);
-                    moverJogador(local==="azul"?azul:vermelho,...k);
-                }
-                atualizarIA(); atualizarGoleiros(); colisaoJogadores();
-                if(modoJogo==="online" && online.host){
-                    const remoteTeam=equipeOposta(equipeControleOnline());
-                    const remotePlayer=remoteTeam==="azul"?azul:vermelho;
-                    if(online.remoteInput.kick){chute(remotePlayer);online.remoteInput.kick=false;}
-                    if(online.remoteInput.dash){carrinhoSeguro(remotePlayer);online.remoteInput.dash=false;}
-                }
-                atualizarChute(); atualizarBola(); atualizarEfeitoDash();
-                 bolaChuteFx=Math.max(0,bolaChuteFx-.07);if(kickVisual.until<performance.now())kickVisual.j=null;
+/*
+   SOCCERGOL — PHYSICS CLOCK
+   Simulation runs at a fixed 60 Hz tick while rendering can run at 60/120/144+ Hz.
+   This prevents monitor refresh rate from changing movement, AI, timers or ball physics.
+*/
+const SG_PHYSICS_STEP=1000/60;
+let sgPhysicsLast=performance.now();
+let sgPhysicsAccumulator=0;
 
-                if(SG.replay && !SG.goalLock){
-                    replayFrames.push({
-                    azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},
-                    vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},
-                    bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},
-                    goleiroA:{x:goleiroA.x,y:goleiroA.y,vx:goleiroA.vx,vy:goleiroA.vy,dx:goleiroA.dx||0,dy:goleiroA.dy||0,cor:goleiroA.cor},
-                    goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,dx:goleiroB.dx||0,dy:goleiroB.dy||0,cor:goleiroB.cor}
-                });
-                if(replayFrames.length>240)replayFrames.shift();
-                }
+function sgPhysicsStep(){
+    if(executandoReplay)return;
+
+    if(modoJogo==="online" && !online.host){
+        enviarInputOnline(false,false);
+        if(SG.replay && !SG.goalLock && jogoAtivo){
+            replayFrames.push({
+                azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},
+                vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},
+                bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},
+                goleiroA:{x:goleiroA.x,y:goleiroA.y,vx:goleiroA.vx,vy:goleiroA.vy,cor:goleiroA.cor},
+                goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,cor:goleiroB.cor}
+            });
+            if(replayFrames.length>240)replayFrames.shift();
+        }
+        return;
+    }
+
+    if(!SG.manualPause && !SG.goalLock)jogoPausado=false;
+
+    if(!jogoAtivo || !jogoPausado){
+        const moveKeys=(team)=>{
+            const normal=team==="azul"
+                ? [keyMap.blueUp,keyMap.blueDown,keyMap.blueLeft,keyMap.blueRight]
+                : [keyMap.redUp,keyMap.redDown,keyMap.redLeft,keyMap.redRight];
+
+            if((modoJogo==="ia"||modoJogo==="online") &&
+               team===equipeControleLocal() && SG.invertControls){
+                return team==="azul"
+                    ? [keyMap.redUp,keyMap.redDown,keyMap.redLeft,keyMap.redRight]
+                    : [keyMap.blueUp,keyMap.blueDown,keyMap.blueLeft,keyMap.blueRight];
             }
-            enviarEstadoOnline();
+            return normal;
+        };
+
+        if(modoJogo==="2players"){
+            const a=moveKeys("azul"),b=moveKeys("vermelho");
+            moverJogador(azul,...a);
+            moverJogador(vermelho,...b);
+        }else if(modoJogo==="ia"){
+            const human=equipeControleLocal();
+            const k=moveKeys(human);
+            moverJogador(human==="azul"?azul:vermelho,...k);
+        }else if(modoJogo==="online"){
+            const local=equipeControleLocal();
+            const k=moveKeys(local);
+            moverJogador(local==="azul"?azul:vermelho,...k);
+        }
+
+        atualizarIA();
+        atualizarGoleiros();
+        colisaoJogadores();
+
+        if(modoJogo==="online" && online.host){
+            const remoteTeam=equipeOposta(equipeControleOnline());
+            const remotePlayer=remoteTeam==="azul"?azul:vermelho;
+            if(online.remoteInput.kick){chute(remotePlayer);online.remoteInput.kick=false;}
+            if(online.remoteInput.dash){carrinhoSeguro(remotePlayer);online.remoteInput.dash=false;}
+        }
+
+        atualizarChute();
+        atualizarBola();
+        atualizarEfeitoDash();
+
+        bolaChuteFx=Math.max(0,bolaChuteFx-.07);
+        if(kickVisual.until<performance.now())kickVisual.j=null;
+
+        if(SG.replay && !SG.goalLock){
+            replayFrames.push({
+                azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},
+                vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},
+                bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},
+                goleiroA:{x:goleiroA.x,y:goleiroA.y,vx:goleiroA.vx,vy:goleiroA.vy,dx:goleiroA.dx||0,dy:goleiroA.dy||0,cor:goleiroA.cor},
+                goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,dx:goleiroB.dx||0,dy:goleiroB.dy||0,cor:goleiroB.cor}
+            });
+            if(replayFrames.length>240)replayFrames.shift();
         }
     }
+
+    enviarEstadoOnline();
+}
+
+function loopSeguro(agora){
+    if(!Number.isFinite(agora))agora=performance.now();
+
+    const delta=Math.min(50,Math.max(0,agora-sgPhysicsLast));
+    sgPhysicsLast=agora;
+    sgPhysicsAccumulator+=delta;
+
+    let steps=0;
+    while(sgPhysicsAccumulator>=SG_PHYSICS_STEP && steps<4){
+        sgPhysicsAccumulator-=SG_PHYSICS_STEP;
+        if(!executandoReplay)sgPhysicsStep();
+        steps++;
+    }
+
+    /* If a tab was throttled, never "catch up" with a giant physics burst. */
+    if(steps>=4)sgPhysicsAccumulator=0;
+
     desenhar();
     requestAnimationFrame(loopSeguro);
 }
@@ -5609,6 +5728,7 @@ atualizarPerfilVisibilidade();
 (function(){
   const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
   function makeSection(parent,text){if(!parent||parent.querySelector('.sg-section-label'))return;const x=document.createElement('div');x.className='sg-section-label';x.textContent=text;parent.appendChild(x)}
+  renderCareerStats();
   function setupMode(){
     const p=q('#modoMenu .menuBox'); if(!p||p.dataset.uiV2)return; p.dataset.uiV2='1';
     const buttons=qa(':scope > .menuButton',p).filter(b=>!b.classList.contains('secondary'));
@@ -5778,6 +5898,299 @@ atualizarPerfilVisibilidade();
     wrapped.__sgMobileFix=true;window.setDevice=wrapped;
   }
   setTimeout(()=>window.atualizarControlesMobile(),0);
+})();
+</script>
+
+
+
+
+
+<script id="sg-quality-v21-js">
+(function(){
+  'use strict';
+
+  const $=(s,r=document)=>r.querySelector(s);
+  const qa=(s,r=document)=>[...r.querySelectorAll(s)];
+
+  /* ---------- Locale / CrazyGames system info ---------- */
+  function chooseLocale(){
+    try{
+      const saved=localStorage.getItem('soccerGolLanguage');
+      if(saved&&['pt','en','es'].includes(saved))return saved;
+    }catch(e){}
+    const lang=(navigator.language||'en').toLowerCase();
+    if(lang.startsWith('pt'))return 'pt';
+    if(lang.startsWith('es'))return 'es';
+    return 'en';
+  }
+  try{
+    SG.lang=chooseLocale();
+    const select=$('#languageSelect'); if(select)select.value=SG.lang;
+  }catch(e){}
+
+  /* Correct CrazyGames username usage when available. */
+  async function syncCrazyProfile(){
+    try{
+      if(window.CrazyGames?.SDK?.user?.getUser){
+        const u=await window.CrazyGames.SDK.user.getUser();
+        if(u?.username){
+          crazyUsername=String(u.username).slice(0,16);
+          const p=$('#botaoPerfil'); if(p)p.textContent='👤 '+crazyUsername;
+        }
+      }
+      const sys=window.CrazyGames?.SDK?.user?.systemInfo;
+      if(sys?.device?.type){
+        document.body.dataset.sgDevice=sys.device.type;
+      }
+    }catch(e){}
+  }
+  setTimeout(syncCrazyProfile,700);
+
+  /* ---------- Persistent progress ---------- */
+  const STATS_KEY='soccerGolQualityStatsV1';
+  const defaultStats={
+    matches:0,wins:0,losses:0,draws:0,goals:0,kicks:0,dashes:0,saves:0,
+    bestStreak:0,currentStreak:0
+  };
+  function loadStats(){
+    try{
+      const o=JSON.parse(localStorage.getItem(STATS_KEY)||'null');
+      return o&&typeof o==='object'?{...defaultStats,...o}:{...defaultStats};
+    }catch(e){return {...defaultStats};}
+  }
+  SG.stats=loadStats();
+  function saveStats(){try{localStorage.setItem(STATS_KEY,JSON.stringify(SG.stats));}catch(e){}}
+  function resetMatchStats(){
+    SG.matchStats={kicks:0,dashes:0,saves:0,goals:0};
+  }
+  resetMatchStats();
+
+  /* ---------- Result screen ---------- */
+  const fim=$('#fim'), result=$('#resultado');
+  if(fim&&result&&!$('#sgResultStats')){
+    const box=document.createElement('div');
+    box.id='sgResultStats';
+    box.className='sgResultStats';
+    box.innerHTML='<div class="sgStat"><b id="sgRSGoals">0</b><small>Gols</small></div>'+
+      '<div class="sgStat"><b id="sgRSKicks">0</b><small>Chutes</small></div>'+
+      '<div class="sgStat"><b id="sgRSDashes">0</b><small>Carrinhos</small></div>'+
+      '<div class="sgStat"><b id="sgRSSaves">0</b><small>Defesas</small></div>';
+    result.insertAdjacentElement('afterend',box);
+  }
+
+  function renderResultStats(){
+    const m=SG.matchStats||defaultStats;
+    const map={sgRSGoals:m.goals||0,sgRSKicks:m.kicks||0,sgRSDashes:m.dashes||0,sgRSSaves:m.saves||0};
+    Object.entries(map).forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.textContent=v;});
+  }
+
+  /* ---------- Goal / match stat instrumentation ---------- */
+  if(typeof window.chute==='function' && !window.chute.__sgQualityStats){
+    const oldKick=window.chute;
+    const wrap=function(j){
+      const r=oldKick.apply(this,arguments);
+      if(r!==false){
+        SG.matchStats=SG.matchStats||defaultStats;
+        SG.matchStats.kicks=(SG.matchStats.kicks||0)+1;
+      }
+      return r;
+    };
+    wrap.__sgQualityStats=true;
+    window.chute=wrap;
+  }
+  if(typeof window.carrinhoSeguro==='function' && !window.carrinhoSeguro.__sgQualityStats){
+    const oldDash=window.carrinhoSeguro;
+    const wrap=function(j){
+      const r=oldDash.apply(this,arguments);
+      if(r!==false){
+        SG.matchStats=SG.matchStats||defaultStats;
+        SG.matchStats.dashes=(SG.matchStats.dashes||0)+1;
+      }
+      return r;
+    };
+    wrap.__sgQualityStats=true;
+    window.carrinhoSeguro=wrap;
+  }
+
+  /* ---------- Game-end wrapper ---------- */
+  if(typeof window.finalizarJogo==='function' && !window.finalizarJogo.__sgQualityStats){
+    const oldFinish=window.finalizarJogo;
+    const wrap=function(){
+      try{
+        const m=SG.matchStats||defaultStats;
+        m.goals=(SG.stats?0:0);
+        m.goals=(equipeControleLocal()==='azul'?golsAzul:golsVermelho);
+        renderResultStats();
+
+        const local=equipeControleLocal();
+        const win=(local==='azul'&&golsAzul>golsVermelho)||(local==='vermelho'&&golsVermelho>golsAzul);
+        const draw=golsAzul===golsVermelho;
+
+        SG.stats.matches++;
+        SG.stats.goals += Math.max(0,Number(m.goals)||0);
+        if(win){SG.stats.wins++;SG.stats.currentStreak++;SG.stats.bestStreak=Math.max(SG.stats.bestStreak,SG.stats.currentStreak);}
+        else if(draw){SG.stats.draws++;SG.stats.currentStreak=0;}
+        else {SG.stats.losses++;SG.stats.currentStreak=0;}
+        saveStats();
+      }catch(e){console.warn('SoccerGol stats error',e);}
+      return oldFinish.apply(this,arguments);
+    };
+    wrap.__sgQualityStats=true;
+    window.finalizarJogo=wrap;
+  }
+
+  /* ---------- New match wrapper resets stats and frame pacing ---------- */
+  if(typeof window.iniciarJogo==='function' && !window.iniciarJogo.__sgQualityStart){
+    const oldStart=window.iniciarJogo;
+    const wrap=function(){
+      resetMatchStats();
+      sgPhysicsLast=performance.now();
+      sgPhysicsAccumulator=0;
+      return oldStart.apply(this,arguments);
+    };
+    wrap.__sgQualityStart=true;
+    window.iniciarJogo=wrap;
+  }
+
+  /* ---------- Match hint: visual onboarding, no blocking click ---------- */
+  let hintTimer=null;
+  function showHint(text,ms=5200){
+    let h=$('#sgMatchHint');
+    if(!h){
+      h=document.createElement('div');h.id='sgMatchHint';document.body.appendChild(h);
+    }
+    h.textContent=text;h.classList.add('show');
+    clearTimeout(hintTimer);hintTimer=setTimeout(()=>h.classList.remove('show'),ms);
+  }
+  let hinted=false;
+  const originalStart=window.iniciarJogo;
+  if(typeof originalStart==='function' && !originalStart.__sgHintMarker){
+    const prev=originalStart;
+    const wrap=function(){
+      const r=prev.apply(this,arguments);
+      if(!hinted){
+        hinted=true;
+        setTimeout(()=>{
+          if(jogoAtivo){
+            if(SG.device==='mobile')showHint('👆 Mova com o joystick e use ⚽ para chutar.',6000);
+            else if(modoJogo==='2players')showHint('⌨️ Azul: WASD + E  •  Vermelho: Setas + SHIFT',6000);
+            else showHint('⌨️ Mova, aproxime-se da bola e chute. Você pode remapear os controles nas configurações.',6000);
+          }
+        },900);
+      }
+      return r;
+    };
+    wrap.__sgHintMarker=true;
+    window.iniciarJogo=wrap;
+  }
+
+  /* ---------- AI difficulty labels + richer indicator ---------- */
+  function updateAIIndicator(){
+    try{
+      const el=$('#indicadorIA');
+      if(el && modoJogo==='ia'){
+        const labels={facil:'ROOKIE',medio:'PRO',dificil:'ELITE',impossivel:'LEGEND'};
+        el.textContent='🤖 '+(labels[dificuldadeIA]||'PRO')+'  •  '+getTeamSkin(timeHumano).name+' • '+(SG.invertControls?'CONTROLES INVERTIDOS':'CONTROLES PADRÃO');
+      }
+    }catch(e){}
+  }
+  setInterval(updateAIIndicator,600);
+
+  /* ---------- Small live FPS sanity monitor (does not affect gameplay) ---------- */
+  const badge=document.createElement('div');badge.id='sgFpsBadge';document.body.appendChild(badge);
+  let fpsFrames=0,fpsLast=performance.now();
+  function fpsProbe(now){
+    fpsFrames++;
+    if(now-fpsLast>2000){
+      const fps=Math.round(fpsFrames*1000/(now-fpsLast));
+      badge.textContent=fps>=50?'':'';
+      fpsFrames=0;fpsLast=now;
+    }
+    requestAnimationFrame(fpsProbe);
+  }
+  requestAnimationFrame(fpsProbe);
+
+  /* ---------- Audio resume for mobile ---------- */
+  document.addEventListener('touchend',()=>{
+    try{
+      const c=window.audioCtx;
+      if(c?.state==='suspended')c.resume();
+      const m=$('#musicaJogo');
+      if(m && m.muted && !crazySdkSettings?.muteAudio){m.muted=false;}
+    }catch(e){}
+  },{passive:true});
+
+  /* ---------- Goal impact ---------- */
+  if(typeof window.SGGoalFX==='function' && !window.SGGoalFX.__sgQualityShake){
+    const oldGoalFX=window.SGGoalFX;
+    const wrap=function(team){
+      const r=oldGoalFX.apply(this,arguments);
+      const c=$('#jogo');
+      if(c){c.classList.remove('sgScreenShake');void c.offsetWidth;c.classList.add('sgScreenShake');setTimeout(()=>c.classList.remove('sgScreenShake'),320);}
+      return r;
+    };
+    wrap.__sgQualityShake=true;
+    window.SGGoalFX=wrap;
+  }
+
+  /* ---------- Keyboard layout adaptation ---------- */
+  try{
+    const noSaved=!localStorage.getItem('soccerGolKeyMap');
+    const fr=/^(fr|be|lu|mc)/i.test(navigator.language||'');
+    if(noSaved && fr){
+      keyMap={...keyMap,
+        blueUp:'KeyZ',blueDown:'KeyS',blueLeft:'KeyQ',blueRight:'KeyD'
+      };
+      saveKeyMap();refreshKeybindUI();
+    }
+  }catch(e){}
+
+
+  /* ---------- Practical English localization for the major screens ---------- */
+  const STR={
+    en:{
+      modes:['GAME MODE','Choose how you want to play.','LOCAL 2 PLAYERS','VS AI','ONLINE 1V1','BACK'],
+      team:['CHOOSE YOUR TEAM','The AI will control the other team.','PLAY BLUE','PLAY RED','BACK'],
+      diff:['AI DIFFICULTY','Higher difficulty means smarter AI.','ROOKIE','PRO','ELITE','LEGEND','BACK'],
+      settings:['SETTINGS','Music volume','Language','Invert controls (AI / Online)','CUSTOMIZE MOBILE CONTROLS','PC KEY REMAPPING','SAVE','BACK'],
+      options:['MATCH OPTIONS','Match duration','Overtime','Replays','Keepers','CONTINUE','BACK'],
+      tutorial:['HOW TO PLAY','Blue Team','Red Team','How to aim','Heel kick','Nutmeg','AI','BACK'],
+      result:['GAME OVER','MENU','PLAY AGAIN'],
+      profile:['PROFILE','Change your nickname. It is saved on this device.','SAVE NICKNAME','BACK'],
+      skins:['SKINS','Choose the appearance of each team.','Blue Team / Player 1','Red Team / Player 2','BACK'],
+      ball:['BALL SKINS','Choose your ball appearance.','BACK']
+    }
+  };
+  function localizeMajorScreens(){
+    if((SG.lang||'pt')!=='en')return;
+    const set=(el,t)=>{if(el&&typeof t==='string')el.textContent=t;};
+    const m=$('#modoMenu'); if(m){set($('.menuTitle',m),'🎮 '+STR.en.modes[0]);set($('.menuDescription',m),STR.en.modes[1]);}
+    const t=$('#timeMenu'); if(t){set($('.menuTitle',t),'🤖 '+STR.en.team[0]);set($('.menuDescription',t),STR.en.team[1]);}
+    const d=$('#dificuldadeMenu'); if(d){set($('.menuTitle',d),'🤖 '+STR.en.diff[0]);set($('.menuDescription',d),STR.en.diff[1]);}
+    const st=$('#settingsPanel'); if(st){set($('.menuTitle',st), '⚙️ '+STR.en.settings[0]);}
+    const op=$('#optionsPanel'); if(op){set($('.menuTitle',op),'⚙️ '+STR.en.options[0]);}
+    const tu=$('#tutorialMenu'); if(tu)set($('.menuTitle',tu),'📖 '+STR.en.tutorial[0]);
+    const sk=$('#skinsPanel'); if(sk){set($('.menuTitle',sk),'🎨 '+STR.en.skins[0]);set($('.menuDescription',sk),STR.en.skins[1]);}
+    const bk=$('#ballSkinsPanel'); if(bk){set($('.menuTitle',bk),'⚽ '+STR.en.ball[0]);set($('.menuDescription',bk),STR.en.ball[1]);}
+    const pr=$('#profilePanel'); if(pr){set($('.menuTitle',pr),'👤 '+STR.en.profile[0]);set($('.menuDescription',pr),STR.en.profile[1]);}
+    qa('.sgModeCard').forEach((b,i)=>{
+      const titles=['LOCAL 2 PLAYERS','VS AI','ONLINE 1V1'];
+      const desc=['Two players on the same device.','Choose your team and challenge the AI.','Create or join a room and play online.'];
+      const cta=['PLAY LOCALLY','CHALLENGE AI','PLAY ONLINE'];
+      const icon=b.querySelector('.modeIcon')?.textContent||'';
+      b.innerHTML='<span class="modeIcon">'+icon+'</span><span class="modeNumber">0'+(i+1)+'</span><strong>'+titles[i]+'</strong><small>'+desc[i]+'</small><span class="modeCta">'+cta[i]+' →</span>';
+    });
+  }
+  setTimeout(localizeMajorScreens,1200);
+
+  /* ---------- First-load quality notice / accessibility ---------- */
+  try{
+    if(!localStorage.getItem('sg_quality_welcome_v1')){
+      SGToast?.('✨ Controles, IA e visual otimizados para uma experiência mais suave.');
+      localStorage.setItem('sg_quality_welcome_v1','1');
+    }
+  }catch(e){}
+
 })();
 </script>
 
