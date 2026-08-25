@@ -2,27 +2,22 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SoccerGol ⚽ — Table Football Online</title>
+<meta name="description" content="SoccerGol is a fast-paced tabletop football game playable in your browser. Play 2 Players, challenge the AI, customize skins, or play online."/>
+<meta name="robots" content="index,follow,max-image-preview:large"/>
+<link rel="canonical" href="https://user192313.github.io/soccer-gol/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="SoccerGol ⚽ — Table Football Online"/>
+<meta property="og:description" content="Play SoccerGol in your browser: local multiplayer, AI, skins, mobile controls and online 1v1."/>
+<meta property="og:url" content="https://user192313.github.io/soccer-gol/"/>
+<meta property="og:site_name" content="SoccerGol"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SoccerGol ⚽ — Table Football Online"/>
+<meta name="twitter:description" content="Table football in your browser with AI, local multiplayer and online 1v1."/>
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/soccer-gol/sitemap.xml"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"SoccerGol","description":"A fast-paced tabletop football game playable directly in the browser.","genre":["Sports","Football"],"gamePlatform":["Web Browser"],"applicationCategory":"Game","url":"https://user192313.github.io/soccer-gol/","inLanguage":["pt-BR","en","es"]}</script>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SoccerGol ⚽ - Jogo de Futebol de Mesa Online</title>
-
-<meta name="description" content="Jogue SoccerGol, um jogo de futebol de mesa online grátis. Jogue contra a IA ou contra seus amigos no PC e celular.">
-
-<meta name="keywords" content="SoccerGol, futebol de mesa, futebol de botão, jogo de futebol, jogo de futebol online, jogo grátis, soccer game">
-
-<meta name="robots" content="index, follow">
-
-<link rel="canonical" href="https://user192313.github.io/">
-
-<meta property="og:title" content="SoccerGol ⚽ - Jogo de Futebol de Mesa Online">
-<meta property="og:description" content="Jogue SoccerGol gratuitamente contra a IA ou seus amigos. Disponível para PC e celular.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://user192313.github.io/">
-
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SoccerGol ⚽">
-<meta name="twitter:description" content="Jogo de futebol de mesa online grátis.">
 
 <style>
 *{box-sizing:border-box}
@@ -450,7 +445,7 @@ button{
 .sgBottomRow{display:flex;align-items:center;gap:8px;margin-top:17px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)}.sgTextButton{border:0;background:transparent;color:#aebbb2;padding:8px 10px;border-radius:9px;cursor:pointer;font-weight:700;font-size:12px}.sgTextButton:hover{color:#fff;background:rgba(255,255,255,.05)}.sgMenuHint{margin-left:auto;color:#56635b;font-size:9px;letter-spacing:1px;font-weight:800}.sgLegacyMenuButtons{display:none!important}
 @media(max-width:720px){.sgMainMenu{padding:20px;border-radius:24px}.sgMenuTop{padding-bottom:15px}.sgBrandName{font-size:25px}.sgBrandBall{width:44px;height:44px;font-size:23px}.sgMenuVersion{display:none}.sgHero{grid-template-columns:1fr;gap:18px;padding:25px 4px}.sgHero h1{font-size:38px}.sgHero p{font-size:13px}.sgPlayButton{min-height:88px!important}.sgQuickGrid{grid-template-columns:1fr 1fr}.sgBottomRow{flex-wrap:wrap}.sgMenuHint{width:100%;margin-left:0}.sgQuickCard{min-height:92px}}
 </style>
-<style>.sgMenuVersion{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.sgMenuVersion strong{display:inline-flex;align-items:center;padding:5px 9px;border:1px solid rgba(114,255,152,.35);border-radius:999px;background:rgba(32,189,82,.12);color:#72ff98;font-size:12px;letter-spacing:.08em}</style></head>
+</head>
 
 <body>
 <div id="deviceChoice" class="overlay">
@@ -470,6 +465,7 @@ button{
   <h1 class="menuTitle">🌐 ONLINE 1v1</h1>
   <p class="menuDescription">Jogue contra outra pessoa em outro dispositivo.</p>
   <div id="onlineHome">
+   <button class="menuButton sgQuickPlayButton" onclick="iniciarQuickPlay()">⚡ QUICK PLAY <small>Encontrar adversário agora</small></button>
    <button class="menuButton" onclick="criarSalaOnline()">🏠 CRIAR SALA</button>
    <input id="onlineJoinCode" class="sg-input" maxlength="6" placeholder="CÓDIGO DA SALA" style="width:100%;text-align:center;text-transform:uppercase;font-size:20px" autocomplete="off" inputmode="text">
    <button class="menuButton blueButton" onclick="entrarSalaOnline()">🔑 ENTRAR NA SALA</button>
@@ -562,7 +558,7 @@ button{
           <div class="sgBrandTag">TABLE FOOTBALL • PLAY ANYWHERE</div>
         </div>
       </div>
-      <div class="sgMenuVersion">BROWSER EDITION <strong>v1.20</strong></div>
+      <div class="sgMenuVersion">v1.20.1 · BROWSER EDITION</div>
     </div>
 
     <div class="sgHero">
@@ -623,7 +619,7 @@ button{
     </div>
 </div>
 
-<div id="updatesPanel" class="overlay hidden"><div class="sg-panel sgUpdatesPanel"><div class="sgUpdatesHead"><div><div class="sgKicker">SOCCERGOL NEWS</div><h1 class="menuTitle">📢 NOVIDADES</h1><p>As últimas mudanças do jogo, direto do campo.</p></div><span class="sgUpdatesBadge">v1.20</span></div><div class="sgUpdateTabs"><button id="updatesTab21" class="sgUpdateTab active" onclick="mostrarAtualizacao(21)"><span>22</span><small>22/08/2026</small></button><button id="updatesTab22" class="sgUpdateTab" onclick="mostrarAtualizacao(22)"><span>21</span><small>21/08/2026</small></button></div><div id="updatesContent21"><div class="updatesDate">22/08/2026</div><div class="updatesList"><div>✨ Interfaces de jogo totalmente renovadas</div><div>🎮 Novas telas para modos, dificuldade e seleção de time</div><div>🌐 Lobby Online redesenhado e mais claro</div><div>📱 Controles mobile mais fáceis e personalizáveis</div><div>🔄 Inverter controles agora mantém o personagem escolhido</div><div>🎥 Replay limitado aos lances de gol para partidas mais rápidas</div><div>🛠️ Correções de estabilidade e preparação para CrazyGames</div></div></div><div id="updatesContent22" class="hidden"><div class="updatesDate">21/08/2026</div><div class="updatesList"><div>🏠 Novo menu principal com identidade visual do SoccerGol</div><div>🎨 Novo sistema visual de skins e personalização</div><div>⚙️ Configurações reorganizadas</div><div>📱 Editor para reposicionar controles mobile</div><div>🌐 Melhorias no sistema de salas Online</div><div>⚽ Ajustes gerais de jogabilidade e interface</div></div></div><button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button></div></div><div id="startupLoading" class="overlay hidden" style="z-index:200;background:rgba(4,12,7,.97)"><div class="sg-panel" style="max-width:420px;text-align:center"><div class="logo" style="font-size:44px">⚽</div><h2 class="menuTitle">Carregando SoccerGol...</h2><div style="height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:18px 0"><div id="startupLoadingBar" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);transition:width .12s linear"></div></div><div id="startupLoadingText" style="font-size:13px;color:#999">Preparando o campo...</div></div></div>
+<div id="updatesPanel" class="overlay hidden"><div class="sg-panel sgUpdatesPanel"><div class="sgUpdatesHead"><div><div class="sgKicker">SOCCERGOL NEWS</div><h1 class="menuTitle">📢 NOVIDADES</h1><p>Atualizações recentes do SoccerGol.</p></div><span class="sgUpdatesBadge">v1.20.1</span></div><div class="sgUpdateTabs"><button id="updatesTab24" class="sgUpdateTab active" onclick="mostrarAtualizacao(24)"><span>24</span><small>24/08</small></button><button id="updatesTab22" class="sgUpdateTab" onclick="mostrarAtualizacao(22)"><span>22</span><small>22/08</small></button><button id="updatesTab21" class="sgUpdateTab" onclick="mostrarAtualizacao(21)"><span>21</span><small>21/08</small></button></div><div id="updatesContent24"><div class="updatesDate">24/08/2026 · v1.20.1</div><div class="updatesList"><div>🎨 Skins agora exibem visualmente as cores que representam</div><div>⚡ Novo Quick Play para procurar adversários simultaneamente</div><div>📱 Controles mobile mais visíveis e confortáveis</div><div>🛠️ Editor mobile com opacidade configurável e seleção de lado</div><div>🌐 Preparação extra do Online e suporte melhor para salas</div><div>🔎 SEO preparado para indexação no Google com sitemap, robots.txt e dados estruturados</div></div></div><div id="updatesContent22" class="hidden"><div class="updatesDate">22/08/2026</div><div class="updatesList"><div>✨ Interfaces de jogo renovadas</div><div>🎮 Novas telas para modos, dificuldade e seleção de time</div><div>🌐 Lobby Online redesenhado</div><div>📱 Controles mobile personalizáveis</div><div>🔄 Inverter controles mantém o personagem escolhido</div><div>🎥 Replay limitado aos lances de gol</div><div>🛠️ Correções de estabilidade e preparação para CrazyGames</div></div></div><div id="updatesContent21" class="hidden"><div class="updatesDate">21/08/2026</div><div class="updatesList"><div>🏠 Novo menu principal</div><div>🎨 Novo sistema visual de skins</div><div>⚙️ Configurações reorganizadas</div><div>📱 Editor para reposicionar controles mobile</div><div>🌐 Melhorias no sistema de salas Online</div></div></div><button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button></div></div><div id="startupLoading" class="overlay hidden" style="z-index:200;background:rgba(4,12,7,.97)"><div class="sg-panel" style="max-width:420px;text-align:center"><div class="logo" style="font-size:44px">⚽</div><h2 class="menuTitle">Carregando SoccerGol...</h2><div style="height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:18px 0"><div id="startupLoadingBar" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);transition:width .12s linear"></div></div><div id="startupLoadingText" style="font-size:13px;color:#999">Preparando o campo...</div></div></div>
 
 <!-- MODOS -->
 
@@ -4451,8 +4447,14 @@ function selecionarSkinOnline(key){
 function abrirSkinsBola(){esconderMenus();renderSkinsBola();document.getElementById("ballSkinsPanel")?.classList.remove("hidden");}
 function fecharSkinsBola(){document.getElementById("ballSkinsPanel")?.classList.add("hidden");voltarMenuPrincipal();}
 function renderSkinsBola(){
- const grid=document.getElementById("ballSkinsGrid");if(!grid)return;
- grid.innerHTML=Object.entries(BALL_SKINS).map(([key,b])=>{const owned=isBallSkinOwned(key),locked=!owned,price=ballSkinPrice(key);return `<button class="skinBtn ${key===SG.ballSkin?"sel":""} ${locked?"skinLocked":""}" style="background:linear-gradient(135deg,${b.base},${b.detail});color:${b.base==="#333941"||b.base==="#11172f"||b.base==="#101522"||b.base==="#0c1026"?"#fff":"#111"}" onclick="selecionarSkinBola('${key}')">⚽ ${b.name}${locked?`<span class="shopPrice">🪙 ${price.toLocaleString("pt-BR")}</span>`:`<span class="shopOwned">✅ Liberada</span>`}</button>`;}).join("");
+ const grid=document.getElementById('ballSkinsGrid');if(!grid)return;
+ grid.innerHTML=Object.entries(BALL_SKINS).map(([key,b])=>{
+   const owned=isBallSkinOwned(key),locked=!owned,price=ballSkinPrice(key);
+   const fg=(b.base==='#333941'||b.base==='#11172f'||b.base==='#101522'||b.base==='#0c1026')?'#fff':'#111';
+   const status=locked?'<span class="shopPrice">🪙 '+price.toLocaleString('pt-BR')+'</span>':'<span class="shopOwned">✅ Liberada</span>';
+   const cls='skinBtn sgBallSkin '+(key===SG.ballSkin?'sel ':'')+(locked?'skinLocked':'');
+   return '<button class="'+cls+'" style="--ball-base:'+b.base+';--ball-detail:'+b.detail+';color:'+fg+'" onclick="selecionarSkinBola(\''+key+'\')"><span class="sgBallPreview" style="background:radial-gradient(circle at 35% 30%,'+b.base+','+b.base+' 45%,'+b.detail+' 46%,'+b.detail+' 60%,'+b.base+' 61%)"></span><strong>⚽ '+b.name+'</strong>'+status+'</button>';
+ }).join('');
 }
 function selecionarSkinBola(key){if(!BALL_SKINS[key])return;if(!isBallSkinOwned(key)&&!comprarBallSkin(key))return;SG.ballSkin=key;try{localStorage.setItem("soccerGolBallSkin",key);}catch(e){}renderSkinsBola();}
 try{const savedBall=localStorage.getItem("soccerGolBallSkin");if(savedBall&&BALL_SKINS[savedBall])SG.ballSkin=savedBall;}catch(e){}
@@ -4491,7 +4493,7 @@ function setDevice(device){
     if(hasSavedNickname()&&crazyInviteRoomCode){const c=crazyInviteRoomCode;crazyInviteRoomCode=null;setTimeout(()=>{try{prepararEntradaCrazyRoom(c);}catch(e){}},120);}
 }
 
-function mostrarAtualizacao(dia){const hoje=dia===21;document.getElementById('updatesContent21')?.classList.toggle('hidden',!hoje);document.getElementById('updatesContent22')?.classList.toggle('hidden',hoje);document.getElementById('updatesTab21')?.classList.toggle('active',hoje);document.getElementById('updatesTab22')?.classList.toggle('active',!hoje);}
+function mostrarAtualizacao(dia){const items=[[24,'updatesContent24','updatesTab24'],[22,'updatesContent22','updatesTab22'],[21,'updatesContent21','updatesTab21']];items.forEach(([d,c,t])=>{document.getElementById(c)?.classList.toggle('hidden',dia!==d);document.getElementById(t)?.classList.toggle('active',dia===d);});}
 function fecharAtualizacoes(){
     document.getElementById("updatesPanel")?.classList.add("hidden");
     voltarMenuPrincipal();
@@ -4624,10 +4626,13 @@ function renderSkins(){
         if(!el)return;
         const current=i===0?SG.skinsA:SG.skinsB;
         const blocked=i===0?SG.skinsB:SG.skinsA;
-        el.innerHTML=Object.entries(SKINS).map(([key,s])=>{
+        el.innerHTML=Object.entries(SKINS).map(([key,skin])=>{
           const owned=isPlayerSkinOwned(key),price=playerSkinPrice(key),locked=!owned,disabled=key===blocked;
-          return `<button class="skinBtn ${key===current?"sel":""} ${locked?"skinLocked":""}" ${disabled?"disabled":""} style="background:${s.color};color:${s.color==="#fff"||s.color==="#ffd52e"?"#111":"#fff"}" onclick="selecionarSkin(${i},'${key}')">${s.emoji} ${s.name}${disabled?" — ocupada":locked?`<span class="shopPrice">🪙 ${price.toLocaleString("pt-BR")}</span>`:`<span class="shopOwned">✅ Liberada</span>`}</button>`;
-        }).join("");
+          let status=disabled?'<span class="shopOwned">🚫 Ocupada</span>':(locked?'<span class="shopPrice">🪙 '+price.toLocaleString('pt-BR')+'</span>':'<span class="shopOwned">✅ Liberada</span>');
+          const cls='skinBtn sgColorSkin '+(key===current?'sel ':'')+(locked?'skinLocked':'');
+          const fg=(skin.color==='#fff'||skin.color==='#ffd52e')?'#111':'#fff';
+          return '<button class="'+cls+'" '+(disabled?'disabled':'')+' style="--skin-color:'+skin.color+';color:'+fg+'" onclick="selecionarSkin('+i+',\''+key+'\')"><span class="sgSkinPreview" style="background:'+skin.color+';box-shadow:inset 0 0 0 2px '+(skin.outline||'#000')+'66"></span><strong>'+skin.emoji+' '+skin.name+'</strong>'+status+'</button>';
+        }).join('');
     });
 }
 function atualizarBotoesTimeIA(){
@@ -5470,7 +5475,7 @@ atualizarPerfilVisibilidade();
 <div id="mobileLayoutPanel" class="overlay hidden" style="z-index:180">
  <div class="sg-panel mobileEditorPanel">
   <div class="editorHeader"><div><div class="editorEyebrow">PERSONALIZAÇÃO</div><h1 class="menuTitle">📱 CONTROLES MOBILE</h1><p class="menuDescription">Arraste cada controle para o lugar mais confortável para você.</p></div><button class="editorClose" onclick="fecharEditorMobile()">✕</button></div>
-  <div class="editorTabs"><button id="mobileEditTab2p" class="editorTab active" onclick="selecionarLayoutMobileEditor('2p')">👥 2 PLAYERS</button><button id="mobileEditTabSolo" class="editorTab" onclick="selecionarLayoutMobileEditor('solo')">🤖 IA / 🌐 ONLINE</button></div>
+  <div class="editorTabs"><button id="mobileEditTab2p" class="editorTab active" onclick="selecionarLayoutMobileEditor('2p')">👥 2 PLAYERS</button><button id="mobileEditTabSolo" class="editorTab" onclick="selecionarLayoutMobileEditor('solo')">🤖 IA / 🌐 ONLINE</button></div><div class="sgMobileEditorOptions"><div class="sg-row"><label>🎮 Controles exibidos</label><select id="mobileSoloSideSelect" class="sg-select"><option value="auto">Automático</option><option value="azul">Mostrar Azul</option><option value="vermelho">Mostrar Vermelho</option></select></div><div class="sg-row"><label>🌫️ Opacidade dos controles</label><input id="mobileOpacityRange" type="range" min="30" max="100" value="58"><span id="mobileOpacityValue" class="sgOpacityValue">58%</span></div></div>
   <div id="mobileEditorStage" class="mobileEditorStage"><div class="editorFieldLines"></div>
    <div class="editorControl" data-control="joyBlue">🔵<small>Joystick Azul</small></div><div class="editorControl" data-control="kickBlue">⚽<small>Chute Azul</small></div><div class="editorControl" data-control="dashBlue">👟<small>Carrinho Azul</small></div>
    <div class="editorControl" data-control="joyRed">🔴<small>Joystick Vermelho</small></div><div class="editorControl" data-control="kickRed">⚽<small>Chute Vermelho</small></div><div class="editorControl" data-control="dashRed">👟<small>Carrinho Vermelho</small></div>
@@ -5479,6 +5484,12 @@ atualizarPerfilVisibilidade();
   <button class="menuButton" onclick="fecharEditorMobile()">✅ CONCLUIR</button>
  </div>
 </div>
+
+<style id="sg1201-css">
+.sgMenuVersion{color:#76ef9b!important}.sgQuickPlayButton{position:relative;background:linear-gradient(135deg,#5c33ff,#8c5cff)!important}.sgQuickPlayButton small{display:block;font-size:10px;opacity:.75;margin-top:4px}.sgQuickPlayButton:after{content:'MATCHMAKING';position:absolute;right:14px;top:10px;font-size:8px;letter-spacing:1.3px;opacity:.65}.sgUpdateTabs{grid-template-columns:repeat(3,1fr)!important}.sgColorSkin,.sgBallSkin{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:105px!important;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02))!important;border-color:color-mix(in srgb,var(--skin-color,#fff) 25%,transparent)!important}.sgSkinPreview{display:block;width:46px;height:46px;border-radius:50%;border:3px solid rgba(255,255,255,.75)}.sgBallPreview{display:block;width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,.72);box-shadow:0 6px 15px rgba(0,0,0,.25)}.sgColorSkin strong,.sgBallSkin strong{font-size:12px}.sgMobileEditorOptions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.sgMobileEditorOptions .sg-row{margin:0!important}.sgOpacityValue{font-weight:900;color:#72ff98;min-width:42px;text-align:right}.sgQuickWait{margin-top:14px;padding:16px;border-radius:16px;background:rgba(92,51,255,.10);border:1px solid rgba(140,92,255,.28);text-align:center}.sgQuickWait .qSpin{display:inline-block;width:26px;height:26px;border:3px solid rgba(255,255,255,.15);border-top-color:#9b7aff;border-radius:50%;animation:sgSpin .8s linear infinite;margin-bottom:8px}@keyframes sgSpin{to{transform:rotate(360deg)}}
+#mobileControls .joy{opacity:.58!important;background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.28)!important}#mobileControls .kickBtn{opacity:.68!important;background:rgba(255,255,255,.16)!important;border-color:rgba(255,255,255,.38)!important}#mobileControls .dashBtn{opacity:.60!important;background:rgba(0,0,0,.34)!important;border-color:rgba(255,255,255,.28)!important}#mobileControls .joy:active,#mobileControls .kickBtn:active,#mobileControls .dashBtn:active{opacity:.90!important}.sgMobileEditorOptions input[type=range]{accent-color:#31df6f;min-width:130px}
+@media(max-width:700px){.sgMobileEditorOptions{grid-template-columns:1fr}.sgUpdateTabs{grid-template-columns:1fr 1fr 1fr!important}.sgUpdatesPanel{padding:20px!important}}
+</style>
 <style id="sg-final-polish">
 .overlay{background:radial-gradient(circle at 50% 15%,rgba(46,230,105,.10),transparent 32%),rgba(2,7,4,.78)!important;backdrop-filter:blur(10px)}
 .sg-panel,.onlineBox,.nicknameBox{border:1px solid rgba(112,255,153,.18)!important;background:linear-gradient(145deg,rgba(11,22,16,.98),rgba(4,9,7,.99))!important;box-shadow:0 28px 90px rgba(0,0,0,.62),0 0 55px rgba(38,224,100,.07)!important}
@@ -5492,20 +5503,27 @@ atualizarPerfilVisibilidade();
 </style>
 <script id="sg-mobile-editor-js">
 (function(){
- const L2='soccerGolMobileLayout2P', LS='soccerGolMobileLayoutSolo'; let editMode='2p';
+ const L2='soccerGolMobileLayout2P', LS='soccerGolMobileLayoutSolo', LO='soccerGolMobileOpacity', LH='soccerGolMobileSoloHide'; let editMode='2p';
  const defaults={ '2p':{joyBlue:[7,72],kickBlue:[18,78],dashBlue:[21,64],joyRed:[83,72],kickRed:[82,78],dashRed:[79,64]}, 'solo':{joyBlue:[7,72],kickBlue:[18,78],dashBlue:[21,64],joyRed:[83,72],kickRed:[82,78],dashRed:[79,64]} };
  function load(mode){try{const x=JSON.parse(localStorage.getItem(mode==='2p'?L2:LS)||'null');return x&&typeof x==='object'?{...defaults[mode],...x}:{...defaults[mode]};}catch(e){return {...defaults[mode]};}}
  function save(mode,x){try{localStorage.setItem(mode==='2p'?L2:LS,JSON.stringify(x));}catch(e){}}
+ function getOpacity(){try{return Math.max(.30,Math.min(1,Number(localStorage.getItem(LO)||.58)));}catch(e){return .58}}
+ function setOpacity(v){try{localStorage.setItem(LO,String(v));}catch(e){}}
+ function getHide(){try{return localStorage.getItem(LH)||'auto';}catch(e){return 'auto'}}
+ function setHide(v){try{localStorage.setItem(LH,v);}catch(e){}}
  const bound=new WeakSet();
  function bind(el){if(bound.has(el))return;bound.add(el);let drag=false;el.addEventListener('pointerdown',e=>{drag=true;el.setPointerCapture?.(e.pointerId);e.preventDefault();});el.addEventListener('pointermove',e=>{if(!drag)return;const r=document.getElementById('mobileEditorStage').getBoundingClientRect();let x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;x=Math.max(4,Math.min(96,x));y=Math.max(8,Math.min(92,y));el.style.left=x+'%';el.style.top=y+'%';const lay=load(editMode);lay[el.dataset.control]=[Number(x.toFixed(2)),Number(y.toFixed(2))];save(editMode,lay);});['pointerup','pointercancel'].forEach(t=>el.addEventListener(t,()=>drag=false));}
- function render(){const stage=document.getElementById('mobileEditorStage');if(!stage)return;const lay=load(editMode);stage.querySelectorAll('.editorControl').forEach(el=>{const p=lay[el.dataset.control]||[50,50];el.style.left=p[0]+'%';el.style.top=p[1]+'%';bind(el);});}
+ function render(){const stage=document.getElementById('mobileEditorStage');if(!stage)return;const lay=load(editMode);const hide=editMode==='solo'?getHide():'auto';stage.querySelectorAll('.editorControl').forEach(el=>{const p=lay[el.dataset.control]||[50,50];el.style.left=p[0]+'%';el.style.top=p[1]+'%';const isBlue=/Blue/.test(el.dataset.control),isRed=/Red/.test(el.dataset.control);el.style.display=(editMode==='solo'&&hide!=='auto'&&((hide==='azul'&&isRed)||(hide==='vermelho'&&isBlue)))?'none':'';bind(el);});const op=document.getElementById('mobileOpacityRange');const ov=document.getElementById('mobileOpacityValue');if(op){op.value=Math.round(getOpacity()*100);if(ov)ov.textContent=op.value+'%';}const sel=document.getElementById('mobileSoloSideSelect');if(sel)sel.value=hide;}
  window.abrirEditorMobile=function(){esconderMenus();document.getElementById('mobileLayoutPanel')?.classList.remove('hidden');selecionarLayoutMobileEditor('2p');};
  window.fecharEditorMobile=function(){document.getElementById('mobileLayoutPanel')?.classList.add('hidden');voltarMenuPrincipal();};
- window.selecionarLayoutMobileEditor=function(mode){editMode=mode;document.getElementById('mobileEditTab2p')?.classList.toggle('active',mode==='2p');document.getElementById('mobileEditTabSolo')?.classList.toggle('active',mode==='solo');render();};
+ window.selecionarLayoutMobileEditor=function(mode){editMode=mode;document.getElementById('mobileEditTab2p')?.classList.toggle('active',mode==='2p');document.getElementById('mobileEditTabSolo')?.classList.toggle('active',mode==='solo');document.getElementById('mobileSoloSideSelect')?.closest('.sgMobileEditorOptions')?.classList.toggle('hidden',mode!=='solo');render();};
  window.resetarLayoutMobileAtual=function(){try{localStorage.removeItem(editMode==='2p'?L2:LS);}catch(e){}render();if(typeof atualizarControlesMobile==='function')atualizarControlesMobile();};
  window.sgGetMobileLayout=function(mode){return load(mode==='2p'?'2p':'solo');};
+ window.sgGetMobileOpacity=getOpacity; window.sgGetMobileHide=getHide;
+ document.getElementById('mobileSoloSideSelect')?.addEventListener('change',e=>{setHide(e.target.value);render();if(typeof atualizarControlesMobile==='function')atualizarControlesMobile();});
+ document.getElementById('mobileOpacityRange')?.addEventListener('input',e=>{const v=Number(e.target.value)/100;setOpacity(v);const out=document.getElementById('mobileOpacityValue');if(out)out.textContent=e.target.value+'%';if(typeof atualizarControlesMobile==='function')atualizarControlesMobile();});
  const old=window.atualizarControlesMobile;
- window.atualizarControlesMobile=function(){if(old)old();const mc=document.getElementById('mobileControls');if(!mc||!mc.classList.contains('active'))return;const mode=modoJogo==='2players'?'2p':'solo';const lay=load(mode);let hasCustom=false;try{hasCustom=!!localStorage.getItem(mode==='2p'?L2:LS);}catch(e){}const localTeam=(modoJogo==='ia'||modoJogo==='online')?(typeof equipeControleLocal==='function'?equipeControleLocal():null):null;['joyBlue','kickBlue','dashBlue','joyRed','kickRed','dashRed'].forEach(id=>{const el=document.getElementById(id),p=lay[id];if(!el||!p)return;let x=p[0];if(mode==='solo'&&!hasCustom&&localTeam&&SG.invertControls)x=100-x;el.style.left=x+'%';el.style.right='auto';el.style.top=p[1]+'%';el.style.bottom='auto';});};
+ window.atualizarControlesMobile=function(){if(old)old();const mc=document.getElementById('mobileControls');if(!mc||!mc.classList.contains('active'))return;const mode=modoJogo==='2players'?'2p':'solo';const lay=load(mode);const localTeam=(modoJogo==='ia'||modoJogo==='online')?(typeof equipeControleLocal==='function'?equipeControleLocal():null):null;const hide=(mode==='solo')?getHide():'auto';const opacity=getOpacity();['joyBlue','kickBlue','dashBlue','joyRed','kickRed','dashRed'].forEach(id=>{const el=document.getElementById(id),p=lay[id];if(!el||!p)return;let x=p[0];if(mode==='solo'&&!localStorage.getItem(mode==='2p'?L2:LS)&&localTeam&&SG.invertControls)x=100-x;el.style.left=x+'%';el.style.right='auto';el.style.top=p[1]+'%';el.style.bottom='auto';el.style.setProperty('--sg-mobile-opacity',String(opacity));el.style.display=(mode==='solo'&&hide!=='auto'&&((hide==='azul'&&id.endsWith('Blue'))||(hide==='vermelho'&&id.endsWith('Red'))))?'none':'';});};
 })();
 </script>
 <script id="sg-online-ux-js">(function(){const i=document.getElementById('onlineJoinCode');if(i){i.addEventListener('input',()=>{i.value=i.value.replace(/[^a-z0-9]/gi,'').toUpperCase().slice(0,6);i.classList.toggle('readyCode',i.value.length===6);});i.addEventListener('keydown',e=>{if(e.key==='Enter'&&i.value.length===6){e.preventDefault();entrarSalaOnline();}});}})();</script>
@@ -5626,5 +5644,19 @@ atualizarPerfilVisibilidade();
 })();
 </script>
 
+<style id="sg-quickplay-css">.sgQuickPlayButton{padding-right:130px!important}.sgQuickWait{display:none}.sgQuickWait.active{display:block}</style>
+<script id="sg-quickplay-js">
+(function(){
+ let qpPeer=null,qpTimer=null,qpConn=null,qpNonce='';
+ function ui(msg,show=true){const home=document.getElementById('onlineHome');if(home)home.classList.toggle('hidden',show);let box=document.getElementById('quickPlayWait');if(!box){box=document.createElement('div');box.id='quickPlayWait';box.className='sgQuickWait';const room=document.getElementById('onlineRoom');(room||document.getElementById('onlinePanel')?.querySelector('.onlineBox'))?.appendChild(box);}box.classList.add('active');box.innerHTML='<div class="qSpin"></div><div style="font-weight:900">'+msg+'</div><div style="font-size:11px;color:#7f8f87;margin-top:5px">Aguarde outro jogador entrar no Quick Play.</div><button class="menuButton secondary" style="margin-top:12px" onclick="cancelarQuickPlay()">✕ CANCELAR</button>';}
+ function stop(){if(qpTimer){clearInterval(qpTimer);qpTimer=null}try{qpConn?.close()}catch(e){}try{qpPeer?.destroy()}catch(e){}qpConn=null;qpPeer=null;}
+ window.cancelarQuickPlay=function(){stop();const box=document.getElementById('quickPlayWait');box?.classList.remove('active');document.getElementById('onlineHome')?.classList.remove('hidden');onlineSetStatus?.('Quick Play cancelado.');};
+ async function listPeers(){return await new Promise((resolve,reject)=>{if(!qpPeer?.listAllPeers)return reject(new Error('listAllPeers indisponível'));qpPeer.listAllPeers(peers=>resolve(peers||[]));});}
+ function makeId(){return 'sgquick-'+Math.random().toString(36).slice(2,10)+'-'+Date.now().toString(36).slice(-4);}
+ function tryConnectTo(peerId){if(!qpPeer||qpConn)return;try{qpConn=qpPeer.connect(peerId,{reliable:true,serialization:'json',label:'quickmatch'});qpConn.on('error',()=>{qpConn=null});qpConn.on('open',()=>{qpConn.send({type:'quickHello',nonce:qpNonce,nickname:getNickname()});});qpConn.on('data',async d=>{if(!d||d.type!=='quickHello')return;try{const roomCode=gerarCodigoSala();qpConn.send({type:'quickRoom',roomCode});setTimeout(()=>{stop();online.intentionalClose=false;online.host=true;online.active=true;online.roomCode=roomCode;esconderExtras();document.getElementById('onlinePanel')?.classList.remove('hidden');document.getElementById('onlineHome')?.classList.add('hidden');document.getElementById('onlineRoom')?.classList.remove('hidden');document.getElementById('onlineCode').textContent=roomCode;iniciarBarraOnline?.(25);criarPeerHost(roomCode);},120);}catch(e){cancelarQuickPlay();}});}catch(e){qpConn=null;}}
+ window.iniciarQuickPlay=function(){if(typeof Peer==='undefined'){onlineSetStatus('Sistema online não carregou.');return;}encerrarOnline?.();online.intentionalClose=false;online.active=true;online.host=false;online.waiting=true;ui('Procurando adversário...',true);const id=makeId();qpNonce=id;qpPeer=new Peer(id,{debug:1,config:ONLINE_ICE_CONFIG});qpPeer.on('open',async()=>{onlineSetStatus('⚡ Procurando jogador...');try{let peers=await listPeers();peers=peers.filter(x=>x.startsWith('sgquick-')&&x!==id);if(peers.length){const target=peers.sort()[0];if(id<target)tryConnectTo(target);}qpTimer=setInterval(async()=>{if(qpConn||!qpPeer)return;try{let ps=await listPeers();ps=ps.filter(x=>x.startsWith('sgquick-')&&x!==id).sort();if(ps.length&&id<ps[0])tryConnectTo(ps[0]);}catch(e){}},1800);}catch(e){onlineSetDebug?.('Quick Play indisponível neste navegador.');}});qpPeer.on('connection',conn=>{if(qpConn){conn.close();return}qpConn=conn;conn.on('open',()=>conn.send({type:'quickHello',nonce:qpNonce,nickname:getNickname()}));conn.on('data',d=>{if(d?.type==='quickRoom'){const code=String(d.roomCode||'').toUpperCase();if(code){stop();document.getElementById('onlineJoinCode').value=code;online.host=false;online.active=true;online.intentionalClose=false;entrarSalaOnline();}}});});qpPeer.on('error',e=>{onlineSetDebug?.('Quick Play: '+(e?.type||'erro'));});};
+})();
+</script>
+<style id="sg1201-opacity-fix">#mobileControls .joy,#mobileControls .kickBtn,#mobileControls .dashBtn{opacity:var(--sg-mobile-opacity,.58)!important}#mobileControls .joy:active,#mobileControls .kickBtn:active,#mobileControls .dashBtn:active{opacity:min(1,calc(var(--sg-mobile-opacity,.58) + .22))!important}.editorControl[data-control^="joy"],.editorControl[data-control^="kick"],.editorControl[data-control^="dash"]{transition:opacity .15s,transform .15s}</style>
 </body>
 </html>
