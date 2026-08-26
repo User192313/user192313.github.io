@@ -574,7 +574,7 @@ button{
           <div class="sgBrandTag">TABLE FOOTBALL • PLAY ANYWHERE</div>
         </div>
       </div>
-      <div class="sgMenuVersion">v1.20.1 · BROWSER EDITION</div>
+      <div class="sgMenuVersion">v1.20.8 · BROWSER EDITION</div>
     </div>
 
     <div class="sgHero">
@@ -635,7 +635,7 @@ button{
     </div>
 </div>
 
-<div id="updatesPanel" class="overlay hidden"><div class="sg-panel sgUpdatesPanel"><div class="sgUpdatesHead"><div><div class="sgKicker">SOCCERGOL NEWS</div><h1 class="menuTitle">📢 NOVIDADES</h1><p>Atualizações recentes do SoccerGol.</p></div><span class="sgUpdatesBadge">v1.20.1</span></div><div class="sgUpdateTabs"><button id="updatesTab24" class="sgUpdateTab active" onclick="mostrarAtualizacao(24)"><span>24</span><small>24/08</small></button><button id="updatesTab22" class="sgUpdateTab" onclick="mostrarAtualizacao(22)"><span>22</span><small>22/08</small></button><button id="updatesTab21" class="sgUpdateTab" onclick="mostrarAtualizacao(21)"><span>21</span><small>21/08</small></button></div><div id="updatesContent24"><div class="updatesDate">24/08/2026 · v1.20.1</div><div class="updatesList"><div>🎨 Skins agora exibem visualmente as cores que representam</div><div>⚡ Novo Quick Play para procurar adversários simultaneamente</div><div>📱 Controles mobile mais visíveis e confortáveis</div><div>🛠️ Editor mobile com opacidade configurável e seleção de lado</div><div>🌐 Preparação extra do Online e suporte melhor para salas</div><div>🔎 SEO preparado para indexação no Google com sitemap, robots.txt e dados estruturados</div></div></div><div id="updatesContent22" class="hidden"><div class="updatesDate">22/08/2026</div><div class="updatesList"><div>✨ Interfaces de jogo renovadas</div><div>🎮 Novas telas para modos, dificuldade e seleção de time</div><div>🌐 Lobby Online redesenhado</div><div>📱 Controles mobile personalizáveis</div><div>🔄 Inverter controles mantém o personagem escolhido</div><div>🎥 Replay limitado aos lances de gol</div><div>🛠️ Correções de estabilidade e preparação para CrazyGames</div></div></div><div id="updatesContent21" class="hidden"><div class="updatesDate">21/08/2026</div><div class="updatesList"><div>🏠 Novo menu principal</div><div>🎨 Novo sistema visual de skins</div><div>⚙️ Configurações reorganizadas</div><div>📱 Editor para reposicionar controles mobile</div><div>🌐 Melhorias no sistema de salas Online</div></div></div><button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button></div></div><div id="startupLoading" class="overlay hidden" style="z-index:200;background:rgba(4,12,7,.97)"><div class="sg-panel" style="max-width:420px;text-align:center"><div class="logo" style="font-size:44px">⚽</div><h2 class="menuTitle">Carregando SoccerGol...</h2><div style="height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:18px 0"><div id="startupLoadingBar" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);transition:width .12s linear"></div></div><div id="startupLoadingText" style="font-size:13px;color:#999">Preparando o campo...</div></div></div>
+<div id="updatesPanel" class="overlay hidden"><div class="sg-panel sgUpdatesPanel"><div class="sgUpdatesHead"><div><div class="sgKicker">SOCCERGOL NEWS</div><h1 class="menuTitle">📢 NOVIDADES</h1><p>Atualizações recentes do SoccerGol.</p></div><span class="sgUpdatesBadge">v1.20.8</span></div><div class="sgUpdateTabs"><button id="updatesTab26" class="sgUpdateTab active" onclick="mostrarAtualizacao(26)"><span>26</span><small>26/08</small></button></div><div id="updatesContent26"><div class="updatesDate">26/08/2026 · v1.20.8</div><div class="updatesList"><div>🏆 Conquistas e desafios aprimorados</div><div>🎮 Novos ajustes de gameplay, IA e experiência Online</div><div>⚡ Quick Play e sorteio de lado refinados</div><div>🎨 Mais polimento visual, controles e telas</div><div>🛠️ Correções de estabilidade e bugs</div></div></div><button class="menuButton" onclick="fecharAtualizacoes()">🚀 CONTINUAR</button></div></div><div id="startupLoading" class="overlay hidden" style="z-index:200;background:rgba(4,12,7,.97)"><div class="sg-panel" style="max-width:420px;text-align:center"><div class="logo" style="font-size:44px">⚽</div><h2 class="menuTitle">Carregando SoccerGol...</h2><div style="height:10px;border-radius:999px;background:#17201a;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin:18px 0"><div id="startupLoadingBar" style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#20bd52,#72ff98);transition:width .12s linear"></div></div><div id="startupLoadingText" style="font-size:13px;color:#999">Preparando o campo...</div></div></div>
 
 <!-- MODOS -->
 
@@ -985,7 +985,7 @@ function equipeOposta(team){return team==="azul"?"vermelho":"azul";}
 function equipeControleIA(){return modoJogo==="ia" ? timeHumano : "azul";}
 function equipeControleOnline(){
     if(modoJogo!=="online")return "azul";
-    return online.host ? "azul" : "vermelho";
+    return online.playerSide || (online.host ? "azul" : "vermelho");
 }
 function equipeTeclasParaControle(team){
     if((modoJogo==="ia"||modoJogo==="online") && SG.invertControls) return equipeOposta(team);
@@ -1007,12 +1007,11 @@ document.addEventListener("keydown",e=>{
     if(e.key.startsWith("Arrow")||e.key===" "||e.key==="Tab"||e.ctrlKey)e.preventDefault();
     if(!e.repeat&&e.code===keyMap.pause){alternarPausa();e.preventDefault();return;}
     const localTeam=(modoJogo==="ia"||modoJogo==="online")?equipeControleLocal():null;
-    const keyTeam=localTeam?equipeTeclasParaControle(localTeam):null;
-    if(localTeam && keyTeam){
-        const kickCode=keyTeam==="azul"?keyMap.blueKick:keyMap.redKick;
-        const dashCode=keyTeam==="azul"?keyMap.blueDash:keyMap.redDash;
-        if(!e.repeat&&e.code===kickCode){if(modoJogo==="online"&&!online.host)enviarInputOnline(true,false);else chute(localTeam==="azul"?azul:vermelho);e.preventDefault();return;}
-        if(!e.repeat&&(e.code===dashCode||eventoCarrinhoVermelho(e)&&keyTeam==="vermelho")){if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(localTeam==="azul"?azul:vermelho);e.preventDefault();return;}
+    if(localTeam){
+        const codes=[keyMap.blueKick,keyMap.redKick];
+        const dashCodes=[keyMap.blueDash,keyMap.redDash,"Semicolon","IntlRo"];
+        if(!e.repeat&&codes.includes(e.code)){if(modoJogo==="online"&&!online.host)enviarInputOnline(true,false);else chute(localTeam==="azul"?azul:vermelho);e.preventDefault();return;}
+        if(!e.repeat&&(dashCodes.includes(e.code)||(e.key==="ç"||e.key==="Ç"))){if(modoJogo==="online"&&!online.host)enviarInputOnline(false,true);else carrinhoSeguro(localTeam==="azul"?azul:vermelho);e.preventDefault();return;}
     }else if(modoJogo==="2players"){
         if(!e.repeat&&e.code===keyMap.blueKick){chute(azul);e.preventDefault();return;}
         if(!e.repeat&&e.code===keyMap.redKick){chute(vermelho);e.preventDefault();return;}
@@ -3907,7 +3906,7 @@ const online={
  remoteInput:{x:0,y:0,kick:false,dash:false},controlInvert:false,lastStateSent:0,lastInputSent:0,
  intentionalClose:false,waiting:false,lastError:"",starting:false,clientReady:false,clientEntered:false,connectAttempts:0,chatReady:false,connecting:false,
  startPacket:null,startRetries:0,startTimer:null,connectTimer:null,loadingTimer:null,lastStartNonce:"",startOffer:null,
- scorerTeam:null,replaySkipSent:false,onlineSkinMode:false,hostNickname:"Jogador",guestNickname:"Jogador"
+ scorerTeam:null,replaySkipSent:false,onlineSkinMode:false,hostNickname:"Jogador",guestNickname:"Jogador",playerSide:null,pendingSide:null,hostSide:"azul",guestSide:"vermelho",quickMatch:false
 };
 function onlineSetStatus(text){const e=document.getElementById("onlineStatus");if(e)e.textContent=text;}
 function onlineSetDebug(text){const e=document.getElementById("onlineDebug");if(e)e.textContent=text||"";}
@@ -3991,7 +3990,7 @@ function encerrarOnline(){
  try{online.conn?.close()}catch(e){}
  try{online.peer?.destroy()}catch(e){}
  online.active=false;online.host=false;online.connected=false;online.waiting=false;online.starting=false;online.clientReady=false;online.clientEntered=false;online.startPacket=null;online.startOffer=null;online.startRetries=0;online.lastStartNonce="";online.connecting=false;online.scorerTeam=null;online.replaySkipSent=false;online.onlineSkinMode=false;
- online.conn=null;online.peer=null;online.roomCode="";online.lastError="";
+ online.conn=null;online.peer=null;online.roomCode="";online.lastError="";online.playerSide=null;online.hostSide="azul";online.guestSide="vermelho";online.quickMatch=false;
  online.remoteInput={x:0,y:0,kick:false,dash:false};
 }
 function resetOnlineUI(){
@@ -4016,7 +4015,7 @@ function configurarConexaoOnline(conn){
    onlineSend({type:"helloHost",version:3,nickname:getNickname(),skin:SG.skinsA});
   }else{
    onlineSetStatus("Conectado! Entrando na sala...");
-   onlineSend({type:"join",version:3,nickname:getNickname(),skin:SG.skinsB});
+   onlineSend({type:"join",version:3,nickname:getNickname(),skin:SG.skinsB,side:online.playerSide||"vermelho"});
   }
  };
  const aoFechar=()=>{
@@ -4093,7 +4092,7 @@ function criarPeerHost(code,tentativa=0){
 }
 function criarSalaOnline(){
  if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");onlineSetDebug("A biblioteca PeerJS não carregou.");return;}
- encerrarOnline();online.intentionalClose=false;online.host=true;online.active=true;online.starting=false;online.clientReady=false;
+ encerrarOnline();online.intentionalClose=false;online.host=true;online.active=true;online.starting=false;online.clientReady=false;online.playerSide=online.pendingSide||online.playerSide||"azul";online.pendingSide=null;online.hostSide=online.playerSide;online.guestSide=equipeOposta(online.playerSide);
  const code=gerarCodigoSala();online.roomCode=code;
  esconderExtras();document.getElementById("onlinePanel")?.classList.remove("hidden");
  document.getElementById("onlineHome")?.classList.add("hidden");
@@ -4108,7 +4107,7 @@ function entrarSalaOnline(){
  if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");onlineSetDebug("A biblioteca PeerJS não carregou.");return;}
  const code=(document.getElementById("onlineJoinCode")?.value||"").trim().toUpperCase();
  if(!/^[A-Z0-9]{6}$/.test(code)){alert("Digite um código de 6 caracteres.");return;}
- encerrarOnline();online.intentionalClose=false;online.host=false;online.active=true;online.roomCode=code;online.waiting=true;online.clientReady=false;online.connectAttempts=0;
+ encerrarOnline();online.intentionalClose=false;online.host=false;online.active=true;online.roomCode=code;online.waiting=true;online.playerSide=online.pendingSide||online.playerSide||"vermelho";online.pendingSide=null;online.guestSide=online.playerSide;online.clientReady=false;online.connectAttempts=0;
  esconderExtras();document.getElementById("onlinePanel")?.classList.remove("hidden");
  document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");
  document.getElementById("onlineCode").textContent=code;mostrarOpcoesHostOnline(false);prepararChat();limparChat();
@@ -4176,7 +4175,7 @@ function iniciarSalaOnline(){
  const options=lerOpcoesOnline();
  aplicarOpcoesOnline(options);
  online.controlInvert=!!SG.invertControls;
- online.startOffer={type:"startOffer",version:4,skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin,controlInvert:online.controlInvert,options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,6)};
+ online.startOffer={type:"startOffer",version:4,skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin,controlInvert:online.controlInvert,hostSide:online.playerSide||"azul",options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,6)};
  onlineSetStatus("Convite enviado! A partida só começa quando o segundo jogador clicar em ENTRAR NA PARTIDA.");
  onlineSetDebug("Aguardando a confirmação de entrada do jogador Vermelho...");
  onlineSend(online.startOffer);
@@ -4194,14 +4193,14 @@ function entrarNaPartidaOnline(){
  onlineSend({type:"clientWantsStart",version:4,nonce:online.startOffer.nonce,nickname:getNickname()});
  // O cliente já possui as skins/opções confirmadas no startOffer.
  // Iniciar localmente evita depender de um segundo pacote de sinalização.
- iniciarOnlineClient({type:"start",version:4,skinA:online.startOffer.skinA,skinB:online.startOffer.skinB,controlInvert:online.startOffer.controlInvert,options:online.startOffer.options,nonce:online.startOffer.nonce});
+ iniciarOnlineClient({type:"start",version:4,skinA:online.startOffer.skinA,skinB:online.startOffer.skinB,controlInvert:online.startOffer.controlInvert,hostSide:online.startOffer.hostSide,options:online.startOffer.options,nonce:online.startOffer.nonce});
 }
 function iniciarOnlineHost(){
  if(!online.host||!online.connected||!online.clientEntered)return;
- modoJogo="online";online.controlInvert=!!SG.invertControls;timeHumano="azul";timeIA="vermelho";
+ modoJogo="online";online.controlInvert=!!SG.invertControls;online.playerSide=online.playerSide||"azul";timeHumano=online.playerSide;timeIA=equipeOposta(online.playerSide);
  const options=online.startOffer?.options||{replay:SG.replay,overtime:SG.overtime,keepers:SG.keepers};
  aplicarOpcoesOnline(options);
- const packet={type:"start",version:2,skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin,controlInvert:online.controlInvert,options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,7)};
+ const packet={type:"start",version:2,skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin,controlInvert:online.controlInvert,hostSide:online.playerSide||"azul",options,nonce:Date.now().toString(36)+Math.random().toString(36).slice(2,7)};
  online.startPacket=packet;online.startRetries=0;
  esconderMenus();document.getElementById("onlinePanel")?.classList.add("hidden");
  iniciarJogo();
@@ -4223,7 +4222,7 @@ function iniciarOnlineClient(dados){
  const nonce=String(dados?.nonce||"");
  if(nonce && online.lastStartNonce===nonce){onlineSend({type:"startAck",nonce});return;}
  if(nonce)online.lastStartNonce=nonce;
- modoJogo="online";online.controlInvert=!!dados.controlInvert;SG.invertControls=online.controlInvert;timeHumano="vermelho";timeIA="azul";
+ modoJogo="online";online.controlInvert=!!dados.controlInvert;SG.invertControls=online.controlInvert;online.hostSide=dados.hostSide||"azul";online.playerSide=equipeOposta(online.hostSide);timeHumano=online.playerSide;timeIA=equipeOposta(online.playerSide);
  SG.skinsA=dados.skinA||SG.skinsA;SG.skinsB=dados.skinB||SG.skinsB;SG.ballSkin=(dados.ballSkin&&BALL_SKINS[dados.ballSkin])?dados.ballSkin:SG.ballSkin;
  aplicarOpcoesOnline(dados.options||{});
  applySkin("azul",SG.skinsA);applySkin("vermelho",SG.skinsB);renderSkinsBola();
@@ -4306,20 +4305,25 @@ function processarMensagemOnline(d){
   return;
  }
  if(d.type==="join"&&online.host){
-  let skinB=d.skin||SG.skinsB;
-  if(skinB===SG.skinsA)skinB=escolherSkinDisponivel(SG.skinsA,"");
-  SG.skinsB=skinB;applySkin("vermelho",skinB);online.guestNickname=String(d.nickname||"Jogador").slice(0,16);
+  online.guestSide=(d.side==="azul"?"azul":"vermelho");
+  online.hostSide=online.playerSide||"azul";
+  if(online.guestSide===online.hostSide)online.guestSide=equipeOposta(online.hostSide);
+  const hostSkinKey=online.hostSide==='azul'?SG.skinsA:SG.skinsB;
+  let guestSkin=String(d.skin||'');
+  if(!SKINS[guestSkin] || guestSkin===hostSkinKey)guestSkin=escolherSkinDisponivel(SG.skinsA,SG.skinsB);
+  if(online.guestSide==="azul"){SG.skinsA=guestSkin;applySkin("azul",guestSkin);}else{SG.skinsB=guestSkin;applySkin("vermelho",guestSkin);}
+  online.guestNickname=String(d.nickname||"Jogador").slice(0,16);
   online.waiting=false;online.clientReady=false;
   crazyUpdateRoom({roomId:"soccergol-"+online.roomCode,isJoinable:false});
   onlineSetStatus("Jogador conectado! Escolha as opções e aguarde a confirmação.");
   addChatLine("Sistema",`${d.nickname||"Jogador"} entrou na sala.`);
   atualizarBarraOnline(78);
-  onlineSend({type:"roomReady",version:3,hostNickname:getNickname(),guestNickname:d.nickname||"Jogador",skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin});
+  onlineSend({type:"roomReady",version:3,hostNickname:getNickname(),guestNickname:d.nickname||"Jogador",skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin,hostSide:online.hostSide||online.playerSide||"azul",guestSide:online.guestSide||equipeOposta(online.playerSide||"azul")});
   mostrarOpcoesHostOnline(true);
   return;
  }
  if(d.type==="roomReady"&&!online.host){
-  online.hostNickname=String(d.hostNickname||"Jogador").slice(0,16);online.guestNickname=getNickname();SG.skinsA=d.skinA||SG.skinsA;SG.skinsB=d.skinB||SG.skinsB;SG.ballSkin=(d.ballSkin&&BALL_SKINS[d.ballSkin])?d.ballSkin:SG.ballSkin;
+  online.hostNickname=String(d.hostNickname||"Jogador").slice(0,16);online.guestNickname=getNickname();online.hostSide=d.hostSide||"azul";online.guestSide=d.guestSide||equipeOposta(online.hostSide);online.playerSide=online.guestSide;SG.skinsA=d.skinA||SG.skinsA;SG.skinsB=d.skinB||SG.skinsB;SG.ballSkin=(d.ballSkin&&BALL_SKINS[d.ballSkin])?d.ballSkin:SG.ballSkin;
   applySkin("azul",SG.skinsA);applySkin("vermelho",SG.skinsB);
   onlineSetStatus(`Conectado! ${d.hostNickname||"Host"} está escolhendo as opções...`);onlineSetDebug("Sala sincronizada. Enviando confirmação...");
   addChatLine("Sistema",`Você entrou na sala de ${d.hostNickname||"Host"}.`);
@@ -4340,7 +4344,7 @@ function processarMensagemOnline(d){
   online.startOffer=d;
   crazyUpdateRoom({roomId:"soccergol-"+online.roomCode,isJoinable:false});
   aplicarOpcoesOnline(d.options||{});
-  online.controlInvert=!!d.controlInvert;
+  online.controlInvert=!!d.controlInvert; online.hostSide=d.hostSide||"azul"; online.playerSide=equipeOposta(online.hostSide);
   SG.invertControls=online.controlInvert;
   try{localStorage.setItem("soccerGolInvertControls",SG.invertControls?"1":"0");}catch(e){}
   onlineSetStatus("Partida pronta! Clique em ENTRAR NA PARTIDA para começar.");
@@ -4363,19 +4367,31 @@ function processarMensagemOnline(d){
   return;
  }
  if(d.type==="startAck"&&online.host){clearTimeout(online.startTimer);online.startTimer=null;online.startPacket=null;online.startRetries=0;online.startOffer=null;finalizarBarraOnline(true);onlineSetStatus("Partida online iniciada nos dois dispositivos!");enviarEstadoOnline();return;}
+ if(d.type==="rematchRequest"&&online.host){
+   const options=online.startOffer?.options||{replay:SG.replay,overtime:SG.overtime,keepers:SG.keepers,matchSeconds:SG.matchSeconds};
+   onlineSend({type:"rematchStart",version:1,hostSide:online.hostSide||online.playerSide||"azul",options,skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin});
+   document.getElementById("fim")?.style.setProperty("display","none");
+   iniciarJogo();
+   return;
+ }
+ if(d.type==="rematchStart"&&!online.host){
+   aplicarOpcoesOnline(d.options||{});
+   online.hostSide=d.hostSide||"azul";online.playerSide=equipeOposta(online.hostSide);
+   SG.skinsA=d.skinA||SG.skinsA;SG.skinsB=d.skinB||SG.skinsB;SG.ballSkin=d.ballSkin||SG.ballSkin;
+   document.getElementById("fim")?.style.setProperty("display","none");
+   iniciarJogo();
+   return;
+ }
  if(d.type==="skinChange"){
-   const requested=String(d.skin||"");
+   const requested=String(d.skin||""), side=d.side==="azul"?"azul":"vermelho";
    if(!SKINS[requested]) return;
-   if(online.host && d.side==="vermelho"){
-      if(requested===SG.skinsA){onlineSend({type:"skinReject",side:"vermelho",skin:SG.skinsA});return;}
-      SG.skinsB=requested;applySkin("vermelho",requested);onlineSend({type:"skinSync",side:"vermelho",skin:requested});
-      return;
-   }
-   if(!online.host && d.side==="azul"){
-      if(requested===SG.skinsB){onlineSend({type:"skinReject",side:"azul",skin:SG.skinsB});return;}
-      SG.skinsA=requested;applySkin("azul",requested);onlineSend({type:"skinSync",side:"azul",skin:requested});
-      return;
-   }
+   const localSide=online.playerSide||equipeControleOnline();
+   if(side===localSide) return;
+   const blocked=side==='azul'?SG.skinsB:SG.skinsA;
+   if(requested===blocked){onlineSend({type:'skinReject',side,skin:blocked});return;}
+   if(side==='azul'){SG.skinsA=requested;applySkin('azul',requested);}else{SG.skinsB=requested;applySkin('vermelho',requested);}
+   onlineSend({type:'skinSync',side,skin:requested});
+   return;
  }
  if(d.type==="skinSync"){
    if(d.side==="azul" && SKINS[d.skin]){SG.skinsA=d.skin;applySkin("azul",d.skin);}
@@ -4390,10 +4406,11 @@ function processarMensagemOnline(d){
  if(d.type==="replayStart"&&!online.host){
    online.scorerTeam=d.scorer||null;
    online.replaySkipSent=false;
-   replayData=replayFrames.map(f=>({azul:{...f.azul},vermelho:{...f.vermelho},bola:{...f.bola},goleiroA:f.goleiroA?{...f.goleiroA}:null,goleiroB:f.goleiroB?{...f.goleiroB}:null}));
-   if(SG.replay) iniciarReplayLimpo();
+   replayData=Array.isArray(d.replay)?d.replay.map(f=>JSON.parse(JSON.stringify(f))).filter(f=>f&&f.azul&&f.vermelho&&f.bola):[];
+   if(SG.replay && replayData.length>1) iniciarReplayLimpo(); else resetarDepoisReplay();
    return;
  }
+ if(d.type==="replayEnd"&&!online.host){ resetarDepoisReplay(); return; }
  if(d.type==="replaySkip"){
    pararReplay();
    resetarDepoisReplay();
@@ -4447,8 +4464,9 @@ function fecharSkinsOnline(){
 }
 function renderOnlineSkins(){
  const grid=document.getElementById("onlineSkinsGrid");if(!grid)return;
- const current=online.host?SG.skinsA:SG.skinsB;
- const blocked=online.host?SG.skinsB:SG.skinsA;
+ const localSide=online.playerSide||("online"===modoJogo?(online.host?"azul":"vermelho"):"azul");
+ const current=localSide==="azul"?SG.skinsA:SG.skinsB;
+ const blocked=localSide==="azul"?SG.skinsB:SG.skinsA;
  grid.innerHTML=Object.entries(SKINS).map(([key,s])=>{
    const owned=isPlayerSkinOwned(key),price=playerSkinPrice(key),blockedSame=key===blocked;
    return `<button class="skinBtn ${key===current?"sel":""} ${!owned?"skinLocked":""}" ${blockedSame?"disabled":""} style="background:${s.color};color:${s.color==="#fff"||s.color==="#ffd52e"?"#111":"#fff"}" onclick="selecionarSkinOnline('${key}')">${s.emoji} ${s.name}${blockedSame?" — ocupada":!owned?`<span class="shopPrice">🪙 ${price.toLocaleString("pt-BR")}</span>`:`<span class="shopOwned">✅ Liberada</span>`}</button>`;
@@ -4459,7 +4477,8 @@ function selecionarSkinOnline(key){
  if(!isPlayerSkinOwned(key)&&!comprarPlayerSkin(key))return;
  const blocked=online.host?SG.skinsB:SG.skinsA;
  if(key===blocked){onlineSetStatus("Essa skin já está sendo usada pelo outro jogador.");return;}
- if(online.host){SG.skinsA=key;applySkin("azul",key);onlineSend({type:"skinChange",side:"azul",skin:key});}
+ const side=online.playerSide||(online.host?"azul":"vermelho");
+ if(side==="azul"){SG.skinsA=key;applySkin("azul",key);onlineSend({type:"skinChange",side:"azul",skin:key});}
  else{SG.skinsB=key;applySkin("vermelho",key);onlineSend({type:"skinChange",side:"vermelho",skin:key});}
  renderOnlineSkins();
 }
@@ -4514,7 +4533,7 @@ function setDevice(device){
     if(hasSavedNickname()&&crazyInviteRoomCode){const c=crazyInviteRoomCode;crazyInviteRoomCode=null;setTimeout(()=>{try{prepararEntradaCrazyRoom(c);}catch(e){}},120);}
 }
 
-function mostrarAtualizacao(dia){const items=[[24,'updatesContent24','updatesTab24'],[22,'updatesContent22','updatesTab22'],[21,'updatesContent21','updatesTab21']];items.forEach(([d,c,t])=>{document.getElementById(c)?.classList.toggle('hidden',dia!==d);document.getElementById(t)?.classList.toggle('active',dia===d);});}
+function mostrarAtualizacao(dia){const el=document.getElementById('updatesContent26');const tab=document.getElementById('updatesTab26');if(el)el.classList.remove('hidden');if(tab)tab.classList.add('active');}
 function fecharAtualizacoes(){
     SG.startingMatch=false;
     document.getElementById("updatesPanel")?.classList.add("hidden");
@@ -4917,8 +4936,14 @@ moverJogador=function(j,cima,baixo,esq,dir){
     }else if(SG.device==="mobile"){
         const jv=joy[team==="azul"?"blue":"red"];x=jv.x;y=jv.y;
     }else{
-        const keyTeam=equipeTeclasParaControle(team); const km=keyTeam==="azul"?{up:keyMap.blueUp,down:keyMap.blueDown,left:keyMap.blueLeft,right:keyMap.blueRight}:{up:keyMap.redUp,down:keyMap.redDown,left:keyMap.redLeft,right:keyMap.redRight};
-        if(codeDown(km.left))x--;if(codeDown(km.right))x++;if(codeDown(km.up))y--;if(codeDown(km.down))y++;
+        // In IA/Online, BOTH PC layouts control the same selected character.
+        // In 2 Players, each team keeps its own keyboard layout.
+        const solo=(modoJogo==="ia"||modoJogo==="online");
+        const maps=solo?[
+          {up:keyMap.blueUp,down:keyMap.blueDown,left:keyMap.blueLeft,right:keyMap.blueRight},
+          {up:keyMap.redUp,down:keyMap.redDown,left:keyMap.redLeft,right:keyMap.redRight}
+        ]:[team==="azul"?{up:keyMap.blueUp,down:keyMap.blueDown,left:keyMap.blueLeft,right:keyMap.blueRight}:{up:keyMap.redUp,down:keyMap.redDown,left:keyMap.redLeft,right:keyMap.redRight}];
+        for(const km of maps){if(codeDown(km.left))x--;if(codeDown(km.right))x++;if(codeDown(km.up))y--;if(codeDown(km.down))y++;}
     }
 
     const m=Math.hypot(x,y);
@@ -5675,14 +5700,112 @@ atualizarPerfilVisibilidade();
 <style id="sg-quickplay-css">.sgQuickPlayButton{padding-right:130px!important}.sgQuickWait{display:none}.sgQuickWait.active{display:block}</style>
 <script id="sg-quickplay-js">
 (function(){
- let qpPeer=null,qpTimer=null,qpConn=null,qpNonce='';
- function ui(msg,show=true){const home=document.getElementById('onlineHome');if(home)home.classList.toggle('hidden',show);let box=document.getElementById('quickPlayWait');if(!box){box=document.createElement('div');box.id='quickPlayWait';box.className='sgQuickWait';const room=document.getElementById('onlineRoom');(room||document.getElementById('onlinePanel')?.querySelector('.onlineBox'))?.appendChild(box);}box.classList.add('active');box.innerHTML='<div class="qSpin"></div><div style="font-weight:900">'+msg+'</div><div style="font-size:11px;color:#7f8f87;margin-top:5px">Aguarde outro jogador entrar no Quick Play.</div><button class="menuButton secondary" style="margin-top:12px" onclick="cancelarQuickPlay()">✕ CANCELAR</button>';}
- function stop(){if(qpTimer){clearInterval(qpTimer);qpTimer=null}try{qpConn?.close()}catch(e){}try{qpPeer?.destroy()}catch(e){}qpConn=null;qpPeer=null;}
- window.cancelarQuickPlay=function(){stop();const box=document.getElementById('quickPlayWait');box?.classList.remove('active');document.getElementById('onlineHome')?.classList.remove('hidden');onlineSetStatus?.('Quick Play cancelado.');};
- async function listPeers(){return await new Promise((resolve,reject)=>{if(!qpPeer?.listAllPeers)return reject(new Error('listAllPeers indisponível'));qpPeer.listAllPeers(peers=>resolve(peers||[]));});}
- function makeId(){return 'sgquick-'+Math.random().toString(36).slice(2,10)+'-'+Date.now().toString(36).slice(-4);}
- function tryConnectTo(peerId){if(!qpPeer||qpConn)return;try{qpConn=qpPeer.connect(peerId,{reliable:true,serialization:'json',label:'quickmatch'});qpConn.on('error',()=>{qpConn=null});qpConn.on('open',()=>{qpConn.send({type:'quickHello',nonce:qpNonce,nickname:getNickname()});});qpConn.on('data',async d=>{if(!d||d.type!=='quickHello')return;try{const roomCode=gerarCodigoSala();qpConn.send({type:'quickRoom',roomCode});setTimeout(()=>{stop();online.intentionalClose=false;online.host=true;online.active=true;online.roomCode=roomCode;esconderExtras();document.getElementById('onlinePanel')?.classList.remove('hidden');document.getElementById('onlineHome')?.classList.add('hidden');document.getElementById('onlineRoom')?.classList.remove('hidden');document.getElementById('onlineCode').textContent=roomCode;iniciarBarraOnline?.(25);criarPeerHost(roomCode);},120);}catch(e){cancelarQuickPlay();}});}catch(e){qpConn=null;}}
- window.iniciarQuickPlay=function(){if(typeof Peer==='undefined'){onlineSetStatus('Sistema online não carregou.');return;}encerrarOnline?.();online.intentionalClose=false;online.active=true;online.host=false;online.waiting=true;ui('Procurando adversário...',true);const id=makeId();qpNonce=id;qpPeer=new Peer(id,{debug:1,config:ONLINE_ICE_CONFIG});qpPeer.on('open',async()=>{onlineSetStatus('⚡ Procurando jogador...');try{let peers=await listPeers();peers=peers.filter(x=>x.startsWith('sgquick-')&&x!==id);if(peers.length){const target=peers.sort()[0];if(id<target)tryConnectTo(target);}qpTimer=setInterval(async()=>{if(qpConn||!qpPeer)return;try{let ps=await listPeers();ps=ps.filter(x=>x.startsWith('sgquick-')&&x!==id).sort();if(ps.length&&id<ps[0])tryConnectTo(ps[0]);}catch(e){}},1800);}catch(e){onlineSetDebug?.('Quick Play indisponível neste navegador.');}});qpPeer.on('connection',conn=>{if(qpConn){conn.close();return}qpConn=conn;conn.on('open',()=>conn.send({type:'quickHello',nonce:qpNonce,nickname:getNickname()}));conn.on('data',d=>{if(d?.type==='quickRoom'){const code=String(d.roomCode||'').toUpperCase();if(code){stop();document.getElementById('onlineJoinCode').value=code;online.host=false;online.active=true;online.intentionalClose=false;entrarSalaOnline();}}});});qpPeer.on('error',e=>{onlineSetDebug?.('Quick Play: '+(e?.type||'erro'));});};
+  let hubPeer=null,matchConn=null,hubQueue=[],quickActive=false;
+  const HUB="soccergol-quickmatch-hub-v3";
+  function stopHub(){try{matchConn?.close()}catch(e){}try{hubPeer?.destroy()}catch(e){}matchConn=null;hubPeer=null;hubQueue=[];}
+  function waitUI(msg){
+    document.getElementById("onlineHome")?.classList.add("hidden");
+    let box=document.getElementById("quickPlayWait");
+    if(!box){box=document.createElement("div");box.id="quickPlayWait";box.className="sgQuickWait";(document.getElementById("onlinePanel")?.querySelector(".onlineBox"))?.appendChild(box);}
+    box.classList.add("active");
+    box.innerHTML='<div class="qSpin"></div><div style="font-weight:900">'+msg+'</div><div style="font-size:11px;color:#7f8f87;margin-top:5px">O sistema procura outro jogador e sorteia aleatoriamente o lado esquerdo/direito.</div><button class="menuButton secondary" style="margin-top:12px" onclick="cancelarQuickPlay()">✕ CANCELAR</button>';
+  }
+  function fail(msg){onlineSetStatus?.(msg);onlineSetDebug?.("Quick Play: "+msg);}
+  function openHostRoom(code,side){
+    online.quickMatch=true;online.playerSide=side;online.pendingSide=side;online.hostSide=side;online.guestSide=equipeOposta(side);online.host=true;online.active=true;online.intentionalClose=false;online.roomCode=code;
+    document.getElementById("quickPlayWait")?.classList.remove("active");
+    esconderExtras();document.getElementById("onlinePanel")?.classList.remove("hidden");document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");document.getElementById("onlineCode").textContent=code;mostrarOpcoesHostOnline(true);onlineSetStatus("Adversário encontrado! Preparando partida...");iniciarBarraOnline(82);
+    criarPeerHost(code);
+  }
+  function openClientRoom(code,side){
+    online.quickMatch=true;online.playerSide=side;online.pendingSide=side;online.hostSide=equipeOposta(side);online.guestSide=side;
+    document.getElementById("quickPlayWait")?.classList.remove("active");
+    document.getElementById("onlineJoinCode").value=code;entrarSalaOnline();
+  }
+  function sendMatch(a,b){
+    const hostIsA=Math.random()<.5;
+    const hostSide=Math.random()<.5?"azul":"vermelho";
+    const hostPeer=hostIsA?a.peerId:b.peerId;
+    const pa={type:"quickMatch",hostPeer,hostSide};const pb={type:"quickMatch",hostPeer,hostSide};
+    if(a.self)selfMatched(pa,b.conn,b.peerId);else{try{a.conn.send(pa)}catch(e){}}
+    if(b.self)selfMatched(pb,a.conn,a.peerId);else{try{b.conn.send(pb)}catch(e){}}
+  }
+  function selfMatched(packet,otherConn,otherId){
+    const amHost=packet.hostPeer===HUB;
+    if(amHost){
+      const code=gerarCodigoSala();
+      try{otherConn?.send({type:"quickRoom",roomCode:code,hostSide:packet.hostSide})}catch(e){}
+      openHostRoom(code,packet.hostSide);
+    }else{
+      const side=equipeOposta(packet.hostSide);
+      try{otherConn?.send({type:"quickHostRequest",hostSide:packet.hostSide})}catch(e){}
+      online.pendingSide=side;online.playerSide=side;waitUI("Adversário encontrado. Conectando...");
+    }
+  }
+  function becomeHub(){
+    try{
+      hubPeer=new Peer(HUB,{debug:1,config:ONLINE_ICE_CONFIG});
+      hubPeer.on("open",()=>{quickActive=true;hubQueue=[{peerId:HUB,conn:null,nickname:getNickname(),self:true}];onlineSetStatus("⚡ Procurando adversário...");});
+      hubPeer.on("connection",conn=>{
+        conn.on("open",()=>{
+          conn.on("data",d=>{
+            if(d?.type==="quickQueue"){
+              const item={peerId:conn.peer,conn,nickname:d.nickname||"Jogador",self:false};
+              if(!hubQueue.length){hubQueue.push(item);return;}
+              const a=hubQueue.shift();const b=item;sendMatch(a,b);
+              return;
+            }
+            if(d?.type==="quickRoom"&&hubQueue.some(x=>x.self)){
+              const side=equipeOposta(d.hostSide==="azul"?"azul":"vermelho");
+              openClientRoom(String(d.roomCode||"").toUpperCase(),side);
+              return;
+            }
+          });
+        });
+      });
+      hubPeer.on("error",e=>{if(e?.type==="unavailable-id")startAsQueueClient();else fail("Não foi possível iniciar o matchmaking.");});
+    }catch(e){startAsQueueClient();}
+  }
+  function startAsQueueClient(){
+    try{
+      hubPeer=new Peer(undefined,{debug:1,config:ONLINE_ICE_CONFIG});
+      hubPeer.on("open",()=>{
+        quickActive=true;matchConn=hubPeer.connect(HUB,{reliable:true,serialization:"json",label:"quickqueue"});
+        matchConn.on("open",()=>matchConn.send({type:"quickQueue",nickname:getNickname()}));
+        matchConn.on("data",d=>{
+          if(d?.type==="quickMatch"){
+            const amHost=d.hostPeer===hubPeer.id;
+            if(amHost){
+              const code=gerarCodigoSala();
+              try{matchConn.send({type:"quickRoom",roomCode:code,hostSide:d.hostSide})}catch(e){}
+              openHostRoom(code,d.hostSide);
+            }else{
+              const side=equipeOposta(d.hostSide);online.pendingSide=side;online.playerSide=side;waitUI("Adversário encontrado. Conectando...");
+            }
+            return;
+          }
+          if(d?.type==="quickHostRequest"){
+            const code=gerarCodigoSala();
+            try{matchConn.send({type:"quickRoom",roomCode:code,hostSide:d.hostSide})}catch(e){}
+            openHostRoom(code,d.hostSide);
+            return;
+          }
+          if(d?.type==="quickRoom"){
+            const side=equipeOposta(d.hostSide==="azul"?"azul":"vermelho");
+            openClientRoom(String(d.roomCode||"").toUpperCase(),side);
+          }
+        });
+        matchConn.on("close",()=>{if(quickActive)fail("A fila foi encerrada. Tente novamente.")});
+      });
+      hubPeer.on("error",e=>fail("Não foi possível procurar partida: "+(e?.type||"erro")));
+    }catch(e){fail("Quick Play indisponível neste navegador.");}
+  }
+  window.cancelarQuickPlay=function(){quickActive=false;stopHub();document.getElementById("quickPlayWait")?.classList.remove("active");document.getElementById("onlineHome")?.classList.remove("hidden");onlineSetStatus?.("Quick Play cancelado.")};
+  window.iniciarQuickPlay=function(){
+    if(typeof Peer==="undefined"){fail("O sistema online não carregou.");return;}
+    try{encerrarOnline?.()}catch(e){}
+    quickActive=true;waitUI("Procurando adversário...");becomeHub();
+  };
 })();
 </script>
 <style id="sg1201-opacity-fix">#mobileControls .joy,#mobileControls .kickBtn,#mobileControls .dashBtn{opacity:var(--sg-mobile-opacity,.58)!important}#mobileControls .joy:active,#mobileControls .kickBtn:active,#mobileControls .dashBtn:active{opacity:min(1,calc(var(--sg-mobile-opacity,.58) + .22))!important}.editorControl[data-control^="joy"],.editorControl[data-control^="kick"],.editorControl[data-control^="dash"]{transition:opacity .15s,transform .15s}</style>
@@ -5924,5 +6047,132 @@ atualizarPerfilVisibilidade();
 #mobileControls .dashBtn{opacity:calc(var(--sg-mobile-opacity,.58) * .92)!important}
 #mobileControls .joy:active,#mobileControls .kickBtn:active,#mobileControls .dashBtn:active{opacity:.94!important}
 </style>
+
+
+<!-- SOCCERGOL NEXT-GEN POLISH PACK -->
+<style id="sg-nextgen-css">
+.sgNextSection{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)}
+.sgFeatureGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.sgFeatureCard{padding:18px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));color:#fff;text-align:left;cursor:pointer;transition:.18s}
+.sgFeatureCard:hover{transform:translateY(-3px);border-color:rgba(68,235,119,.3);box-shadow:0 18px 38px rgba(0,0,0,.22)}
+.sgFeatureCard .ic{font-size:26px;display:block;margin-bottom:10px}.sgFeatureCard b{font-size:14px}.sgFeatureCard small{display:block;color:#819188;line-height:1.45;margin-top:5px}
+.sgStatGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}.sgStat{padding:12px 8px;text-align:center;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06)}.sgStat b{display:block;font-size:20px}.sgStat small{color:#788880;font-size:9px;letter-spacing:1px;font-weight:900}
+.sgAchievement{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin:8px 0}.sgAchievement.locked{opacity:.42;filter:grayscale(.6)}.sgAchievement .aIcon{font-size:26px}.sgAchievement b{display:block}.sgAchievement small{display:block;color:#7f9188;margin-top:3px}
+.sgChallenge{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);margin:8px 0}.sgChallengeTop{display:flex;justify-content:space-between;gap:10px}.sgProgress{height:7px;border-radius:999px;background:#101813;overflow:hidden;margin-top:10px}.sgProgress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#23d35f,#79ff9c);border-radius:999px;transition:width .25s}
+.sgMvp{margin:14px 0;padding:16px;border-radius:17px;background:linear-gradient(135deg,rgba(255,215,80,.10),rgba(255,255,255,.025));border:1px solid rgba(255,215,80,.18);text-align:center}.sgMvp strong{font-size:18px;color:#ffe783}.sgMvp div{margin-top:4px;color:#d7d8d2}
+.sgQuickFound{padding:18px;border-radius:18px;background:linear-gradient(135deg,rgba(37,227,106,.12),rgba(117,79,255,.12));border:1px solid rgba(117,255,170,.20);text-align:center;margin-top:12px}.sgQuickFound .coin{font-size:40px}.sgQuickFound b{font-size:20px;display:block}.sgQuickFound small{color:#819189}
+.sgThemePreview{height:54px;border-radius:14px;border:1px solid rgba(255,255,255,.08);margin:10px 0;background:linear-gradient(90deg,#0b5d2a,#15311d)}
+body.sg-theme-night{background:radial-gradient(circle at 50% 30%,#0d2137,#040811 72%)} body.sg-theme-neon{background:radial-gradient(circle at 50% 30%,#3b1d6b,#10051d 72%)}
+canvas.sgReplayCine{filter:contrast(1.05) saturate(1.08) drop-shadow(0 0 22px rgba(255,255,255,.08));transform:scale(1.015);transition:transform .18s ease}
+.sgModeExtras{margin-top:12px}.sgModeExtras .sgFeatureGrid{grid-template-columns:repeat(2,1fr)}
+@media(max-width:700px){.sgFeatureGrid{grid-template-columns:1fr}.sgStatGrid{grid-template-columns:repeat(2,1fr)}.sgModeExtras .sgFeatureGrid{grid-template-columns:1fr}}
+</style>
+<div id="achievementsPanel" class="overlay hidden" style="z-index:190"><div class="sg-panel" style="width:min(720px,95vw);max-height:92vh;overflow:auto"><div class="sgKicker">SOCERGOL MASTERY</div><h1 class="menuTitle">🏆 CONQUISTAS</h1><p class="menuDescription">Desbloqueie feitos jogando do seu jeito.</p><div id="achievementsList"></div><button class="menuButton secondary" onclick="fecharNextPanel('achievementsPanel')">◀️ VOLTAR</button></div></div>
+<div id="profileStatsPanel" class="overlay hidden" style="z-index:190"><div class="sg-panel" style="width:min(720px,95vw);max-height:92vh;overflow:auto"><div class="sgKicker">PLAYER PROFILE</div><h1 class="menuTitle">👤 <span id="nextProfileName">Jogador</span></h1><div class="sgStatGrid" id="profileStatsGrid"></div><div id="profileMvpBox"></div><button class="menuButton" onclick="abrirDesafios()">🎯 DESAFIOS</button><button class="menuButton secondary" onclick="abrirConquistas()">🏆 CONQUISTAS</button><button class="menuButton secondary" onclick="fecharNextPanel('profileStatsPanel')">◀️ VOLTAR</button></div></div>
+<div id="challengesPanel" class="overlay hidden" style="z-index:191"><div class="sg-panel" style="width:min(720px,95vw);max-height:92vh;overflow:auto"><div class="sgKicker">REWARDS</div><h1 class="menuTitle">🎯 DESAFIOS</h1><p class="menuDescription">Objetivos simples para manter a próxima partida interessante.</p><div id="challengesList"></div><button class="menuButton secondary" onclick="fecharNextPanel('challengesPanel')">◀️ VOLTAR</button></div></div>
+<div id="skillPanel" class="overlay hidden" style="z-index:192"><div class="sg-panel" style="width:min(680px,95vw);text-align:center"><div class="sgKicker">SKILL LAB</div><h1 class="menuTitle">🎯 LABORATÓRIO DE HABILIDADES</h1><p id="skillDesc" class="menuDescription">Escolha um desafio rápido para treinar mecânicas do SoccerGol.</p><div id="skillCards" class="sgFeatureGrid"></div><button class="menuButton secondary" onclick="fecharNextPanel('skillPanel')">◀️ VOLTAR</button></div></div>
+<div id="nextRematchToast" class="hidden" style="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:220;padding:12px 18px;border-radius:14px;background:rgba(6,12,8,.95);border:1px solid rgba(83,242,127,.25);color:#fff;font-weight:900">🔁 REVANCHE DISPONÍVEL</div>
+<script id="sg-nextgen-js">
+(function(){
+ const KEY='soccerGolNextStatsV1';
+ const defaults={matches:0,wins:0,losses:0,draws:0,goals:0,shots:0,tackles:0,saves:0,streak:0,bestStreak:0,onlineWins:0,impossibleWins:0,maxGoalsMatch:0,unlocked:[],challenge:{play5:0,goals10:0,wins3:0,claimed:{play5:false,goals10:false,wins3:false}}};
+ let stats; try{stats={...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')};stats.challenge={...defaults.challenge,...(stats.challenge||{}),claimed:{...defaults.challenge.claimed,...((stats.challenge||{}).claimed||{})}};stats.unlocked=Array.isArray(stats.unlocked)?stats.unlocked:[];}catch(e){stats={...defaults,challenge:{...defaults.challenge,claimed:{...defaults.challenge.claimed}},unlocked:[]};}
+ let match={shots:{azul:0,vermelho:0},goals:{azul:0,vermelho:0},tackles:{azul:0,vermelho:0},saves:{azul:0,vermelho:0},bestVelocity:0,lastTeam:null,lastType:'SHOT',goalTimes:[]};window.__sgNextMatchStats=match;
+ let skill=null;
+ function save(){try{localStorage.setItem(KEY,JSON.stringify(stats))}catch(e){}}
+ function close(id){document.getElementById(id)?.classList.add('hidden')}
+ window.fecharNextPanel=close;
+ function syncStats(){save();renderProfile();renderAchievements();renderChallenges();}
+ function unlock(id){if(!stats.unlocked.includes(id)){stats.unlocked.push(id);save();if(window.toast)toast('🏆 Conquista desbloqueada!');}}
+ const ACH=[
+  ['firstGoal','⚽','Primeiro Gol','Marque seu primeiro gol.'],['hatTrick','🔥','Hat-trick','Marque 3 gols em uma partida.'],['wall','🧤','Muralha','Faça 5 defesas em uma partida.'],['speed','⚡','Relâmpago','Marque nos primeiros 10 segundos.'],['perfect','🎯','Precisão','Marque 3 gols em uma partida com até 3 chutes.'],['legend','☠️','Sem Medo','Vença uma partida no Legend.'],['online','🌐','Rival Online','Vença uma partida online.']
+ ];
+ function evalA(){if(stats.goals>0)unlock('firstGoal');if(stats.maxGoalsMatch>=3)unlock('hatTrick');if(match.saves.azul>=5||match.saves.vermelho>=5)unlock('wall');if(match.goalTimes.some(t=>t<=10))unlock('speed');if(match.goals.azul>=3&&match.shots.azul<=3||match.goals.vermelho>=3&&match.shots.vermelho<=3)unlock('perfect');if(stats.impossibleWins>0)unlock('legend');if(stats.onlineWins>0)unlock('online');syncStats()}
+ function renderAchievements(){const el=document.getElementById('achievementsList');if(!el)return;el.innerHTML=ACH.map(a=>{const ok=stats.unlocked.includes(a[0]);return '<div class="sgAchievement '+(ok?'':'locked')+'"><span class="aIcon">'+(ok?a[1]:'🔒')+'</span><div><b>'+a[2]+'</b><small>'+a[3]+'</small></div></div>'}).join('')}
+ function renderProfile(){const n=document.getElementById('nextProfileName');if(n)n.textContent=getNickname();const g=document.getElementById('profileStatsGrid');if(g)g.innerHTML=[['🎮',stats.matches,'PARTIDAS'],['🏆',stats.wins,'VITÓRIAS'],['⚽',stats.goals,'GOLS'],['🎯',stats.shots,'CHUTES'],['🦶',stats.tackles,'CARRINHOS'],['🧤',stats.saves,'DEFESAS'],['🔥',stats.streak,'SEQUÊNCIA'],['📈',stats.bestStreak,'MELHOR']].map(x=>'<div class="sgStat"><b>'+x[0]+' '+x[1]+'</b><small>'+x[2]+'</small></div>').join('');const m=document.getElementById('profileMvpBox');if(m)m.innerHTML='<div class="sgMvp"><strong>⭐ ÚLTIMA FORMA</strong><div>'+Math.max(0,stats.goals)+' gols • '+Math.max(0,stats.saves)+' defesas • '+stats.bestStreak+' melhor sequência</div></div>'}
+ function renderChallenges(){const el=document.getElementById('challengesList');if(!el)return;const data=[['play5','🎮','Jogue 5 partidas',stats.challenge.play5,5,250],['goals10','⚽','Marque 10 gols',stats.challenge.goals10,10,300],['wins3','🏆','Vença 3 partidas',stats.challenge.wins3,3,500]];el.innerHTML=data.map(d=>{const pct=Math.min(100,d[3]/d[4]*100),claimed=stats.challenge.claimed[d[0]];return '<div class="sgChallenge"><div class="sgChallengeTop"><div><b>'+d[1]+' '+d[2]+'</b><small style="display:block;color:#7f9188;margin-top:4px">Recompensa: 🪙 '+d[5]+'</small></div><strong>'+d[3]+'/'+d[4]+'</strong></div><div class="sgProgress"><i style="width:'+pct+'%"></i></div><div style="margin-top:7px;font-size:10px;color:'+(claimed?'#63ec8d':'#7f9188')+'">'+(claimed?'✅ RESGATADO':'Em progresso')+'</div></div>'}).join('')}
+ window.abrirConquistas=function(){renderAchievements();document.getElementById('achievementsPanel')?.classList.remove('hidden')};
+ window.abrirDesafios=function(){renderChallenges();document.getElementById('challengesPanel')?.classList.remove('hidden')};
+ window.abrirPerfilStats=function(){renderProfile();document.getElementById('profileStatsPanel')?.classList.remove('hidden')};
+ window.abrirSkillLab=function(){renderSkills();document.getElementById('skillPanel')?.classList.remove('hidden')};
+ function renderSkills(){const el=document.getElementById('skillCards');if(!el)return;const data=[['power','💥','POWER SHOT','Acerte 3 chutes fortes.'],['finisher','🎯','FINISHER','Marque 3 gols.'],['dash','💨','DRIBBLER','Execute 3 carrinhos.']];el.innerHTML=data.map(d=>'<button class="sgFeatureCard" onclick="iniciarSkill(\''+d[0]+'\')"><span class="ic">'+d[1]+'</span><b>'+d[2]+'</b><small>'+d[3]+'</small></button>').join('')}
+ window.iniciarSkill=function(type){skill={type,value:0,done:false};close('skillPanel');SG.training=true;SG.skillType=type;modoJogo='ia';timeHumano='azul';timeIA='vermelho';SG.matchSeconds=999999;SG.overtime=false;SG.replay=false;SG.goalLock=false;iniciarJogo();setTimeout(()=>{if(window.toast)toast(type==='power'?'💥 Acerte 3 POWER SHOTS':type==='finisher'?'🎯 Marque 3 gols':'💨 Faça 3 carrinhos')},700)};
+ window.iniciarTreino=function(){skill=null;SG.training=true;SG.skillType='free';modoJogo='ia';timeHumano='azul';timeIA='vermelho';SG.matchSeconds=999999;SG.overtime=false;SG.replay=false;SG.goalLock=false;iniciarJogo()};
+ // Stats reset at the real start of a new match.
+ const originalIniciar=window.iniciarJogo;
+ window.iniciarJogo=function(){match={shots:{azul:0,vermelho:0},goals:{azul:0,vermelho:0},tackles:{azul:0,vermelho:0},saves:{azul:0,vermelho:0},bestVelocity:0,lastTeam:null,lastType:'SHOT',goalTimes:[]};window.__sgNextMatchStats=match;return originalIniciar.apply(this,arguments)};
+ const originalKick=window.chute;
+ window.chute=function(j){const team=j===azul?'azul':'vermelho';if(modoJogo==='ia'&&SG.training&&team!=='azul')return false;const d=Math.hypot(bola.x-j.x,bola.y-j.y);if(d<=j.r+bola.r+20)match.shots[team]++;let type='SHOT';if(match.goalTimes.length===0&&Math.hypot(j.vx,j.vy)<1)type='SHOT';const ret=originalKick.apply(this,arguments);if(ret){const v=Math.hypot(bola.vx,bola.vy);if(v>13){type='POWER';match.bestVelocity=Math.max(match.bestVelocity,v);if(skill?.type==='power'){skill.value++;if(skill.value>=3)finishSkill()}}if(j.vx*j.dx+j.vy*j.dy<-.25)type='BACKHEEL';match.lastTeam=team;match.lastType=type}return ret};
+ const originalDash=window.carrinhoSeguro;window.carrinhoSeguro=function(j){const team=j===azul?'azul':'vermelho';if(modoJogo==='ia'&&SG.training&&team!=='azul')return false;const r=originalDash.apply(this,arguments);if(r!==false&&jogoAtivo){match.tackles[team]++;if(skill?.type==='dash'&&team==='azul'){skill.value++;if(skill.value>=3)finishSkill()}}return r};
+ const originalGoal=window.mostrarGol;window.mostrarGol=function(team){const t=team==='azul'?'azul':'vermelho';match.goals[t]++;match.goalTimes.push(Math.max(0,(SG.matchSeconds||120)-tempo));if(skill?.type==='finisher'&&t==='azul'){skill.value++;if(skill.value>=3)finishSkill()}return originalGoal.apply(this,arguments)};
+ function finishSkill(){if(!skill||skill.done)return;skill.done=true;let reward=skill.type==='power'?300:skill.type==='finisher'?350:250;try{let coins=Number(localStorage.getItem('soccerGolCoins')||0)+reward;localStorage.setItem('soccerGolCoins',String(coins))}catch(e){}if(window.toast)toast('🏅 DESAFIO CONCLUÍDO! +'+reward+' moedas');skill=null;setTimeout(()=>{if(SG.training)voltarMenu()},800)}
+ const originalFinal=window.finalizarJogo;window.finalizarJogo=function(){if(SG.training&&!skill?.done)return;const res=originalFinal.apply(this,arguments);if(!SG.training){stats.matches++;stats.goals+=match.goals.azul+match.goals.vermelho;stats.shots+=match.shots.azul+match.shots.vermelho;stats.tackles+=match.tackles.azul+match.tackles.vermelho;stats.saves+=match.saves.azul+match.saves.vermelho;stats.challenge.play5++;stats.challenge.goals10=Math.min(10,stats.challenge.goals10+match.goals.azul+match.goals.vermelho);const human=(modoJogo==='2players'?'azul':equipeControleLocal());const winner=golsAzul===golsVermelho?null:(golsAzul>golsVermelho?'azul':'vermelho');if(winner===human){stats.wins++;stats.streak++;stats.bestStreak=Math.max(stats.bestStreak,stats.streak);if(modoJogo==='online')stats.onlineWins++;if(dificuldadeIA==='impossivel')stats.impossibleWins++;stats.challenge.wins3++;}else if(winner){stats.losses++;stats.streak=0}else stats.draws++;stats.maxGoalsMatch=Math.max(stats.maxGoalsMatch,match.goals.azul,match.goals.vermelho);save();evalA();}SG.training=false;return res};
+ const originalVoltar=window.voltarMenu;window.voltarMenu=function(){SG.training=false;skill=null;SG.skillType=null;return originalVoltar.apply(this,arguments)};
+ // Disable AI in free training and keep the clock infinite.
+ const originalAI=window.atualizarIA;window.atualizarIA=function(){if(SG.training)return;return originalAI.apply(this,arguments)};
+ const originalCrono=window.atualizarCronometro;window.atualizarCronometro=function(){if(SG.training){const old=tempo;tempo=0;const r=originalCrono.apply(this,arguments);tempo=old;return r}return originalCrono.apply(this,arguments)};
+ const oldIniciarPartida=window.iniciarPartida;window.iniciarPartida=function(){const r=oldIniciarPartida.apply(this,arguments);if(SG.training){clearInterval(intervaloTempo);tempo=0;atualizarCronometro();}return r};
+ // Stadium theme selector.
+ function applyTheme(v){document.body.classList.remove('sg-theme-night','sg-theme-neon');if(v==='night')document.body.classList.add('sg-theme-night');if(v==='neon')document.body.classList.add('sg-theme-neon');try{localStorage.setItem('soccerGolTheme',v)}catch(e){}}
+ const savedTheme=(()=>{try{return localStorage.getItem('soccerGolTheme')||'classic'}catch(e){return 'classic'}})();applyTheme(savedTheme);
+ window.sgApplyTheme=applyTheme;
+ // Initial render.
+ setTimeout(()=>{renderProfile();renderAchievements();renderChallenges();const fim=document.getElementById('fim');if(fim&&!document.getElementById('sgMatchMvp')){const x=document.createElement('div');x.id='sgMatchMvp';fim.querySelector('.fimBox')?.insertBefore(x,document.getElementById('moedasResultado'));}const o=new MutationObserver(()=>{if(fim&&getComputedStyle(fim).display!=='none'){const gA=match.goals.azul+match.tackles.azul+match.saves.azul,gB=match.goals.vermelho+match.tackles.vermelho+match.saves.vermelho;const team=gA>=gB?'azul':'vermelho';const skin=getTeamSkin(team);const x=document.getElementById('sgMatchMvp');if(x)x.innerHTML='<div class=\"sgMvp\"><strong>⭐ MVP DA PARTIDA</strong><div>'+skin.emoji+' '+skin.name.toUpperCase()+' • '+(team==='azul'?match.goals.azul:match.goals.vermelho)+' GOL(S) • '+(team==='azul'?match.saves.azul:match.saves.vermelho)+' DEFESA(S)</div></div>';}});o.observe(fim,{attributes:true,attributeFilter:['style']});},300);
+})();
+</script>
+<script id="sg-nextgen-ui">
+(function(){
+ const mode=document.getElementById('modoMenu');
+ if(mode&&!document.getElementById('sgModeExtras')){const back=mode.querySelector('.menuButton.secondary');const sec=document.createElement('div');sec.id='sgModeExtras';sec.className='sgModeExtras';sec.innerHTML='<div class="sgFeatureGrid"><button class="sgFeatureCard" onclick="iniciarTreino()"><span class="ic">🎮</span><b>MODO TREINO</b><small>Treine chutes, canetas, calcanhar e carrinhos sem pressão.</small></button><button class="sgFeatureCard" onclick="abrirSkillLab()"><span class="ic">🎯</span><b>DESAFIOS</b><small>Domine mecânicas específicas e ganhe moedas.</small></button></div>';mode.querySelector('.menuBox')?.insertBefore(sec,back||null)}
+ const mb=document.querySelector('#menu .sgBottomRow');if(mb&&!mb.querySelector('.nextProfileBtn')){const b=document.createElement('button');b.className='sgTextButton nextProfileBtn';b.textContent='👤 Perfil';b.onclick=abrirPerfilStats;mb.insertBefore(b,mb.firstChild)}
+ const settings=document.querySelector('#settingsPanel .sg-panel');if(settings&&!document.getElementById('sgThemeSelect')){const label=document.createElement('div');label.className='sg-section-label';label.textContent='ESTILO DO ESTÁDIO';const row=document.createElement('div');row.className='sg-row';row.innerHTML='<label>🏟️ Tema</label><select id="sgThemeSelect" class="sg-select"><option value="classic">Classic Green</option><option value="night">Night Match</option><option value="neon">Neon Arena</option></select>';settings.insertBefore(label,settings.querySelector('h3')||settings.lastElementChild);settings.insertBefore(row,settings.querySelector('h3')||settings.lastElementChild);const sel=row.querySelector('select');sel.value=(localStorage.getItem('soccerGolTheme')||'classic');sel.addEventListener('change',()=>sgApplyTheme(sel.value))}
+ // Difficulty visuals: four large cards with explicit level meter.
+ const diff=document.getElementById('dificuldadeMenu');if(diff){const grid=diff.querySelector('.sgDifficultyGrid');if(grid){grid.querySelectorAll('.sgDifficultyCard').forEach((b,i)=>{b.querySelectorAll('.diffBars i').forEach((x,j)=>x.classList.toggle('on',j<=i));b.dataset.level=String(i+1)})}}
+})();
+</script>
+<style id="sg-difficulty-bars">.diffBars{display:flex;gap:6px;margin-top:14px}.diffBars i{display:block;flex:1;height:7px;border-radius:99px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}.diffBars i.on{background:linear-gradient(90deg,#35df72,#7effa5);box-shadow:0 0 11px rgba(66,237,113,.22)}.sgDifficultyCard{position:relative;min-height:165px!important}.sgDifficultyCard:after{content:attr(data-level) ' / 4';position:absolute;top:14px;right:14px;font-size:9px;color:#7d8d84;letter-spacing:1px;font-weight:900}</style>
+
+
+<script id="sg-online-final-fix">
+(function(){
+ // Make the current player's PC both keyboard layouts valid in IA/Online.
+ // The existing movement hook reads both maps; these helpers keep action keys consistent.
+ window.sgLocalControlTeam=function(){return (modoJogo==='ia'||modoJogo==='online')?equipeControleLocal():'azul'};
+ // Ensure replay always uses the network payload on the remote client and ends cleanly.
+ const oldReset=window.resetarDepoisReplay;
+ if(typeof oldReset==='function'&&!oldReset.__sgFinal){
+   const wrap=function(){const wasOnline=modoJogo==='online'&&online.host;const r=oldReset.apply(this,arguments);if(wasOnline&&online.connected){try{onlineSend({type:'replayEnd'});}catch(e){}}return r};wrap.__sgFinal=true;window.resetarDepoisReplay=wrap;
+ }
+ // Keep quickplay UI free from the concept of a room creator.
+ const qp=document.getElementById('quickPlayWait');if(qp)qp.setAttribute('aria-live','polite');
+ // In online matches, use the actual player side for mobile controls and labels.
+ const oldOpen=window.abrirSkinsOnline;if(typeof oldOpen==='function'&&!oldOpen.__sgSide){const wrap=function(){const r=oldOpen.apply(this,arguments);const team=equipeControleOnline();const desc=document.getElementById('onlineSkinDescription');if(desc)desc.textContent='Você controla o '+(team==='azul'?'lado esquerdo':'lado direito')+'. Escolha sua skin.';return r};wrap.__sgSide=true;window.abrirSkinsOnline=wrap}
+})();
+</script>
+
+<script id="sg-final-feel-fixes">
+(function(){
+ // Goalkeeper saves: count a save when a keeper intercepts a fast ball.
+ if(typeof atualizarGoleiros==='function'&&!atualizarGoleiros.__sgSave){
+  const og=atualizarGoleiros;
+  const w=function(){const before=bola.vel||0;const bx=bola.x,by=bola.y;const r=og.apply(this,arguments);const nearA=Math.hypot(bola.x-goleiroA.x,bola.y-goleiroA.y)<goleiroA.r+bola.r+10;const nearB=Math.hypot(bola.x-goleiroB.x,bola.y-goleiroB.y)<goleiroB.r+bola.r+10;if(SG.keepers&&(before>7)&&((nearA)||(nearB))){const side=nearA?'azul':'vermelho';try{const el=window.__sgNextMatchStats;if(el)el.saves[side]++;}catch(e){}}return r};w.__sgSave=true;window.atualizarGoleiros=w;
+ }
+ // Adaptive AI: small positional anticipation bonus based on the player's repeated attack side.
+ if(typeof atualizarIA==='function'&&!atualizarIA.__sgAdaptive){
+  const oa=atualizarIA;const baseErr=Object.fromEntries(Object.entries(configuracoesIA).map(([k,v])=>[k,v.erro]));
+  let hist=[];
+  const basePrev=Object.fromEntries(Object.entries(configuracoesIA).map(([k,v])=>[k,v.previsao]));const w=function(){if(SG.training)return;try{if(typeof modoJogo==='string'&&modoJogo==='ia'&&jogoAtivo){hist.push(azul.x<campo.x+campo.w*.38?'left':(azul.x>campo.x+campo.w*.62?'right':'center'));if(hist.length>45)hist.shift();const l=hist.filter(x=>x==='left').length,rr=hist.filter(x=>x==='right').length;const bias=Math.min(12,Math.abs(l-rr)/6);const cfg=configuracoesIA[dificuldadeIA];cfg.erro=Math.max(2,baseErr[dificuldadeIA]-bias);cfg.previsao=basePrev[dificuldadeIA]+difficultyAdaptive(dificuldadeIA,l,rr)}}catch(e){} const r=oa.apply(this,arguments);try{configuracoesIA[dificuldadeIA].erro=baseErr[dificuldadeIA];configuracoesIA[dificuldadeIA].previsao=basePrev[dificuldadeIA]}catch(e){}return r};
+  function difficultyAdaptive(d,l,r){return d==='facil'?0:d==='medio'?0.02:d==='dificil'?0.04:0.06}
+  w.__sgAdaptive=true;window.atualizarIA=w;
+ }
+})();
+</script>
+
 </body>
 </html>
+<script id="sg-rematch-js">
+(function(){const old=window.reiniciarAtual;if(typeof old==='function'&&!old.__sgRematch){const w=function(){if(modoJogo==='online'&&online.active&&online.connected){if(online.host){try{onlineSend({type:'rematchStart',version:1,hostSide:online.hostSide||online.playerSide||'azul',options:{matchSeconds:SG.matchSeconds,replay:SG.replay,overtime:SG.overtime,overtimeSeconds:SG.overtimeSeconds,keepers:SG.keepers},skinA:SG.skinsA,skinB:SG.skinsB,ballSkin:SG.ballSkin})}catch(e){};document.getElementById('fim')?.style.setProperty('display','none');iniciarJogo()}else{onlineSend({type:'rematchRequest'});onlineSetStatus('Solicitando revanche...')}}else return old.apply(this,arguments)};w.__sgRematch=true;window.reiniciarAtual=w}})();
+</script>
+<script id="sg-goal-moments-js">
+(function(){const oldGoal=window.mostrarGol;if(typeof oldGoal==='function'&&!oldGoal.__sgMoment){const w=function(team){const label=(window.__sgNextMatchStats?.lastType==='POWER')?'💥 POWER SHOT!':(window.__sgNextMatchStats?.lastType==='BACKHEEL')?'🦶 BACKHEEL!':((typeof tempo==='number'&&tempo<=10)?'⏱️ LAST SECOND!':'');const sub=document.getElementById('golSub');const old= sub?.textContent;const r=oldGoal.apply(this,arguments);if(label&&sub){sub.textContent=label;setTimeout(()=>{if(sub&&document.getElementById('golOverlay')?.style.display!=='none')sub.textContent=old||sub.textContent},1300)}return r};w.__sgMoment=true;window.mostrarGol=w}})();
+</script>
