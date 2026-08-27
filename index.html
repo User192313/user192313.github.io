@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -4107,7 +4107,8 @@ function entrarSalaOnline(){
  if(typeof Peer==="undefined"){onlineSetStatus("Não foi possível carregar o sistema online.");onlineSetDebug("A biblioteca PeerJS não carregou.");return;}
  const code=(document.getElementById("onlineJoinCode")?.value||"").trim().toUpperCase();
  if(!/^[A-Z0-9]{6}$/.test(code)){alert("Digite um código de 6 caracteres.");return;}
- encerrarOnline();online.intentionalClose=false;online.host=false;online.active=true;online.roomCode=code;online.waiting=true;online.playerSide=online.pendingSide||online.playerSide||"vermelho";online.pendingSide=null;online.guestSide=online.playerSide;online.clientReady=false;online.connectAttempts=0;
+ const quickMatchPreserve=!!online.quickMatch;
+ encerrarOnline();online.quickMatch=quickMatchPreserve;online.intentionalClose=false;online.host=false;online.active=true;online.roomCode=code;online.waiting=true;online.playerSide=online.pendingSide||online.playerSide||"vermelho";online.pendingSide=null;online.guestSide=online.playerSide;online.clientReady=false;online.connectAttempts=0;
  esconderExtras();document.getElementById("onlinePanel")?.classList.remove("hidden");
  document.getElementById("onlineHome")?.classList.add("hidden");document.getElementById("onlineRoom")?.classList.remove("hidden");
  document.getElementById("onlineCode").textContent=code;mostrarOpcoesHostOnline(false);prepararChat();limparChat();
@@ -4428,10 +4429,20 @@ function obterInputLocalOnline(){
   x=joy[team==="azul"?"blue":"red"].x;
   y=joy[team==="azul"?"blue":"red"].y;
  }else{
-  const keyTeam=equipeTeclasParaControle(team); const km=keyTeam==="azul"?{up:keyMap.blueUp,down:keyMap.blueDown,left:keyMap.blueLeft,right:keyMap.blueRight}:{up:keyMap.redUp,down:keyMap.redDown,left:keyMap.redLeft,right:keyMap.redRight};
-  if(codeDown(km.left))x--;if(codeDown(km.right))x++;if(codeDown(km.up))y--;if(codeDown(km.down))y++;
+  // In AI/Online, both keyboard layouts control the SAME selected character.
+  // This is independent of the skin/side and independent of the invert toggle.
+  const maps=[
+    {up:keyMap.blueUp,down:keyMap.blueDown,left:keyMap.blueLeft,right:keyMap.blueRight},
+    {up:keyMap.redUp,down:keyMap.redDown,left:keyMap.redLeft,right:keyMap.redRight}
+  ];
+  for(const km of maps){
+   if(codeDown(km.left))x--; if(codeDown(km.right))x++;
+   if(codeDown(km.up))y--; if(codeDown(km.down))y++;
+  }
  }
- const m=Math.hypot(x,y)||1;if(Math.hypot(x,y)>1){x/=m;y/=m;}return{x,y};
+ const mag=Math.hypot(x,y);
+ if(mag>1){x/=mag;y/=mag;}
+ return{x,y};
 }
 function enviarInputOnline(kick=false,dash=false){
  if(!online.active||online.host||!online.connected)return;
@@ -4440,7 +4451,7 @@ function enviarInputOnline(kick=false,dash=false){
 }
 function estadoOnline(){return{azul:{x:azul.x,y:azul.y,vx:azul.vx,vy:azul.vy,dx:azul.dx,dy:azul.dy},vermelho:{x:vermelho.x,y:vermelho.y,vx:vermelho.vx,vy:vermelho.vy,dx:vermelho.dx,dy:vermelho.dy},bola:{x:bola.x,y:bola.y,vx:bola.vx,vy:bola.vy,dx:bola.dx,dy:bola.dy,vel:bola.vel},goleiroA:{x:goleiroA.x,y:goleiroA.y,vx:goleiroA.vx,vy:goleiroA.vy,cor:goleiroA.cor},goleiroB:{x:goleiroB.x,y:goleiroB.y,vx:goleiroB.vx,vy:goleiroB.vy,cor:goleiroB.cor},golsAzul,golsVermelho,tempo,jogoAtivo,jogoPausado,otUsed:SG.otUsed};}
 function aplicarEstadoOnline(s){
- if(!s)return;
+ if(!s || executandoReplay)return;
  const estavaAtivo=jogoAtivo;
  Object.assign(azul,s.azul||{});Object.assign(vermelho,s.vermelho||{});Object.assign(bola,s.bola||{});Object.assign(goleiroA,s.goleiroA||{});Object.assign(goleiroB,s.goleiroB||{});
  golsAzul=Number(s.golsAzul)||0;golsVermelho=Number(s.golsVermelho)||0;tempo=Number.isFinite(s.tempo)?s.tempo:tempo;SG.otUsed=!!s.otUsed;
@@ -5130,6 +5141,11 @@ function loopSeguro(){
                     const local=equipeControleLocal();
                     const k=moveKeys(local);
                     moverJogador(local==="azul"?azul:vermelho,...k);
+                    if(online.host){
+                        const remoteTeam=equipeOposta(local);
+                        const remotePlayer=remoteTeam==="azul"?azul:vermelho;
+                        moverJogador(remotePlayer,null,null,null,null);
+                    }
                 }
                 atualizarIA(); atualizarGoleiros(); colisaoJogadores();
                 if(modoJogo==="online" && online.host){
@@ -6168,6 +6184,509 @@ canvas.sgReplayCine{filter:contrast(1.05) saturate(1.08) drop-shadow(0 0 22px rg
 })();
 </script>
 
+
+<style id="sg-quality-v4-css">
+/* Quality pass: visual themes, daily challenges, cosmetic coin utility, safe online replay, and translation helpers. */
+#jogo.sg-theme-night{filter:brightness(.68) saturate(.72) hue-rotate(175deg) contrast(1.10)}
+#jogo.sg-theme-neon{filter:brightness(1.05) saturate(1.80) contrast(1.12) hue-rotate(22deg)}
+.sgDailyPanel,.sgCoinShopPanel{width:min(820px,95vw)!important;max-height:92vh;overflow:auto}
+.sgDailyGrid,.sgShopGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.sgDailyCard,.sgShopCard{padding:17px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.016));text-align:left;color:#fff}
+.sgDailyTop,.sgShopTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.sgDailyTitle,.sgShopTitle{font-weight:1000}.sgReward{color:#ffe783;font-weight:1000;font-size:11px;margin-top:5px}.sgDailyDesc,.sgShopDesc{color:#829189;font-size:11px;line-height:1.45;margin-top:6px}.sgDailyBar{height:8px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;margin-top:12px}.sgDailyBar i{display:block;height:100%;background:linear-gradient(90deg,#25dc66,#8affb1);border-radius:99px}.sgDailyDone{color:#70f09a;font-size:10px;font-weight:1000;margin-top:8px}.sgCoinBalance{padding:12px 15px;border:1px solid rgba(255,221,120,.18);background:rgba(255,221,120,.06);border-radius:14px;font-weight:1000;color:#ffe783;text-align:center}.sgShopPreview{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:28px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);flex:none}.sgShopCard.locked{opacity:.76}.sgShopCard button{margin-top:12px!important;padding:10px!important;font-size:13px!important}
+.sgGoalEffect-fire #golTexto{text-shadow:0 0 8px #ffd300,0 0 24px #ff6800,0 0 52px #ff1d00}.sgGoalEffect-ice #golTexto{text-shadow:0 0 8px #b9f2ff,0 0 24px #45cfff,0 0 52px #008cff}.sgGoalEffect-spark #golTexto{text-shadow:0 0 8px #fff,0 0 22px #fff,0 0 48px #b874ff}
+@media(max-width:700px){.sgDailyGrid,.sgShopGrid{grid-template-columns:1fr}}
+</style>
+<script id="sg-quality-v4-js">
+(function(){
+'use strict';
+/* ---------- language: English is the default; a manual choice persists ---------- */
+const savedLang=(()=>{try{return localStorage.getItem('soccerGolLanguage')||''}catch(e){return ''}})();
+SG.lang=(savedLang==='pt'||savedLang==='es'||savedLang==='en')?savedLang:'en';
+const MAP={
+en:{
+'JOGAR AGORA':'PLAY NOW','Escolher modo de jogo':'Choose a game mode','Configurações':'Settings','Controles & áudio':'Controls & audio','Personalizar':'Customize','Skins dos times':'Team skins','Bolas':'Balls','Visual da bola':'Ball appearance','Histórico':'Match history','Suas partidas':'Your matches','Como jogar':'How to play','Créditos':'Credits','Perfil':'Profile','Estatísticas':'Statistics','Desafios':'Daily Challenges','Ganhe moedas':'Earn coins','MODO DE JOGO':'GAME MODE','Escolha como quer jogar.':'Choose how you want to play.','MODO IA':'VS AI','ESCOLHA SEU TIME':'CHOOSE YOUR SIDE','A IA ficará com o outro time.':'The AI will play the other side.','JOGAR DE AZUL':'PLAY BLUE','JOGAR DE VERMELHO':'PLAY RED','DIFICULDADE':'DIFFICULTY','Quanto maior, mais inteligente a IA.':'Higher levels make the AI smarter.','FÁCIL':'ROOKIE','MÉDIO':'PRO','DIFÍCIL':'ELITE','IMPOSSÍVEL':'LEGEND','Volume da música':'Music volume','Idioma':'Language','Português':'Portuguese','Inverter controles (IA / Online)':'Invert controls (AI / Online)','PERSONALIZAR CONTROLES MOBILE':'CUSTOMIZE MOBILE CONTROLS','Remapeamento PC':'PC KEY REMAPPING','RESTAURAR PADRÃO':'RESTORE DEFAULTS','SALVAR':'SAVE','SKINS DA BOLA':'BALL SKINS','HISTÓRICO DE PARTIDAS':'MATCH HISTORY','NOVIDADES':'NEWS','COMO VOCÊ VAI JOGAR?':'HOW WILL YOU PLAY?','PC / TECLADO':'PC / KEYBOARD','MOBILE / TOUCH':'MOBILE / TOUCH','SEU NICKNAME':'YOUR NICKNAME','CONTINUAR':'CONTINUE','ENTRAR NA SALA':'JOIN ROOM','CRIAR SALA':'CREATE ROOM','PREPARAR PARTIDA':'READY UP','ENTRAR NA PARTIDA':'ENTER MATCH','CONVIDAR AMIGO':'INVITE FRIEND','COPIAR CÓDIGO':'COPY CODE','TENTAR NOVAMENTE':'TRY AGAIN','CHAT DA SALA':'ROOM CHAT','Digite uma mensagem...':'Type a message...','OPÇÕES DA SALA':'ROOM OPTIONS','Duração da partida':'Match duration','Prorrogação':'Overtime','Goleiros':'Goalkeepers','FIM DE JOGO':'FULL TIME','JOGAR NOVAMENTE':'REMATCH','Música: ON':'Music: ON','Música: OFF':'Music: OFF','PAUSADO':'PAUSED','RESETAR':'RESET','MODO TREINO':'TRAINING MODE','LABORATÓRIO DE HABILIDADES':'SKILL LAB','CONQUISTAS':'ACHIEVEMENTS','PLAYER PROFILE':'PLAYER PROFILE','PLAYER OF THE MATCH':'PLAYER OF THE MATCH','RECOMPENSAS':'REWARDS','CRÉDITOS':'CREDITS','Futebol de Mesa':'Table Football','Criado por':'Created by','Divirta-se!':'Have fun!','ESCOLHA SEU TIME':'CHOOSE YOUR SIDE','Jogar contra a IA, desafie um amigo ou entre em uma sala online.':'Challenge the AI, play a friend, or join an online room.'},
+es:{
+'JOGAR AGORA':'JUGAR AHORA','Escolher modo de jogo':'Elegir modo de juego','Configurações':'Ajustes','Controles & áudio':'Controles y audio','Personalizar':'Personalizar','Skins dos times':'Skins de equipos','Bolas':'Balones','Visual da bola':'Apariencia del balón','Histórico':'Historial de partidas','Suas partidas':'Tus partidas','Como jogar':'Cómo jugar','Créditos':'Créditos','Perfil':'Perfil','Estatísticas':'Estadísticas','Desafios':'Desafíos diarios','Ganhe moedas':'Gana monedas','MODO DE JOGO':'MODO DE JUEGO','Escolha como quer jogar.':'Elige cómo quieres jugar.','MODO IA':'CONTRA IA','ESCOLHA SEU TIME':'ELIGE TU LADO','A IA ficará com o outro time.':'La IA jugará del otro lado.','JOGAR DE AZUL':'JUGAR DE AZUL','JOGAR DE VERMELHO':'JUGAR DE ROJO','DIFICULDADE':'DIFICULTAD','Quanto maior, mais inteligente a IA.':'Cuanto mayor, más inteligente la IA.','FÁCIL':'ROOKIE','MÉDIO':'PRO','DIFÍCIL':'ÉLITE','IMPOSSÍVEL':'LEYENDA','Volume da música':'Volumen de música','Idioma':'Idioma','Português':'Portugués','Inverter controles (IA / Online)':'Invertir controles (IA / Online)','PERSONALIZAR CONTROLES MOBILE':'PERSONALIZAR CONTROLES MÓVILES','Remapeamento PC':'REASIGNACIÓN PC','RESTAURAR PADRÃO':'RESTAURAR PREDETERMINADOS','SALVAR':'GUARDAR','SKINS DA BOLA':'SKINS DEL BALÓN','HISTÓRICO DE PARTIDAS':'HISTORIAL DE PARTIDAS','NOVIDADES':'NOVEDADES','COMO VOCÊ VAI JOGAR?':'¿CÓMO VAS A JUGAR?','PC / TECLADO':'PC / TECLADO','MOBILE / TOUCH':'MÓVIL / TÁCTIL','SEU NICKNAME':'TU NICKNAME','CONTINUAR':'CONTINUAR','ENTRAR NA SALA':'UNIRSE A LA SALA','CRIAR SALA':'CREAR SALA','PREPARAR PARTIDA':'PREPARAR PARTIDA','ENTRAR NA PARTIDA':'ENTRAR AL PARTIDO','CONVIDAR AMIGO':'INVITAR AMIGO','COPIAR CÓDIGO':'COPIAR CÓDIGO','TENTAR NOVAMENTE':'INTENTAR DE NUEVO','CHAT DA SALA':'CHAT DE LA SALA','Digite uma mensagem...':'Escribe un mensaje...','OPÇÕES DA SALA':'OPCIONES DE SALA','Duração da partida':'Duración del partido','Prorrogação':'Prórroga','Goleiros':'Porteros','FIM DE JOGO':'FINAL DEL PARTIDO','JOGAR NOVAMENTE':'REVANCHA','PAUSADO':'PAUSADO','RESETAR':'REINICIAR','MODO TREINO':'MODO ENTRENAMIENTO','LABORATÓRIO DE HABILIDADES':'LABORATORIO DE HABILIDADES','CONQUISTAS':'LOGROS','PLAYER PROFILE':'PERFIL DEL JUGADOR','PLAYER OF THE MATCH':'JUGADOR DEL PARTIDO','RECOMPENSAS':'RECOMPENSAS','CRÉDITOS':'CRÉDITOS','Futebol de Mesa':'Fútbol de mesa','Criado por':'Creado por','Divirta-se!':'¡Diviértete!'}
+};
+function tr(s){const str=String(s??'');return SG.lang==='pt'?str:(MAP[SG.lang]||MAP.en)[str]||str}
+window.sgT=tr;
+const oldApply=window.aplicarIdioma;
+const baseText=new WeakMap();const basePlaceholder=new WeakMap();
+function translateTree(root){if(!root)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const ns=[];let n;while((n=w.nextNode()))ns.push(n);for(const node of ns){const raw=node.nodeValue,t=raw.trim();if(!t)continue;if(!baseText.has(node))baseText.set(node,t);const base=baseText.get(node),x=tr(base);if(raw!==raw.replace(t,x))node.nodeValue=raw.replace(t,x);else if(raw.trim()!==x)node.nodeValue=raw.replace(t,x)}root.querySelectorAll?.('input,textarea').forEach(e=>{if(!basePlaceholder.has(e)&&e.placeholder)basePlaceholder.set(e,e.placeholder);if(basePlaceholder.has(e))e.placeholder=tr(basePlaceholder.get(e))})}
+window.aplicarIdioma=function(){try{oldApply?.()}catch(e){};translateTree(document.body);const s=document.getElementById('languageSelect');if(s)s.value=SG.lang;document.documentElement.lang=SG.lang==='pt'?'pt-BR':SG.lang;try{localStorage.setItem('soccerGolLanguage',SG.lang)}catch(e){};setTimeout(()=>{window.renderChallenges?.();window.renderShop?.()},0)};
+setTimeout(()=>window.aplicarIdioma(),100);
+
+/* ---------- daily rotating challenges based on lifetime-stat snapshots ---------- */
+const DK='soccerGolDailyV4';
+const CH=[
+{id:'play2',icon:'🎮',title:'Jogue 2 partidas',desc:'Complete duas partidas hoje.',need:2,reward:180,key:'matches'},
+{id:'score5',icon:'⚽',title:'Marque 5 gols',desc:'Faça cinco gols hoje.',need:5,reward:250,key:'goals'},
+{id:'win1',icon:'🏆',title:'Consiga 1 vitória',desc:'Vença uma partida hoje.',need:1,reward:220,key:'wins'},
+{id:'shots8',icon:'🎯',title:'Dê 8 chutes',desc:'Finalize oito vezes hoje.',need:8,reward:160,key:'shots'},
+{id:'tackles3',icon:'🦶',title:'Faça 3 carrinhos',desc:'Execute três carrinhos hoje.',need:3,reward:170,key:'tackles'},
+{id:'online1',icon:'🌐',title:'Vença 1 partida online',desc:'Ganhe uma partida online ou Quick Play.',need:1,reward:320,key:'onlineWins'},
+{id:'saves3',icon:'🧤',title:'Faça 3 defesas',desc:'Consiga três defesas hoje.',need:3,reward:190,key:'saves'}];
+function dailyDay(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function getStatsRaw(){try{return JSON.parse(localStorage.getItem('soccerGolNextStatsV1')||'{}')}catch(e){return {}}}
+function getDaily(){const s=getStatsRaw(),day=dailyDay();let d;try{d=JSON.parse(localStorage.getItem(DK)||'null')}catch(e){};if(!d||d.day!==day){let h=0;for(const c of day)h=(h*33+c.charCodeAt(0))>>>0;const chosen=[];while(chosen.length<3){const i=h%CH.length;h=(h*1103515245+12345)>>>0;if(!chosen.includes(i))chosen.push(i)};const base={};for(const c of CH)base[c.key]=Number(s[c.key]||0);d={day,chosen,base,claimed:{}};try{localStorage.setItem(DK,JSON.stringify(d))}catch(e){}}return d}
+function claimDaily(){const d=getDaily(),s=getStatsRaw();let coins=Number(localStorage.getItem('soccerGolCoins')||0),changed=false;for(const idx of d.chosen){const c=CH[idx],p=Math.max(0,Number(s[c.key]||0)-Number(d.base[c.key]||0));if(p>=c.need&&!d.claimed[c.id]){d.claimed[c.id]=true;coins+=c.reward;changed=true;if(window.toast)toast('🎯 '+tr(c.title)+' +'+c.reward+' 🪙')}}if(changed){try{localStorage.setItem('soccerGolCoins',String(coins))}catch(e){}try{localStorage.setItem(DK,JSON.stringify(d))}catch(e){};window.atualizarMoedasUI?.()}}
+window.renderChallenges=function(){claimDaily();const el=document.getElementById('challengesList');if(!el)return;const d=getDaily(),s=getStatsRaw();const html=d.chosen.map(i=>{const c=CH[i],p=Math.min(c.need,Math.max(0,Number(s[c.key]||0)-Number(d.base[c.key]||0))),done=p>=c.need,claimed=!!d.claimed[c.id];return '<div class="sgDailyCard"><div class="sgDailyTop"><div><div class="sgDailyTitle">'+c.icon+' '+tr(c.title)+'</div><div class="sgDailyDesc">'+tr(c.desc)+'</div></div><div class="sgReward">🪙 '+c.reward+'</div></div><div class="sgDailyBar"><i style="width:'+Math.round(p/c.need*100)+'%"></i></div><div class="sgDailyDone">'+(claimed?'✅ '+(SG.lang==='en'?'CLAIMED':SG.lang==='es'?'RECLAMADO':'RESGATADO'):p+'/'+c.need)+'</div></div>'}).join('');el.innerHTML='<div class="sgDailyTop"><div><div class="sgKicker">DAILY ROTATION</div><div style="font-weight:1000;color:#fff">'+(SG.lang==='en'?'New challenges every day':SG.lang==='es'?'Nuevos desafíos cada día':'Novos desafios todos os dias')+'</div><div style="font-size:10px;color:#718078;margin-top:3px">'+d.day+'</div></div><div class="sgCoinBalance">🪙 '+Number(localStorage.getItem('soccerGolCoins')||0).toLocaleString()+'</div></div><div class="sgDailyGrid">'+html+'</div>'}
+window.abrirDesafios=function(){window.renderChallenges();document.getElementById('challengesPanel')?.classList.remove('hidden')};
+
+/* ---------- coin utility shop ---------- */
+const SK='soccerGolCoinShopV3';
+const ITEMS=[
+{id:'night',type:'theme',icon:'🌙',name:'Night Match',desc:'Tema noturno aplicado ao campo.',price:700},
+{id:'neon',type:'theme',icon:'🌈',name:'Neon Arena',desc:'Tema neon com cores mais fortes.',price:1000},
+{id:'fire',type:'goal',icon:'🔥',name:'Fire Goal',desc:'Brilho quente no anúncio de gol.',price:500},
+{id:'ice',type:'goal',icon:'❄️',name:'Ice Goal',desc:'Brilho azul gelado no anúncio de gol.',price:500},
+{id:'spark',type:'goal',icon:'✨',name:'Spark Goal',desc:'Brilho roxo elétrico no anúncio de gol.',price:650},
+{id:'green',type:'trail',icon:'💚',name:'Green Trail',desc:'Rastro verde atrás da bola.',price:450},
+{id:'trailNeon',type:'trail',icon:'💜',name:'Neon Trail',desc:'Rastro neon atrás da bola.',price:750}];
+function shop(){let d;try{d=JSON.parse(localStorage.getItem(SK)||'null')}catch(e){};d=d&&typeof d==='object'?d:{owned:[],eq:{theme:'classic',goal:'classic',trail:'classic'}};d.owned=Array.isArray(d.owned)?d.owned:[];d.eq={theme:'classic',goal:'classic',trail:'classic',...(d.eq||{})};return d}
+function shopSave(d){try{localStorage.setItem(SK,JSON.stringify(d))}catch(e){}}
+window.comprarOuEquiparMoeda=function(id){const it=ITEMS.find(x=>x.id===id);if(!it)return;const d=shop();if(!d.owned.includes(id)){let coins=Number(localStorage.getItem('soccerGolCoins')||0);if(coins<it.price){window.toast?.(SG.lang==='en'?'Not enough coins.':SG.lang==='es'?'No tienes suficientes monedas.':'Você não tem moedas suficientes.');return}coins-=it.price;try{localStorage.setItem('soccerGolCoins',String(coins))}catch(e){}d.owned.push(id)}d.eq[it.type]=it.id;shopSave(d);if(it.type==='theme')window.sgApplyTheme?.(it.id,true);if(it.type==='goal'){SG.goalEffect=it.id;try{localStorage.setItem('soccerGolGoalEffect',it.id)}catch(e){}}if(it.type==='trail'){SG.ballTrail=it.id;try{localStorage.setItem('soccerGolBallTrail',it.id)}catch(e){}}renderShop();window.atualizarMoedasUI?.()};
+window.renderShop=function(){
+  const el=document.getElementById('coinShopList');
+  if(!el)return;
+  const d=shop();
+  el.innerHTML=ITEMS.map(it=>{
+    const owned=d.owned.includes(it.id),eq=d.eq[it.type]===it.id;
+    const status=eq?'✓ '+(SG.lang==='en'?'EQUIPPED':SG.lang==='es'?'EQUIPADO':'EQUIPADO'):(owned?(SG.lang==='en'?'OWNED':SG.lang==='es'?'ADQUIRIDO':'ADQUIRIDO'):'🪙 '+it.price);
+    const action=eq?'✓ '+(SG.lang==='en'?'EQUIPPED':SG.lang==='es'?'EQUIPADO':'EQUIPADO'):(owned?(SG.lang==='en'?'EQUIP':SG.lang==='es'?'EQUIPAR':'EQUIPAR'):(SG.lang==='en'?'BUY':SG.lang==='es'?'COMPRAR':'COMPRAR'));
+    return `<div class="sgShopCard ${owned?'':'locked'}"><div class="sgShopTop"><div><div class="sgShopTitle">${it.icon} ${tr(it.name)}</div><div class="sgShopDesc">${tr(it.desc)}</div></div><div class="sgShopPreview">${it.icon}</div></div><div class="sgReward">${status}</div><button class="menuButton ${eq?'secondary':''}" data-shop-id="${it.id}">${action}</button></div>`;
+  }).join('');
+  el.querySelectorAll('[data-shop-id]').forEach(b=>b.addEventListener('click',()=>window.comprarOuEquiparMoeda(b.dataset.shopId)));
+};
+function openShop(){window.renderShop();document.getElementById('coinShopPanel')?.classList.remove('hidden')}
+window.abrirLojaMoedas=openShop;window.fecharLojaMoedas=()=>document.getElementById('coinShopPanel')?.classList.add('hidden');
+setTimeout(()=>{if(!document.getElementById('coinShopPanel')){const p=document.createElement('div');p.id='coinShopPanel';p.className='overlay hidden';p.innerHTML='<div class="sg-panel sgCoinShopPanel"><div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div><div class="sgKicker">COIN LAB</div><h1 class="menuTitle">🪙 '+(SG.lang==='en'?'COIN SHOP':SG.lang==='es'?'TIENDA DE MONEDAS':'LOJA DE MOEDAS')+'</h1><p class="menuDescription">'+(SG.lang==='en'?'Spend coins on useful cosmetic upgrades.':SG.lang==='es'?'Gasta monedas en mejoras cosméticas.':'Gaste moedas em melhorias cosméticas.')+'</p></div><div class="sgCoinBalance">🪙 '+Number(localStorage.getItem('soccerGolCoins')||0)+'</div></div><div id="coinShopList" class="sgShopGrid"></div><button class="menuButton secondary" onclick="fecharLojaMoedas()">◀️ '+(SG.lang==='en'?'BACK':SG.lang==='es'?'VOLVER':'VOLTAR')+'</button></div>';document.body.appendChild(p)}window.renderShop()},250);
+
+/* ---------- apply theme to canvas ---------- */
+const oldTheme=window.sgApplyTheme;window.sgApplyTheme=function(v){oldTheme?.(v);const c=document.getElementById('jogo');if(c){c.classList.remove('sg-theme-night','sg-theme-neon');if(v==='night')c.classList.add('sg-theme-night');if(v==='neon')c.classList.add('sg-theme-neon')}};
+window.sgApplyTheme(localStorage.getItem('soccerGolTheme')||'classic');
+SG.goalEffect=(()=>{try{return localStorage.getItem('soccerGolGoalEffect')||'classic'}catch(e){return 'classic'}})();SG.ballTrail=(()=>{try{return localStorage.getItem('soccerGolBallTrail')||'classic'}catch(e){return 'classic'}})();
+const trail=[];const oldDraw=window.desenharBola;window.desenharBola=function(){try{if(jogoAtivo&&bola.vel>.7&&SG.ballTrail&&SG.ballTrail!=='classic'){trail.push({x:bola.x,y:bola.y});if(trail.length>13)trail.shift()}else if(bola.vel<.4)trail.length=0;const cols=(SG.ballTrail==='trailNeon'||SG.ballTrail==='neon')?['#c27cff','#54e9ff','#fff']:['#49e87a','#9cffc3','#fff'];ctx.save();for(let i=0;i<trail.length;i++){ctx.globalAlpha=.03+i/trail.length*.18;ctx.fillStyle=cols[i%cols.length];ctx.beginPath();ctx.arc(trail[i].x,trail[i].y,2+8*i/trail.length,0,Math.PI*2);ctx.fill()}ctx.restore()}catch(e){}oldDraw?.()};
+const oldGoal=window.mostrarGol;window.mostrarGol=function(t){const o=document.getElementById('golOverlay');if(o){o.classList.remove('sgGoalEffect-fire','sgGoalEffect-ice','sgGoalEffect-spark');if(SG.goalEffect!=='classic')o.classList.add('sgGoalEffect-'+SG.goalEffect)}return oldGoal?.apply(this,arguments)};
+
+/* ---------- harden ball/wall/player resolution ---------- */
+const oldBall=window.atualizarBola;window.atualizarBola=function(){const r=oldBall?.apply(this,arguments);if(jogoAtivo&&!jogoPausado&&!executandoReplay&&!SG.goalLock){for(let i=0;i<2;i++){try{colidirBolaJogador(azul);colidirBolaJogador(vermelho);protegerBola()}catch(e){break}}}return r};
+
+/* ---------- online replay: ignore network state while replaying ---------- */
+const oldInput=window.enviarInputOnline;window.enviarInputOnline=function(){if(executandoReplay||SG.goalLock)return;return oldInput?.apply(this,arguments)};
+setTimeout(()=>{window.renderChallenges?.();window.renderShop?.();window.aplicarIdioma?.()},500);
+  setInterval(()=>{try{if(document.getElementById('challengesPanel')&&!document.getElementById('challengesPanel').classList.contains('hidden'))window.renderChallenges?.()}catch(e){}},30000);
+})();
+</script>
+
+<!-- =========================================================
+     SOCCERGOL FINAL QUALITY PATCH
+     Robust collision solver, stadium themes, fuller i18n,
+     online input resilience, daily economy polish.
+========================================================= -->
+<style id="sg-final-polish-css">
+/* Stadium themes: make the selected theme visibly affect the pitch, not just the page. */
+body.sg-theme-night #jogo{filter:brightness(.82) saturate(.78) contrast(1.06) hue-rotate(165deg)!important}
+body.sg-theme-neon #jogo{filter:brightness(1.06) saturate(1.42) contrast(1.08) hue-rotate(10deg)!important}
+.sgDailyRefresh{font-size:10px;color:#718078;margin-top:6px}
+.sgCoinShopNote{font-size:11px;color:#7c8b83;line-height:1.45;margin:8px 0 14px}
+.sgToastFinal{
+ position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(18px);
+ z-index:500;opacity:0;pointer-events:none;
+ padding:11px 16px;border:1px solid rgba(118,255,156,.25);
+ border-radius:14px;background:rgba(4,11,7,.95);color:#fff;
+ box-shadow:0 14px 40px rgba(0,0,0,.5),0 0 30px rgba(38,225,103,.08);
+ font-weight:800;font-size:13px;transition:.22s;
+}
+.sgToastFinal.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+<script id="sg-final-quality-patch">
+(function(){
+'use strict';
+
+/* ---------- fuller localization ---------- */
+const FULL_I18N = {
+en: {
+'Fácil':'ROOKIE','Médio':'PRO','Difícil':'ELITE','Impossível':'LEGEND',
+'Escolha seu dispositivo. Você pode mudar isso depois nas configurações.':'Choose your device. You can change this later in Settings.',
+'WASD + teclado • ideal para desktop':'WASD + keyboard • ideal for desktop',
+'Joystick + botões na tela • toque confortável':'Joystick + on-screen buttons • comfortable touch controls',
+'Esse nome será salvo neste dispositivo e usado nas salas online.':'This name will be saved on this device and used in online rooms.',
+'Jogue contra outra pessoa em outro dispositivo.':'Play against another player on another device.',
+'Encontrar adversário agora':'Find an opponent now',
+'CÓDIGO DA SALA':'ROOM CODE',
+'Digite o código da sala':'Enter the room code',
+'O criador fica com o Azul. Quem entrar fica com o Vermelho.':'The host is Blue. The player who joins is Red.',
+'Aguardando jogador...':'Waiting for player...',
+'Aguardando o segundo jogador entrar na partida...':'Waiting for the second player to enter the match...',
+'O criador está escolhendo as opções da partida...':'The host is choosing the match settings...',
+'Escolha as opções da sala e clique em ENVIAR CONVITE PARA ENTRAR.':'Choose the room settings and send the invite to join.',
+'Escolha a sua skin para esta sala.':'Choose your skin for this room.',
+'Você continua controlando o mesmo personagem. A opção apenas troca o conjunto de controles usado: no PC, Azul pode usar as setas e Vermelho pode usar WASD. No mobile, seus controles podem ficar no lado oposto.':'You always control the same character. This only changes the control layout. On PC, Blue can use arrows and Red can use WASD. On mobile, your controls can move to the opposite side.',
+'Clique em um comando e pressione a tecla desejada. O remapeamento é salvo automaticamente neste PC.':'Click a command and press the key you want. Your remapping is saved on this PC.',
+'Arraste cada controle para o lugar mais confortável para você.':'Drag each control to the most comfortable position.',
+'Opacidade dos controles':'Control opacity',
+'Automático':'Automatic',
+'Mostrar Azul':'Show Blue',
+'Mostrar Vermelho':'Show Red',
+'Escolha qual conjunto de controles aparece no editor.':'Choose which control set is shown in the editor.',
+'Nenhuma partida registrada nesta sessão.':'No matches recorded this session.',
+'Nenhuma partida registrada nesta sessão.':'No matches recorded this session.',
+'Objetivos simples para manter a próxima partida interessante.':'Simple goals to keep your next match interesting.',
+'Faça 5 defesas em uma partida.':'Make 5 saves in one match.',
+'Marque 3 gols em uma partida com até 3 chutes.':'Score 3 goals in a match with up to 3 shots.',
+'Marque 3 gols em uma partida.':'Score 3 goals in one match.',
+'Vença uma partida no Legend.':'Win a match on Legend.',
+'Vença uma partida online.':'Win an online match.',
+'Marque seu primeiro gol.':'Score your first goal.',
+'Jogue 5 partidas.':'Play 5 matches.',
+'Vença 3 partidas.':'Win 3 matches.',
+'Vença 3 partidas contra IA ou Online.':'Win 3 matches against AI or Online.',
+'Gaste moedas em melhorias cosméticas.':'Spend coins on cosmetic upgrades.',
+'Novos desafios todos os dias':'New challenges every day',
+'Novos desafios a cada dia':'New challenges every day',
+'Desafios diários':'Daily challenges',
+'Ganhe moedas':'Earn coins',
+'Domine mecânicas específicas e ganhe moedas.':'Master specific mechanics and earn coins.',
+'PROCURANDO OPONENTE...':'SEARCHING FOR OPPONENT...',
+'Adversário encontrado! Preparando partida...':'Opponent found! Preparing match...',
+'Adversário encontrado. Conectando...':'Opponent found. Connecting...',
+'Partida online iniciada. Você é o':'Online match started. You are',
+'Você controla o':'You control',
+'Você joga pelo lado direito.':'You are playing on the right side.',
+'Você joga pelo lado esquerdo.':'You are playing on the left side.',
+'Jogador conectado! Escolha as opções e aguarde a confirmação.':'Player connected! Choose the settings and wait for confirmation.',
+'Jogador remoto confirmou a conexão.':'Remote player confirmed the connection.',
+'Sala criada. Aguardando jogador...':'Room created. Waiting for player...',
+'Conectando ao PeerJS Cloud...':'Connecting to the online service...',
+'Conectando à sala...':'Connecting to room...',
+'Entrando na partida...':'Entering match...',
+'Sincronizando sala...':'Synchronizing room...',
+'Canal P2P aberto. Chat e sincronização liberados.':'P2P channel open. Chat and synchronization enabled.',
+'Canal P2P ativo. Chat e sincronização liberados.':'P2P channel active. Chat and synchronization enabled.',
+'Sinalização conectada ao PeerJS.':'Signaling connected.',
+'Servidor de sinalização desconectado. Tentando reconectar...':'Signaling server disconnected. Reconnecting...',
+'O outro jogador saiu da sala.':'The other player left the room.',
+'Não foi possível carregar o sistema online.':'Could not load the online system.',
+'Não foi possível conectar ao servidor de sinalização.':'Could not connect to the signaling server.',
+'Este navegador não suporta o multiplayer WebRTC.':'This browser does not support WebRTC multiplayer.',
+'Falha ao criar sala: ':'Failed to create room: ',
+'Falha de conexão (':'Connection failure (',
+'Tempo de conexão esgotado. Tente novamente.':'Connection timed out. Try again.',
+'Tempo esgotado ao criar a sala. Tente novamente.':'Timed out creating the room. Try again.',
+'Tempo esgotado procurando a sala. Confira o código e tente novamente.':'Timed out searching for the room. Check the code and try again.',
+'Código da sala':'Room code',
+'Pronto!':'Ready!',
+'Preparando o campo...':'Preparing the pitch...',
+'Carregando controles...':'Loading controls...',
+'Carregando SoccerGol...':'Loading SoccerGol...',
+'Você ganhou':'You earned',
+'moedas por esta partida.':'coins for this match.',
+'2 Players não rende moedas.':'2 Players does not earn coins.',
+'Você não tem moedas suficientes.':'You do not have enough coins.',
+'Essa skin já está sendo usada pelo outro jogador.':'That skin is already being used by the other player.',
+'⚠️ Essa skin já está sendo usada pelo outro time. Escolha outra.':'⚠️ That skin is already being used by the other team. Choose another.',
+'Você controla o mesmo personagem.':'You control the same character.',
+'Jogar contra a IA, desafie um amigo ou entre em uma sala online.':'Challenge the AI, play a friend, or join an online room.',
+'Prense a bola entre os dois jogadores e chute para tentar atravessar o adversário.':'Trap the ball between both players and kick to try to nutmeg your opponent.',
+'Se você estiver se movimentando para trás em relação ao chute, pode executar um chute especial.':'Moving backward relative to the kick can trigger a special backheel shot.',
+'O jogador chuta na direção em que está se movimentando.':'Players kick in the direction they are moving.',
+'Quanto maior a dificuldade, melhor a IA se posiciona e finaliza.':'Higher difficulties improve AI positioning and finishing.',
+'Quanto maior, mais inteligente a IA.':'Higher levels make the AI smarter.',
+'Vença uma partida online.':'Win an online match.',
+},
+es: {
+'Fácil':'ROOKIE','Médio':'PRO','Difícil':'ÉLITE','Impossível':'LEYENDA',
+'Escolha seu dispositivo. Você pode mudar isso depois nas configurações.':'Elige tu dispositivo. Puedes cambiarlo después en Ajustes.',
+'WASD + teclado • ideal para desktop':'WASD + teclado • ideal para ordenador',
+'Joystick + botões na tela • toque confortável':'Joystick + botones en pantalla • controles cómodos',
+'Esse nome será salvo neste dispositivo e usado nas salas online.':'Este nombre se guardará en este dispositivo y se usará en las salas online.',
+'Jogue contra outra pessoa em outro dispositivo.':'Juega contra otra persona en otro dispositivo.',
+'Encontrar adversário agora':'Buscar rival ahora',
+'CÓDIGO DA SALA':'CÓDIGO DE SALA',
+'Digite o código da sala':'Escribe el código de la sala',
+'O criador fica com o Azul. Quem entrar fica com o Vermelho.':'El anfitrión es Azul. Quien se una será Rojo.',
+'Aguardando jogador...':'Esperando jugador...',
+'Aguardando o segundo jogador entrar na partida...':'Esperando al segundo jugador para entrar al partido...',
+'O criador está escolhendo as opções da partida...':'El anfitrión está eligiendo las opciones del partido...',
+'Escolha as opções da sala e clique em ENVIAR CONVITE PARA ENTRAR.':'Elige las opciones de la sala y envía la invitación para entrar.',
+'Escolha a sua skin para esta sala.':'Elige tu skin para esta sala.',
+'Você continua controlando o mesmo personagem. A opção apenas troca o conjunto de controles usado: no PC, Azul pode usar as setas e Vermelho pode usar WASD. No mobile, seus controles podem ficar no lado oposto.':'Sigues controlando al mismo personaje. Esta opción solo cambia el esquema de controles. En PC, Azul puede usar las flechas y Rojo puede usar WASD. En móvil, tus controles pueden aparecer en el lado contrario.',
+'Clique em um comando e pressione a tecla desejada. O remapeamento é salvo automaticamente neste PC.':'Haz clic en un comando y pulsa la tecla que quieras. El cambio se guarda automáticamente en este PC.',
+'Arraste cada controle para o lugar mais confortável para você.':'Arrastra cada control a la posición más cómoda.',
+'Opacidade dos controles':'Opacidad de los controles',
+'Automático':'Automático',
+'Mostrar Azul':'Mostrar Azul',
+'Mostrar Vermelho':'Mostrar Rojo',
+'Escolha qual conjunto de controles aparece no editor.':'Elige qué conjunto de controles aparece en el editor.',
+'Nenhuma partida registrada nesta sessão.':'No hay partidas registradas en esta sesión.',
+'Objetivos simples para manter a próxima partida interessante.':'Objetivos simples para mantener interesante la próxima partida.',
+'Faça 5 defesas em uma partida.':'Haz 5 paradas en un partido.',
+'Marque 3 gols em uma partida com até 3 chutes.':'Marca 3 goles en un partido con hasta 3 tiros.',
+'Marque 3 gols em uma partida.':'Marca 3 goles en un partido.',
+'Vença uma partida no Legend.':'Gana un partido en Leyenda.',
+'Vença uma partida online.':'Gana un partido online.',
+'Marque seu primeiro gol.':'Marca tu primer gol.',
+'Jogue 5 partidas.':'Juega 5 partidos.',
+'Vença 3 partidas.':'Gana 3 partidos.',
+'Vença 3 partidas contra IA ou Online.':'Gana 3 partidos contra IA u Online.',
+'Gaste moedas em melhorias cosméticas.':'Gasta monedas en mejoras cosméticas.',
+'Novos desafios todos os dias':'Nuevos desafíos cada día',
+'Desafios diários':'Desafíos diarios',
+'Ganhe moedas':'Gana monedas',
+'Domine mecânicas específicas e ganhe moedas.':'Domina mecánicas específicas y gana monedas.',
+'PROCURANDO OPONENTE...':'BUSCANDO RIVAL...',
+'Adversário encontrado! Preparando partida...':'¡Rival encontrado! Preparando el partido...',
+'Adversário encontrado. Conectando...':'Rival encontrado. Conectando...',
+'Partida online iniciada. Você é o':'Partido online iniciado. Eres el',
+'Você controla o':'Controlas al',
+'Você joga pelo lado direito.':'Juegas por el lado derecho.',
+'Você joga pelo lado esquerdo.':'Juegas por el lado izquierdo.',
+'Jogador conectado! Escolha as opções e aguarde a confirmação.':'¡Jugador conectado! Elige las opciones y espera la confirmación.',
+'Jogador remoto confirmou a conexão.':'El jugador remoto confirmó la conexión.',
+'Sala criada. Aguardando jogador...':'Sala creada. Esperando jugador...',
+'Conectando ao PeerJS Cloud...':'Conectando al servicio online...',
+'Conectando à sala...':'Conectando a la sala...',
+'Entrando na partida...':'Entrando al partido...',
+'Sincronizando sala...':'Sincronizando la sala...',
+'Canal P2P aberto. Chat e sincronização liberados.':'Canal P2P abierto. Chat y sincronización activados.',
+'Canal P2P ativo. Chat e sincronização liberados.':'Canal P2P activo. Chat y sincronización activados.',
+'Sinalização conectada ao PeerJS.':'Señalización conectada.',
+'Servidor de sinalização desconectado. Tentando reconectar...':'Servidor de señalización desconectado. Reconectando...',
+'O outro jogador saiu da sala.':'El otro jugador salió de la sala.',
+'Não foi possível carregar o sistema online.':'No se pudo cargar el sistema online.',
+'Não foi possível conectar ao servidor de sinalização.':'No se pudo conectar al servidor de señalización.',
+'Este navegador não suporta o multiplayer WebRTC.':'Este navegador no admite multijugador WebRTC.',
+'Falha ao criar sala: ':'Error al crear la sala: ',
+'Falha de conexão (':'Error de conexión (',
+'Tempo de conexão esgotado. Tente novamente.':'Tiempo de conexión agotado. Inténtalo de nuevo.',
+'Tempo esgotado ao criar a sala. Tente novamente.':'Tiempo agotado al crear la sala. Inténtalo de nuevo.',
+'Tempo esgotado procurando a sala. Confira o código e tente novamente.':'Tiempo agotado buscando la sala. Comprueba el código.',
+'Código da sala':'Código de sala',
+'Pronto!':'¡Listo!',
+'Preparando o campo...':'Preparando el campo...',
+'Carregando controles...':'Cargando controles...',
+'Carregando SoccerGol...':'Cargando SoccerGol...',
+'Você ganhou':'Ganaste',
+'moedas por esta partida.':'monedas por este partido.',
+'2 Players não rende moedas.':'2 Players no otorga monedas.',
+'Você não tem moedas suficientes.':'No tienes suficientes monedas.',
+'Essa skin já está sendo usada pelo outro jogador.':'Esa skin ya la está usando el otro jugador.',
+'Você controla o mesmo personagem.':'Controlas al mismo personaje.',
+'Jogar contra a IA, desafie um amigo ou entre em uma sala online.':'Desafía a la IA, juega con un amigo o entra en una sala online.',
+'Prense a bola entre os dois jogadores e chute para tentar atravessar o adversário.':'Atrapa el balón entre ambos jugadores y chuta para intentar hacerle un túnel al rival.',
+'Se você estiver se movimentando para trás em relação ao chute, pode executar um chute especial.':'Moverte hacia atrás respecto al disparo puede activar un tiro especial de tacón.',
+'O jogador chuta na direção em que está se movimentando.':'El jugador dispara en la dirección en la que se mueve.',
+'Quanto maior a dificuldade, melhor a IA se posiciona e finaliza.':'Cuanto mayor la dificultad, mejor se posiciona y finaliza la IA.',
+'Quanto maior, mais inteligente a IA.':'Cuanto mayor, más inteligente es la IA.'
+}
+};
+
+const oldTr = window.sgT;
+window.sgT = function(v){
+  const str=String(v??'');
+  if(SG.lang==='pt') return str;
+  const direct=(FULL_I18N[SG.lang]||FULL_I18N.en)[str];
+  if(direct) return direct;
+  try{return oldTr?oldTr(str):str}catch(e){return str}
+};
+
+/* Re-run translation after dynamic panels are created, but never translate input/chat values. */
+let finalTransBusy=false;
+const finalTextBase=new WeakMap(), finalPHBase=new WeakMap();
+function finalTranslateTree(root){
+  if(!root||finalTransBusy)return;
+  finalTransBusy=true;
+  try{
+    const tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    const nodes=[]; let n;
+    while((n=tw.nextNode())) nodes.push(n);
+    for(const node of nodes){
+      const parent=node.parentElement;
+      if(parent && (parent.closest('#onlineChatLog') || parent.closest('.nicknameInput'))) continue;
+      const trimmed=node.nodeValue.trim();
+      if(!trimmed) continue;
+      if(!finalTextBase.has(node)) finalTextBase.set(node,trimmed);
+      const base=finalTextBase.get(node);
+      const translated=window.sgT(base);
+      if(translated!==base) node.nodeValue=node.nodeValue.replace(trimmed,translated);
+    }
+    root.querySelectorAll?.('input,textarea').forEach(el=>{
+      if(!finalPHBase.has(el)) finalPHBase.set(el,el.placeholder||'');
+      const base=finalPHBase.get(el);
+      if(base) el.placeholder=window.sgT(base);
+    });
+    document.documentElement.lang=SG.lang==='pt'?'pt-BR':SG.lang;
+  }finally{finalTransBusy=false}
+}
+
+/* Wrap settings application so every dynamic label is translated and choice persists. */
+const prevApplyLanguage = window.aplicarIdioma;
+window.aplicarIdioma = function(){
+  try{prevApplyLanguage?.()}catch(e){}
+  try{finalTranslateTree(document.body)}catch(e){}
+  try{localStorage.setItem('soccerGolLanguage',SG.lang)}catch(e){}
+};
+
+/* ---------- online input resilience ---------- */
+const prevProcessOnline = window.processarMensagemOnline;
+if(typeof prevProcessOnline==='function'){
+  /* Keep the last good remote input briefly so packet loss does not freeze P2. */
+  window.processarMensagemOnline=function(d){
+    try{
+      if(d && d.type==='input' && online.active && online.host){
+        online.remoteInput.x=Math.max(-1,Math.min(1,Number(d.x)||0));
+        online.remoteInput.y=Math.max(-1,Math.min(1,Number(d.y)||0));
+        online.remoteInput.lastAt=performance.now();
+      }
+    }catch(e){}
+    return prevProcessOnline.apply(this,arguments);
+  };
+}
+online.remoteInput=online.remoteInput||{x:0,y:0,kick:false,dash:false};
+online.remoteInput.lastAt=online.remoteInput.lastAt||0;
+
+/* If a remote client temporarily loses packets, release movement after 220ms instead of keeping stale input forever. */
+const prevLoopSafe = window.loopSeguro;
+if(typeof prevLoopSafe==='function' && !window.__sgOnlineWatchdogWrapped){
+  window.__sgOnlineWatchdogWrapped=true;
+  /* The original loop is recursive; the watchdog itself is frame-safe and only zeros stale input. */
+  setInterval(function(){
+    if(online.active && online.host && online.remoteInput){
+      if(performance.now()-(online.remoteInput.lastAt||0)>220){
+        online.remoteInput.x=0;online.remoteInput.y=0;
+      }
+    }
+  },100);
+}
+
+/* ---------- robust ball/player/wall solver ---------- */
+function clampBallInsidePitch(){
+  if(!window.bola||!window.campo)return;
+  const insideGoal=bola.y>campo.golY && bola.y<campo.golY+campo.golH;
+  if(bola.y-bola.r<campo.y){
+    bola.y=campo.y+bola.r; bola.dy=Math.abs(bola.dy||0); bola.vy=Math.abs(bola.vy||0); bola.vel*=.88;
+  }
+  if(bola.y+bola.r>campo.y+campo.h){
+    bola.y=campo.y+campo.h-bola.r; bola.dy=-Math.abs(bola.dy||0); bola.vy=-Math.abs(bola.vy||0); bola.vel*=.88;
+  }
+  if(!insideGoal && bola.x-bola.r<campo.x){
+    bola.x=campo.x+bola.r; bola.dx=Math.abs(bola.dx||0); bola.vx=Math.abs(bola.vx||0); bola.vel*=.88;
+  }
+  if(!insideGoal && bola.x+bola.r>campo.x+campo.w){
+    bola.x=campo.x+campo.w-bola.r; bola.dx=-Math.abs(bola.dx||0); bola.vx=-Math.abs(bola.vx||0); bola.vel*=.88;
+  }
+}
+const originalAtualizarBola = window.atualizarBola;
+if(typeof originalAtualizarBola==='function' && !window.__sgBallSolverWrapped){
+  window.__sgBallSolverWrapped=true;
+  window.atualizarBola=function(){
+    const r=originalAtualizarBola.apply(this,arguments);
+    if(!jogoAtivo||jogoPausado||executandoReplay||SG.goalLock)return r;
+    /* Re-solve the contact manifold after BOTH wall and player collisions.
+       This prevents the ball being pushed through a player when trapped against a wall. */
+    for(let i=0;i<4;i++){
+      try{
+        colidirBolaJogador(azul);
+        colidirBolaJogador(vermelho);
+        clampBallInsidePitch();
+      }catch(e){break}
+    }
+    protegerBola?.();
+    clampBallInsidePitch();
+    return r;
+  };
+}
+
+/* ---------- stadium visuals ---------- */
+const originalDrawField=window.desenharCampo;
+if(typeof originalDrawField==='function' && !window.__sgThemeFieldWrapped){
+  window.__sgThemeFieldWrapped=true;
+  window.desenharCampo=function(){
+    originalDrawField.apply(this,arguments);
+    const theme=document.body.classList.contains('sg-theme-neon')?'neon':
+                document.body.classList.contains('sg-theme-night')?'night':'classic';
+    if(theme==='classic')return;
+    const w=canvas.width,h=canvas.height,t=performance.now()/1000;
+    ctx.save();
+    if(theme==='night'){
+      const g=ctx.createLinearGradient(0,0,0,h);
+      g.addColorStop(0,'rgba(12,28,52,.16)');g.addColorStop(.5,'rgba(0,0,0,.02)');g.addColorStop(1,'rgba(0,0,22,.20)');
+      ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+      ctx.globalAlpha=.12;
+      for(let i=0;i<9;i++){
+        ctx.fillStyle='#75b9ff';
+        ctx.beginPath();ctx.arc(80+i*130,32+Math.sin(t*1.3+i)*2,3,0,Math.PI*2);ctx.fill();
+      }
+    }else{
+      ctx.globalAlpha=.16;
+      ctx.strokeStyle='#e65cff';ctx.lineWidth=4;
+      ctx.strokeRect(campo.x-6,campo.y-6,campo.w+12,campo.h+12);
+      ctx.globalAlpha=.06;
+      ctx.fillStyle='#53ffba';
+      for(let i=0;i<6;i++)ctx.fillRect(campo.x+i*185,campo.y,72,5+Math.sin(t*2+i)*2);
+    }
+    ctx.restore();
+  };
+}
+
+/* ---------- stronger PC multiplayer action routing ---------- */
+const originalChute = window.chute, originalDash=window.carrinhoSeguro;
+if(typeof originalChute==='function' && !window.__sgUnifiedActionWrapped){
+  window.__sgUnifiedActionWrapped=true;
+  window.chute=function(player){
+    /* In IA/Online, the selected human character receives both control families. */
+    if((modoJogo==='ia'||modoJogo==='online') && equipeControleLocal){
+      const local=equipeControleLocal();
+      if((player===azul||player===vermelho) && (player!== (local==='azul'?azul:vermelho))){
+        return;
+      }
+    }
+    return originalChute.apply(this,arguments);
+  };
+  window.carrinhoSeguro=function(player){
+    if((modoJogo==='ia'||modoJogo==='online') && equipeControleLocal){
+      const local=equipeControleLocal();
+      if((player===azul||player===vermelho) && player!== (local==='azul'?azul:vermelho)){
+        return;
+      }
+    }
+    return originalDash.apply(this,arguments);
+  };
+}
+
+/* ---------- final translation refreshes ---------- */
+setTimeout(()=>finalTranslateTree(document.body),120);
+setTimeout(()=>finalTranslateTree(document.body),700);
+const obs=new MutationObserver(()=>{if(!finalTransBusy)finalTranslateTree(document.body)});
+obs.observe(document.body,{subtree:true,childList:true});
+
+/* ---------- small daily refresh countdown ---------- */
+setInterval(()=>{
+  const el=document.querySelector('.sgDailyRefresh');
+  if(!el)return;
+  const now=new Date(), next=new Date(now);next.setHours(24,0,0,0);
+  const sec=Math.max(0,Math.floor((next-now)/1000));
+  const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60);
+  el.textContent=window.sgT('Novos desafios todos os dias')+' • '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+},1000);
+
+/* ---------- add useful coin shop copy ---------- */
+const shopPanel=document.querySelector('.sgCoinShopPanel');
+if(shopPanel && !shopPanel.querySelector('.sgCoinShopNote')){
+  const p=document.createElement('div');p.className='sgCoinShopNote';
+  p.textContent=window.sgT('Gaste moedas em melhorias cosméticas.');
+  shopPanel.querySelector('.sgShopGrid')?.before(p);
+}
+
+/* ---------- default English unless user explicitly selected a language ---------- */
+try{
+  const saved=localStorage.getItem('soccerGolLanguage');
+  if(saved!=='pt' && saved!=='es' && saved!=='en') SG.lang='en';
+}catch(e){SG.lang='en'}
+window.aplicarIdioma?.();
+})();
+</script>
 </body>
 </html>
 <script id="sg-rematch-js">
